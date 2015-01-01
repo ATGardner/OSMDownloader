@@ -75,10 +75,10 @@ namespace OSMDownloader
             var set = new HashSet<Tuple<int, int, int>>();
             foreach (var tile in tiles)
             {
-                if (!set.Contains(tile)/* && set.Count() < 10*/)
+                if (!set.Contains(tile) /*&& set.Count() < 10//*/)
                 {
                     set.Add(tile);
-                    yield return Task.Factory.StartNew(() => Console.WriteLine("tile"));// DownloadTile(tile);
+                    yield return Task.Factory.StartNew(() => Console.WriteLine("tile"));//*/ DownloadTile(tile);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace OSMDownloader
         {
             var currentServer = GetCurrentServer();
             var directory = string.Format("{0}/{1}", tile.Item3, tile.Item1);
-            var fileName = string.Format("{0}/{1}.png", directory, tile.Item2);
+            var fileName = string.Format("{0}/{1}.jpg", directory, tile.Item2);
             var address = string.Format("{0}/{1}", currentServer, fileName);
             Directory.CreateDirectory(directory);
             var webClient = new WebClient();
@@ -117,8 +117,10 @@ namespace OSMDownloader
                     break;
             }
 
-            server = (server + 1) % 3;
-            return string.Format("http://{0}.tile.opencyclemap.org/cycle", serverStr);
+            server = (server + 1) % 4;
+
+            //return string.Format("http://{0}.tile.opencyclemap.org/cycle", serverStr);
+            return string.Format("http://otile{0}.mqcdn.com/tiles/1.0.0/osm", server + 1);
         }
     }
 }
