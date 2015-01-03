@@ -1,0 +1,67 @@
+﻿[
+    {
+        "Name": "OpenStreetMap",
+        "Address": "http://[abc].tile.openstreetmap.org/{zoom}/{x}/{y}.png",
+        "ZoomLevels": "0-19"
+    },
+    {
+        "Name": "OpenCycleMap",
+        "Address": "http://[abc].tile.opencyclemap.org/cycle/{zoom}/{x}/{y}.png",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "OpenCycleMap Transport",
+        "Address": "http://[abc].tile2.opencyclemap.org/transport/{zoom}/{x}/{y}.png",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "MapQuest",
+        "Address": "http://otile[1234].mqcdn.com/tiles/1.0.0/sat/{zoom}/{x}/{y}.jpg",
+        "ZoomLevels": "0-19"
+    },
+    {
+        "Name": "MapQuest Open Aerial",
+        "Address": "http://otile[1234].mqcdn.com/tiles/1.0.0/sat/{zoom}/{x}/{y}.jpg",
+        "ZoomLevels": "0-19"
+    },
+    {
+        "Name": "Migurski's Terrain",
+        "Address": "http://[abcd].tile.stamen.com/terrain-background/{zoom}/{x}/{y}.jpg",
+        "ZoomLevels": "4-18"
+    },
+    {
+        "Name": "ThunderForest OpenCycleMap",
+        "Address": "http://[abc].tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "ThunderForest Transport",
+        "Address": "http://[abc].tile.thunderforest.com/transport/{z}/{x}/{y}.png",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "ThunderForest Landscape",
+        "Address": "http://[abc].tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "ThunderForest Transport Dark",
+        "Address": "http://[abc].tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "ThunderForest Terrain",
+        "Address": "http://[abcd].tile.stamen.com/terrain-background/zoom/x/y.jpg",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "CALTopo",
+        "Address": "http://caltopo.com/resource/imagery/tiles/eus/{zoom}/{x}/{y}",
+        "ZoomLevels": "0-18"
+    },
+    {
+        "Name": "USA Topo Maps",
+        "Address":  "http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer/tile/{zoom}/{y}/{x}.png",
+        "ZoomLevels": "0-18"
+    }
+]

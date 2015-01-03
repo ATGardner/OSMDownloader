@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OSMDownloader")]
+[assembly: AssemblyTitle("com.atgardner.Downloader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OSMDownloader")]
+[assembly: AssemblyProduct("com.atgardner.Downloader")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("660db102-7064-4e4f-8e37-cbf4ff4abdea")]
+[assembly: Guid("a22cb6ca-c690-4db2-89d9-c2f119fb59eb")]
 
 // Version information for an assembly consists of the following four values:
 //
