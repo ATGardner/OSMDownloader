@@ -1,4 +1,5 @@
 ﻿using com.atgardner.Downloader;
+using Gavaghan.Geodesy;
 using Ionic.Zip;
 using Newtonsoft.Json;
 using SharpKml.Base;
@@ -31,12 +32,11 @@ namespace com.atgardner.TilesDownloader
             MapSource[] sources = JsonConvert.DeserializeObject<MapSource[]>(json);
             cmbMapSource.DataSource = sources;
             Downloader.Downloader.TileDownloaded += Downloader_TileDownloaded;
-            
         }
 
         void Downloader_TileDownloaded(object sender, DownloadTileEventArgs e)
         {
-            worker.ReportProgress(0, e.Phase);
+            worker.ReportProgress(e.ProgressPercentage);
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -65,7 +65,6 @@ namespace com.atgardner.TilesDownloader
 
             btnRun.Enabled = false;
             prgBar.Value = 0;
-            prgBar.Maximum = 0;
             var source = cmbMapSource.SelectedItem as MapSource;
             var argument = new Tuple<string, int[], MapSource>(path, zoomLevels, source);
             worker.RunWorkerAsync(argument);
@@ -93,7 +92,7 @@ namespace com.atgardner.TilesDownloader
             return kml;
         }
 
-        private IEnumerable<Coordinate> ExtractCoordinates(KmlFile kml)
+        private IEnumerable<GlobalCoordinates> ExtractCoordinates(KmlFile kml)
         {
             foreach (var element in kml.Root.Flatten().OfType<Geometry>())
             {
@@ -101,13 +100,15 @@ namespace com.atgardner.TilesDownloader
                 {
                     foreach (var vector in ((LineString)element).Coordinates)
                     {
-                        yield return new Coordinate(vector.Longitude, vector.Latitude);
+                        var lon = new Gavaghan.Geodesy.Angle(vector.Longitude);
+                        var lat = new Gavaghan.Geodesy.Angle(vector.Latitude);
+                        yield return new GlobalCoordinates(lat, lon);
                     }
                 }
                 else if (element is Point)
                 {
                     var vector = ((Point)element).Coordinate;
-                    yield return new Coordinate(vector.Longitude, vector.Latitude);
+                    yield return new GlobalCoordinates(vector.Longitude, vector.Latitude);
                 }
                 else
                 {
@@ -124,29 +125,19 @@ namespace com.atgardner.TilesDownloader
             MapSource source = argument.Item3;
             var kml = GetKml(path);
             worker.ReportProgress(0, "Done Reading File");
-            var coordinates = ExtractCoordinates(kml);
+            var coordinates = ExtractCoordinates(kml).ToArray();
             Downloader.Downloader.DownloadTiles(coordinates, zoomLevels, source.Name, source.Address);
         }
 
         private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if (e.UserState is DownloadPhase)
+            prgBar.Value = e.ProgressPercentage;
+            if (e.ProgressPercentage == 100)
             {
-                var phase = (DownloadPhase)e.UserState;
-                switch (phase)
-                {
-                    case DownloadPhase.Started:
-                        prgBar.Maximum += 1;
-                        break;
-                    case DownloadPhase.TileDone:
-                        prgBar.Value += 1;
-                        break;
-                    case DownloadPhase.Complete:
-                        CompleteDownload();
-                        break;
-                }
+                CompleteDownload();
             }
-            else if (e.UserState is string)
+
+            if (e.UserState is string)
             {
                 lblStatus.Text = (string)e.UserState;
             }
