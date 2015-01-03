@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,9 +21,13 @@ namespace com.atgardner.TilesDownloader
 {
     public partial class TilesDownloaderForm : Form
     {
+        private readonly Downloader.Downloader downloader;
+        private string folderName;
+
         public TilesDownloaderForm()
         {
             InitializeComponent();
+            downloader = new Downloader.Downloader();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -31,7 +37,7 @@ namespace com.atgardner.TilesDownloader
             var json = File.ReadAllText("sources.json");
             MapSource[] sources = JsonConvert.DeserializeObject<MapSource[]>(json);
             cmbMapSource.DataSource = sources;
-            Downloader.Downloader.TileDownloaded += Downloader_TileDownloaded;
+            downloader.TileDownloaded += Downloader_TileDownloaded;
         }
 
         void Downloader_TileDownloaded(object sender, DownloadTileEventArgs e)
@@ -126,7 +132,9 @@ namespace com.atgardner.TilesDownloader
             var kml = GetKml(path);
             worker.ReportProgress(0, "Done Reading File");
             var coordinates = ExtractCoordinates(kml).ToArray();
-            Downloader.Downloader.DownloadTiles(coordinates, zoomLevels, source.Name, source.Address);
+            var hash = ComputeHash(coordinates);
+            folderName = string.Format("{0}-{1}", source.Name, hash);
+            downloader.DownloadTiles(coordinates, zoomLevels, folderName, source.Address);
         }
 
         private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -142,6 +150,22 @@ namespace com.atgardner.TilesDownloader
                 lblStatus.Text = (string)e.UserState;
             }
         }
+
+        private string ComputeHash(IEnumerable<GlobalCoordinates> coordinates)
+        {
+            byte[] bytes;
+            using (var stream = new MemoryStream())
+            {
+                var bf = new BinaryFormatter();
+                bf.Serialize(stream, coordinates);
+                bytes = stream.ToArray();
+            }
+
+            var md5 = MD5.Create();
+            var hash = md5.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+            
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -207,9 +231,11 @@ namespace com.atgardner.TilesDownloader
             var source = cmbMapSource.SelectedItem as MapSource;
             using (var zip = new ZipFile(source.Name + ".zip"))
             {
-                zip.AddDirectory(source.Name);
+                zip.AddDirectory(folderName);
                 zip.Save();
             }
+
+            Directory.Delete(folderName, true);
         }
     }
 }

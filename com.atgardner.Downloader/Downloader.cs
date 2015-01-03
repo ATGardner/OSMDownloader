@@ -11,16 +11,18 @@ using System.Threading.Tasks;
 
 namespace com.atgardner.Downloader
 {
-    public static class Downloader
+    public class Downloader
     {
-        public static event EventHandler<DownloadTileEventArgs> TileDownloaded;
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
-        private static int subDomainNum;
-        private static int counter;
-        private static int total;
+        private static readonly int[] degrees = new [] { 0, 90, 180, 270 };
 
-        public static void DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, string sourceName, string addressTemplate)
+        public event EventHandler<DownloadTileEventArgs> TileDownloaded;
+        private int subDomainNum;
+        private int counter;
+        private int total;
+
+        public void DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, string folderName, string addressTemplate)
         {
             subDomainNum = 0;
             counter = 0;
@@ -31,15 +33,15 @@ namespace com.atgardner.Downloader
             {
                 if (!set.ContainsKey(tile) /*&& set.Count < 10*/)
                 {
-                    set[tile] = DownloadTileAsync(tile, sourceName, addressTemplate);
+                    set[tile] = DownloadTileAsync(folderName, addressTemplate, tile);
                 }
             }
 
             Task.WaitAll(set.Values.ToArray());
-            Console.WriteLine("Finished downloading, {0} tiles", counter);
+            Console.WriteLine("Finished downloading, {0} coordinates", counter);
         }
 
-        private static IEnumerable<Tile> GenerateTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
+        private IEnumerable<Tile> GenerateTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
         {
             foreach (var c in coordinates)
             {
@@ -47,9 +49,13 @@ namespace com.atgardner.Downloader
                 var lat = c.Latitude.Degrees;
                 foreach (var zoom in zoomLevels)
                 {
-                    foreach (var c2 in GetCoordinatesAround(c, 1609.25))
+                    yield return WorldToTilePos(c, zoom);
+                    if (zoom > 13)
                     {
-                        yield return WorldToTilePos(c2, zoom);
+                        foreach (var c2 in GetCoordinatesAround(c, 1609.34))
+                        {
+                            yield return WorldToTilePos(c2, zoom);
+                        }
                     }
                 }
 
@@ -57,11 +63,11 @@ namespace com.atgardner.Downloader
             }
         }
 
-        private static async Task<Tile> DownloadTileAsync(Tile tile, string source, string addressTemplate)
+        private async Task<Tile> DownloadTileAsync(string folderName, string addressTemplate, Tile tile)
         {
             var address = GetAddress(addressTemplate, tile);
             var ext = Path.GetExtension(address);
-            var fileName = string.Format("{0}/{1}/{2}/{3}{4}", source, tile.Zoom, tile.X, tile.Y, ext);
+            var fileName = string.Format("{0}/{1}/{2}/{3}{4}", folderName, tile.Zoom, tile.X, tile.Y, ext);
             if (File.Exists(fileName))
             {
                 return tile;
@@ -83,7 +89,7 @@ namespace com.atgardner.Downloader
             //})).Start();
         }
 
-        private static void IncreaseCounter()
+        private void IncreaseCounter()
         {
             var prevPercentage = 100 * counter / total;
             counter++;
@@ -94,7 +100,7 @@ namespace com.atgardner.Downloader
             }
         }
         
-        private static void FireTileDownloaded(int progressPercentage)
+        private void FireTileDownloaded(int progressPercentage)
         {
             var handler = TileDownloaded;
             var args = new DownloadTileEventArgs(progressPercentage);
@@ -106,8 +112,6 @@ namespace com.atgardner.Downloader
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)
         {
-            var degrees = new[] { 0, 90, 180, 270 };
-            yield return origin;
             foreach (var startBearing in degrees)
             {
                 yield return calc.CalculateEndingGlobalCoordinates(Ellipsoid.WGS84, origin, startBearing, distance);
@@ -123,7 +127,7 @@ namespace com.atgardner.Downloader
             return new Tile(x, y, zoom);
         }
 
-        private static string GetAddress(string addressTemplate, Tile tile)
+        private string GetAddress(string addressTemplate, Tile tile)
         {
             var match = subDomainRegExp.Match(addressTemplate);
             if (match.Success)
