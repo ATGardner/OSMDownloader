@@ -17,15 +17,17 @@
         public string Address { get; private set; }
         public int MinZoom { get; private set; }
         public int MaxZoom { get; private set; }
+        public string Attribution { get; private set; }
         public DateTime LastAccess { get; set; }
         public int Ammount { get; set; }
 
-        public MapSource(string name, string address, int minZoom, int maxZoom, DateTime lastAccess, int ammount)
+        public MapSource(string name, string address, int minZoom, int maxZoom, string attribution, DateTime lastAccess, int ammount)
         {
             this.Name = name;
             this.Address = address;
             this.MinZoom = minZoom;
             this.MaxZoom = maxZoom;
+            this.Attribution = attribution;
             this.LastAccess = lastAccess;
             if (lastAccess != null && lastAccess.Date == DateTime.Today)
             {

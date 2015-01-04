@@ -17,7 +17,7 @@
     {
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
-        private static readonly int[] degrees = new [] { 0, 90, 180, 270 };
+        private static readonly int[] degrees = new[] { 0, 90, 180, 270 };
         private static readonly int limit = 100;
 
         public event EventHandler<DownloadTileEventArgs> TileDownloaded;
@@ -33,42 +33,52 @@
             counter = 0;
             var tiles = GenerateTiles(coordinates, zoomLevels).ToArray();
             total = tiles.Count();
-            var set = new Dictionary<Tile, Task>();
+            var tasks = new List<Task>();
             foreach (var tile in tiles)
             {
-                if (source.Ammount == 0)
-                {
-                    break;
-                }
+                //if (source.Ammount == 0)
+                //{
+                //    break;
+                //}
 
-                if (!set.ContainsKey(tile))
-                {
-                    set[tile] = DownloadTileAsync(folderName, source, tile);
-                }
+                var task = DownloadTileAsync(folderName, source, tile);
+                tasks.Add(task);
             }
 
-            Task.WaitAll(set.Values.ToArray());
+            Task.WaitAll(tasks.ToArray());
             return folderName;
         }
 
         private IEnumerable<Tile> GenerateTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
         {
+            var uniqueTiles = new HashSet<Tile>();
             foreach (var c in coordinates)
             {
                 var lon = c.Longitude.Degrees;
                 var lat = c.Latitude.Degrees;
                 foreach (var zoom in zoomLevels)
                 {
-                    yield return WorldToTilePos(c, zoom);
+                    var tile = WorldToTilePos(c, zoom);
+                    if (!uniqueTiles.Contains(tile))
+                    {
+                        uniqueTiles.Add(tile);
+                    }
+
                     if (zoom > 13)
                     {
                         foreach (var c2 in GetCoordinatesAround(c, 1609.34))
                         {
-                            yield return WorldToTilePos(c2, zoom);
+                            tile = WorldToTilePos(c2, zoom);
+                            if (!uniqueTiles.Contains(tile))
+                            {
+                                uniqueTiles.Add(tile);
+                            }
                         }
                     }
                 }
             }
+
+            return uniqueTiles;
         }
 
         private async Task<Tile> DownloadTileAsync(string folderName, MapSource source, Tile tile)
@@ -76,7 +86,8 @@
             var address = GetAddress(source.Address, tile);
             var ext = Path.GetExtension(address);
             var fileName = string.Format("{0}/{1}/{2}/{3}{4}", folderName, tile.Zoom, tile.X, tile.Y, ext);
-            if (File.Exists(fileName))
+            var fi = new FileInfo(fileName);
+            if (fi.Exists && fi.Length > 3072)
             {
                 IncreaseCounter();
                 return tile;
@@ -86,24 +97,30 @@
             source.LastAccess = DateTime.Today;
             source.Ammount--;
             await PerformDownload(address, fileName);
+            var fi2 = new FileInfo(fileName);
+            if (fi2.Length < 3072)
+            {
+                throw new Exception("Server returning blank tiles");
+            }
+
             IncreaseCounter();
             return tile;
         }
 
         private static async Task PerformDownload(string address, string fileName)
         {
-            //var webClient = new WebClient();
-            //await webClient.DownloadFileTaskAsync(address, fileName);
+            var webClient = new WebClient();
+            await webClient.DownloadFileTaskAsync(address, fileName);
             //(new Thread(() =>
             //{
             //    await Task.Delay(100);
             //    Console.WriteLine("downloadig {0}", address);
             //})).Start();
 
-            await Task.Run(new Action(async () =>
-            {
-                await Task.Delay(1000);
-            }));
+            //await Task.Run(new Action(async () =>
+            //{
+            //    await Task.Delay(1000);
+            //}));
         }
 
         private void IncreaseCounter()
@@ -116,7 +133,7 @@
                 FireTileDownloaded(newPercentage);
             }
         }
-        
+
         private void FireTileDownloaded(int progressPercentage)
         {
             var handler = TileDownloaded;

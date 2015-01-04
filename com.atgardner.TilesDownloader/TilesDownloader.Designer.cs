@@ -44,6 +44,7 @@
             this.prgBar = new System.Windows.Forms.ToolStripProgressBar();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
+            this.lnk = new System.Windows.Forms.LinkLabel();
             this.tlpContainer.SuspendLayout();
             this.status.SuspendLayout();
             this.tspContainer.BottomToolStripPanel.SuspendLayout();
@@ -64,16 +65,18 @@
             this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 1);
             this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 2);
             this.tlpContainer.Controls.Add(this.flpZoomLevels, 1, 2);
-            this.tlpContainer.Controls.Add(this.chkBxZip, 0, 4);
-            this.tlpContainer.Controls.Add(this.btnRun, 2, 4);
+            this.tlpContainer.Controls.Add(this.chkBxZip, 0, 5);
+            this.tlpContainer.Controls.Add(this.lnk, 0, 3);
+            this.tlpContainer.Controls.Add(this.btnRun, 2, 5);
             this.tlpContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContainer.Location = new System.Drawing.Point(0, 0);
             this.tlpContainer.Name = "tlpContainer";
             this.tlpContainer.Padding = new System.Windows.Forms.Padding(10);
-            this.tlpContainer.RowCount = 5;
+            this.tlpContainer.RowCount = 6;
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.Size = new System.Drawing.Size(584, 314);
@@ -224,6 +227,17 @@
             this.tspContainer.TabIndex = 2;
             this.tspContainer.Text = "toolStripContainer1";
             // 
+            // lnk
+            // 
+            this.lnk.AllowDrop = true;
+            this.lnk.AutoSize = true;
+            this.tlpContainer.SetColumnSpan(this.lnk, 3);
+            this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lnk.Location = new System.Drawing.Point(13, 79);
+            this.lnk.Name = "lnk";
+            this.lnk.Size = new System.Drawing.Size(558, 20);
+            this.lnk.TabIndex = 11;
+            // 
             // TilesDownloaderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -263,6 +277,7 @@
         private System.Windows.Forms.Label lblZoomLevels;
         private System.Windows.Forms.FlowLayoutPanel flpZoomLevels;
         private System.Windows.Forms.CheckBox chkBxZip;
+        private System.Windows.Forms.LinkLabel lnk;
     }
 }
 

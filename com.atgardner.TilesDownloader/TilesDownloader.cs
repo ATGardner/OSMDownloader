@@ -84,7 +84,7 @@
             worker.ReportProgress(0, "Done Downloading");
             if (chkBxZip.Checked)
             {
-                ZipResult();
+                ZipResult(folderName, source.Name);
             }
 
             worker.ReportProgress(0, "Done Zipping");
@@ -116,6 +116,7 @@
         {
             var mapSource = cmbMapSource.SelectedItem as MapSource;
             ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
+            lnk.Text = mapSource.Attribution;
         }
 
         private KmlFile GetKml(string path)
@@ -207,10 +208,9 @@
             }
         }
 
-        private void ZipResult()
+        private static void ZipResult(string folderName, string sourceName)
         {
-            var source = cmbMapSource.SelectedItem as MapSource;
-            using (var zip = new ZipFile(source.Name + ".zip"))
+            using (var zip = new ZipFile(sourceName + ".zip"))
             {
                 zip.AddDirectory(folderName);
                 zip.Save();

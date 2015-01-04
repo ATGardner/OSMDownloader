@@ -4,7 +4,7 @@
         "Address": "http://[abc].tile.openstreetmap.org/{zoom}/{x}/{y}.png",
         "minZoom": 0,
         "maxZoom":  19,
-        "attribution": "Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
+        "attribution": "Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     },
     {
         "Name": "MapQuest",
@@ -31,35 +31,35 @@
         "Address": "http://[abc].tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
+        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Transport",
         "Address": "http://[abc].tile.thunderforest.com/transport/{z}/{x}/{y}.png",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
+        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Landscape",
         "Address": "http://[abc].tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
+        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Transport Dark",
         "Address": "http://[abc].tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
+        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Terrain",
         "Address": "http://[abcd].tile.stamen.com/terrain-background/zoom/x/y.jpg",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
+        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     },
     {
         "Name": "CALTopo",
@@ -78,20 +78,20 @@
         "Address":  "http://tile.stamen.com/toner/<zoom>/<x>/<y>.png",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>."
+        "attribution": "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://www.openstreetmap.org/copyright\">ODbL</a>."
     },
     {
         "Name": "staman Terrain",
         "Address":  "http://tile.stamen.com/terrain/<zoom>/<x>/<y>.jpg",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>."
+        "attribution": "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."
     },
     {
         "Name": "staman Watercolor",
         "Address":  "http://tile.stamen.com/watercolor/<zoom>/<x>/<y>.jpg",
         "minZoom": 0,
         "maxZoom":  18,
-        "attribution": "Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>."
+        "attribution": "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."
     }
 ]
