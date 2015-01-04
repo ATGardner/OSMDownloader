@@ -3,31 +3,22 @@
         "Name": "OpenStreetMap",
         "Address": "http://[abc].tile.openstreetmap.org/{zoom}/{x}/{y}.png",
         "minZoom": 0,
-        "maxZoom":  19
-    },
-    {
-        "Name": "OpenCycleMap",
-        "Address": "http://[abc].tile.opencyclemap.org/cycle/{zoom}/{x}/{y}.png",
-        "minZoom": 0,
-        "maxZoom":  18
-    },
-    {
-        "Name": "OpenCycleMap Transport",
-        "Address": "http://[abc].tile2.opencyclemap.org/transport/{zoom}/{x}/{y}.png",
-        "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  19,
+        "attribution": "Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
     },
     {
         "Name": "MapQuest",
         "Address": "http://otile[1234].mqcdn.com/tiles/1.0.0/sat/{zoom}/{x}/{y}.jpg",
         "minZoom": 0,
-        "maxZoom":  19
+        "maxZoom":  19,
+        "Attribution": "Data, imagery and map information provided by MapQuest, OpenStreetMap <http://www.openstreetmap.org/copyright> and contributors, ODbL <http://wiki.openstreetmap.org/wiki/Legal_FAQ#3a._I_would_like_to_use_OpenStreetMap_maps._How_should_I_credit_you.3F> ."
     },
     {
         "Name": "MapQuest Open Aerial",
         "Address": "http://otile[1234].mqcdn.com/tiles/1.0.0/sat/{zoom}/{x}/{y}.jpg",
         "minZoom": 0,
-        "maxZoom":  19
+        "maxZoom":  19,
+        "Attribution": "Data, imagery and map information provided by MapQuest, OpenStreetMap <http://www.openstreetmap.org/copyright> and contributors, ODbL <http://wiki.openstreetmap.org/wiki/Legal_FAQ#3a._I_would_like_to_use_OpenStreetMap_maps._How_should_I_credit_you.3F> ."
     },
     {
         "Name": "Migurski's Terrain",
@@ -39,31 +30,36 @@
         "Name": "ThunderForest OpenCycleMap",
         "Address": "http://[abc].tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
         "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  18,
+        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Transport",
         "Address": "http://[abc].tile.thunderforest.com/transport/{z}/{x}/{y}.png",
         "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  18,
+        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Landscape",
         "Address": "http://[abc].tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
         "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  18,
+        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Transport Dark",
         "Address": "http://[abc].tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png",
         "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  18,
+        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
     },
     {
         "Name": "ThunderForest Terrain",
         "Address": "http://[abcd].tile.stamen.com/terrain-background/zoom/x/y.jpg",
         "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  18,
+        "attribution": "Maps © <a href="http://www.thunderforest.com">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>"
     },
     {
         "Name": "CALTopo",
@@ -76,5 +72,26 @@
         "Address":  "http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer/tile/{zoom}/{y}/{x}.png",
         "minZoom": 0,
         "maxZoom":  18
+    },
+    {
+        "Name": "staman Toner",
+        "Address":  "http://tile.stamen.com/toner/<zoom>/<x>/<y>.png",
+        "minZoom": 0,
+        "maxZoom":  18,
+        "attribution": "Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>."
+    },
+    {
+        "Name": "staman Terrain",
+        "Address":  "http://tile.stamen.com/terrain/<zoom>/<x>/<y>.jpg",
+        "minZoom": 0,
+        "maxZoom":  18,
+        "attribution": "Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>."
+    },
+    {
+        "Name": "staman Watercolor",
+        "Address":  "http://tile.stamen.com/watercolor/<zoom>/<x>/<y>.jpg",
+        "minZoom": 0,
+        "maxZoom":  18,
+        "attribution": "Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>."
     }
 ]
