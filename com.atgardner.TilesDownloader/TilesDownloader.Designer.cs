@@ -36,6 +36,7 @@
             this.cmbMapSource = new System.Windows.Forms.ComboBox();
             this.lblZoomLevels = new System.Windows.Forms.Label();
             this.flpZoomLevels = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkBxZip = new System.Windows.Forms.CheckBox();
             this.btnRun = new System.Windows.Forms.Button();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.worker = new System.ComponentModel.BackgroundWorker();
@@ -43,7 +44,6 @@
             this.prgBar = new System.Windows.Forms.ToolStripProgressBar();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
-            this.chkBxZip = new System.Windows.Forms.CheckBox();
             this.tlpContainer.SuspendLayout();
             this.status.SuspendLayout();
             this.tspContainer.BottomToolStripPanel.SuspendLayout();
@@ -76,7 +76,7 @@
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpContainer.Size = new System.Drawing.Size(584, 339);
+            this.tlpContainer.Size = new System.Drawing.Size(584, 314);
             this.tlpContainer.TabIndex = 0;
             // 
             // lblInput
@@ -147,10 +147,22 @@
             this.flpZoomLevels.Size = new System.Drawing.Size(410, 7);
             this.flpZoomLevels.TabIndex = 8;
             // 
+            // chkBxZip
+            // 
+            this.chkBxZip.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBxZip.AutoSize = true;
+            this.tlpContainer.SetColumnSpan(this.chkBxZip, 2);
+            this.chkBxZip.Location = new System.Drawing.Point(13, 281);
+            this.chkBxZip.Name = "chkBxZip";
+            this.chkBxZip.Size = new System.Drawing.Size(153, 17);
+            this.chkBxZip.TabIndex = 10;
+            this.chkBxZip.Text = "Zip for Mobile Atlas Creator";
+            this.chkBxZip.UseVisualStyleBackColor = true;
+            // 
             // btnRun
             // 
             this.btnRun.AutoSize = true;
-            this.btnRun.Location = new System.Drawing.Point(506, 303);
+            this.btnRun.Location = new System.Drawing.Point(506, 278);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(65, 23);
             this.btnRun.TabIndex = 0;
@@ -170,6 +182,7 @@
             this.worker.WorkerSupportsCancellation = true;
             this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.worker_DoWork);
             this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.worker_ProgressChanged);
+            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.worker_RunWorkerCompleted);
             // 
             // status
             // 
@@ -203,25 +216,13 @@
             // tspContainer.ContentPanel
             // 
             this.tspContainer.ContentPanel.Controls.Add(this.tlpContainer);
-            this.tspContainer.ContentPanel.Size = new System.Drawing.Size(584, 339);
+            this.tspContainer.ContentPanel.Size = new System.Drawing.Size(584, 314);
             this.tspContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tspContainer.Location = new System.Drawing.Point(0, 0);
             this.tspContainer.Name = "tspContainer";
             this.tspContainer.Size = new System.Drawing.Size(584, 361);
             this.tspContainer.TabIndex = 2;
             this.tspContainer.Text = "toolStripContainer1";
-            // 
-            // chkBxZip
-            // 
-            this.chkBxZip.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkBxZip.AutoSize = true;
-            this.tlpContainer.SetColumnSpan(this.chkBxZip, 2);
-            this.chkBxZip.Location = new System.Drawing.Point(13, 306);
-            this.chkBxZip.Name = "chkBxZip";
-            this.chkBxZip.Size = new System.Drawing.Size(153, 17);
-            this.chkBxZip.TabIndex = 10;
-            this.chkBxZip.Text = "Zip for Mobile Atlas Creator";
-            this.chkBxZip.UseVisualStyleBackColor = true;
             // 
             // TilesDownloaderForm
             // 

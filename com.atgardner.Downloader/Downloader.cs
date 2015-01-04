@@ -1,44 +1,54 @@
-﻿using Gavaghan.Geodesy;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace com.atgardner.Downloader
+﻿namespace com.atgardner.Downloader
 {
+    using com.atgardner.Downloader.Properties;
+    using Gavaghan.Geodesy;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Security.Cryptography;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class Downloader
     {
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
         private static readonly int[] degrees = new [] { 0, 90, 180, 270 };
+        private static readonly int limit = 100;
 
         public event EventHandler<DownloadTileEventArgs> TileDownloaded;
         private int subDomainNum;
         private int counter;
         private int total;
 
-        public void DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, string folderName, string addressTemplate)
+        public string DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
         {
+            var hash = ComputeHash(coordinates);
+            var folderName = string.Format("{0}-{1}", source.Name, hash);
             subDomainNum = 0;
             counter = 0;
-            total = coordinates.Count();
-            var tiles = GenerateTiles(coordinates, zoomLevels);
+            var tiles = GenerateTiles(coordinates, zoomLevels).ToArray();
+            total = tiles.Count();
             var set = new Dictionary<Tile, Task>();
             foreach (var tile in tiles)
             {
-                if (!set.ContainsKey(tile) /*&& set.Count < 10*/)
+                if (source.Ammount == 0)
                 {
-                    set[tile] = DownloadTileAsync(folderName, addressTemplate, tile);
+                    break;
+                }
+
+                if (!set.ContainsKey(tile))
+                {
+                    set[tile] = DownloadTileAsync(folderName, source, tile);
                 }
             }
 
             Task.WaitAll(set.Values.ToArray());
-            Console.WriteLine("Finished downloading, {0} coordinates", counter);
+            return folderName;
         }
 
         private IEnumerable<Tile> GenerateTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
@@ -58,23 +68,25 @@ namespace com.atgardner.Downloader
                         }
                     }
                 }
-
-                IncreaseCounter();
             }
         }
 
-        private async Task<Tile> DownloadTileAsync(string folderName, string addressTemplate, Tile tile)
+        private async Task<Tile> DownloadTileAsync(string folderName, MapSource source, Tile tile)
         {
-            var address = GetAddress(addressTemplate, tile);
+            var address = GetAddress(source.Address, tile);
             var ext = Path.GetExtension(address);
             var fileName = string.Format("{0}/{1}/{2}/{3}{4}", folderName, tile.Zoom, tile.X, tile.Y, ext);
             if (File.Exists(fileName))
             {
+                IncreaseCounter();
                 return tile;
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+            source.LastAccess = DateTime.Today;
+            source.Ammount--;
             await PerformDownload(address, fileName);
+            IncreaseCounter();
             return tile;
         }
 
@@ -82,11 +94,16 @@ namespace com.atgardner.Downloader
         {
             //var webClient = new WebClient();
             //await webClient.DownloadFileTaskAsync(address, fileName);
-
-            //(new Thread(() => {
-            //    //Thread.Sleep(100);
+            //(new Thread(() =>
+            //{
+            //    await Task.Delay(100);
             //    Console.WriteLine("downloadig {0}", address);
             //})).Start();
+
+            await Task.Run(new Action(async () =>
+            {
+                await Task.Delay(1000);
+            }));
         }
 
         private void IncreaseCounter()
@@ -139,6 +156,21 @@ namespace com.atgardner.Downloader
             }
 
             return addressTemplate.Replace("{z}", "{zoom}").Replace("{zoom}", tile.Zoom.ToString()).Replace("{x}", tile.X.ToString()).Replace("{y}", tile.Y.ToString());
+        }
+
+        private static string ComputeHash(IEnumerable<GlobalCoordinates> coordinates)
+        {
+            byte[] bytes;
+            using (var stream = new MemoryStream())
+            {
+                var bf = new BinaryFormatter();
+                bf.Serialize(stream, coordinates.ToArray());
+                bytes = stream.ToArray();
+            }
+
+            var md5 = MD5.Create();
+            var hash = md5.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }

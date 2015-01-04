@@ -1,46 +1,41 @@
-﻿using com.atgardner.Downloader;
-using Gavaghan.Geodesy;
-using Ionic.Zip;
-using Newtonsoft.Json;
-using SharpKml.Base;
-using SharpKml.Dom;
-using SharpKml.Engine;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace com.atgardner.TilesDownloader
+﻿namespace com.atgardner.TilesDownloader
 {
+    using com.atgardner.Downloader;
+    using Gavaghan.Geodesy;
+    using Ionic.Zip;
+    using SharpKml.Dom;
+    using SharpKml.Engine;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.IO;
+    using System.Linq;
+    using System.Windows.Forms;
+
     public partial class TilesDownloaderForm : Form
     {
-        private readonly Downloader.Downloader downloader;
+        private static readonly string SourceFile = "sources.json";
+
+        private readonly Downloader downloader;
+        private readonly MapSource[] sources;
         private string folderName;
 
         public TilesDownloaderForm()
         {
             InitializeComponent();
-            downloader = new Downloader.Downloader();
+            downloader = new Downloader();
+            sources = MapSource.LoadSources(SourceFile);
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             CreateZoomCheckBoxes();
-            var json = File.ReadAllText("sources.json");
-            MapSource[] sources = JsonConvert.DeserializeObject<MapSource[]>(json);
             cmbMapSource.DataSource = sources;
             downloader.TileDownloaded += Downloader_TileDownloaded;
         }
 
-        void Downloader_TileDownloaded(object sender, DownloadTileEventArgs e)
+        private void Downloader_TileDownloaded(object sender, DownloadTileEventArgs e)
         {
             worker.ReportProgress(e.ProgressPercentage);
         }
@@ -58,22 +53,69 @@ namespace com.atgardner.TilesDownloader
             var path = txtBxInput.Text;
             if (string.IsNullOrEmpty(path))
             {
-                MessageBox.Show("Please specify an input KML or KMZ file");
+                MessageBox.Show("Please specify an input KML or KMZ file", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var zoomLevels = GetZoomLevels();
             if (zoomLevels.Length == 0)
             {
-                MessageBox.Show("Please chose at least one zoom level");
+                MessageBox.Show("Please chose at least one zoom level", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            btnRun.Enabled = false;
+            tlpContainer.Enabled = false;
             prgBar.Value = 0;
             var source = cmbMapSource.SelectedItem as MapSource;
             var argument = new Tuple<string, int[], MapSource>(path, zoomLevels, source);
             worker.RunWorkerAsync(argument);
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var argument = e.Argument as Tuple<string, int[], MapSource>;
+            var path = argument.Item1;
+            var zoomLevels = argument.Item2;
+            MapSource source = argument.Item3;
+            var kml = GetKml(path);
+            worker.ReportProgress(0, "Done Reading File");
+            var coordinates = ExtractCoordinates(kml);
+            folderName = downloader.DownloadTiles(coordinates, zoomLevels, source);
+            worker.ReportProgress(0, "Done Downloading");
+            if (chkBxZip.Checked)
+            {
+                ZipResult();
+            }
+
+            worker.ReportProgress(0, "Done Zipping");
+        }
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            prgBar.Value = e.ProgressPercentage;
+            if (e.UserState is string)
+            {
+                lblStatus.Text = (string)e.UserState;
+            }
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MapSource.SaveSources(SourceFile, sources);
+            var source = cmbMapSource.SelectedItem as MapSource;
+            if (source.Ammount == 0)
+            {
+                var message = string.Format("Your daily download limit for {0} has been reached. Please try again tomorrow.", source.Name);
+                MessageBox.Show(message, "Limit Reached", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            tlpContainer.Enabled = true;
+        }
+
+        private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var mapSource = cmbMapSource.SelectedItem as MapSource;
+            ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
         }
 
         private KmlFile GetKml(string path)
@@ -123,56 +165,6 @@ namespace com.atgardner.TilesDownloader
             }
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var argument = e.Argument as Tuple<string, int[], MapSource>;
-            var path = argument.Item1;
-            var zoomLevels = argument.Item2;
-            MapSource source = argument.Item3;
-            var kml = GetKml(path);
-            worker.ReportProgress(0, "Done Reading File");
-            var coordinates = ExtractCoordinates(kml).ToArray();
-            var hash = ComputeHash(coordinates);
-            folderName = string.Format("{0}-{1}", source.Name, hash);
-            downloader.DownloadTiles(coordinates, zoomLevels, folderName, source.Address);
-        }
-
-        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            prgBar.Value = e.ProgressPercentage;
-            if (e.ProgressPercentage == 100)
-            {
-                CompleteDownload();
-            }
-
-            if (e.UserState is string)
-            {
-                lblStatus.Text = (string)e.UserState;
-            }
-        }
-
-        private string ComputeHash(IEnumerable<GlobalCoordinates> coordinates)
-        {
-            byte[] bytes;
-            using (var stream = new MemoryStream())
-            {
-                var bf = new BinaryFormatter();
-                bf.Serialize(stream, coordinates);
-                bytes = stream.ToArray();
-            }
-
-            var md5 = MD5.Create();
-            var hash = md5.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
-            
-
-        private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var mapSource = cmbMapSource.SelectedItem as MapSource;
-            ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
-        }
-
         private void CreateZoomCheckBoxes()
         {
             for (int i = 0; i <= 20; i++)
@@ -188,7 +180,7 @@ namespace com.atgardner.TilesDownloader
             var levels = new List<int>();
             foreach (CheckBox chkBx in flpZoomLevels.Controls)
             {
-                if (chkBx.Visible && chkBx.Checked)
+                if (chkBx.Enabled && chkBx.Checked)
                 {
                     levels.Add(int.Parse(chkBx.Text));
                 }
@@ -201,28 +193,17 @@ namespace com.atgardner.TilesDownloader
         {
             for (int i = 0; i < minZoom; i++)
             {
-                flpZoomLevels.Controls[i].Visible = false;
+                flpZoomLevels.Controls[i].Enabled = false;
             }
 
             for (int i = minZoom; i <= maxZoom; i++)
             {
-                flpZoomLevels.Controls[i].Visible = true;
+                flpZoomLevels.Controls[i].Enabled = true;
             }
 
             for (int i = maxZoom + 1; i <= 20; i++)
             {
-                flpZoomLevels.Controls[i].Visible = false;
-            }
-        }
-
-        private void CompleteDownload()
-        {
-            btnRun.Enabled = true;
-            Invoke((MethodInvoker)(() => lblStatus.Text = "Done Downloading"));
-            if (chkBxZip.Checked)
-            {
-                ZipResult();
-                Invoke((MethodInvoker)(() => lblStatus.Text = "Done Zipping"));
+                flpZoomLevels.Controls[i].Enabled = false;
             }
         }
 
