@@ -69,9 +69,9 @@
     },
     {
         "Name": "USA Topo Maps",
-        "Address":  "http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer/tile/{zoom}/{y}/{x}.png",
+        "Address":  "http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer/tile/{zoom}/{y}/{x}.png",
         "minZoom": 0,
-        "maxZoom":  18
+        "maxZoom":  15
     },
     {
         "Name": "staman Toner",

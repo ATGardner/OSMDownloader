@@ -157,7 +157,7 @@
                 else if (element is Point)
                 {
                     var vector = ((Point)element).Coordinate;
-                    yield return new GlobalCoordinates(vector.Longitude, vector.Latitude);
+                    yield return new GlobalCoordinates(vector.Latitude, vector.Longitude);
                 }
                 else
                 {
