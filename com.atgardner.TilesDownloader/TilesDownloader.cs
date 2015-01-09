@@ -24,7 +24,7 @@
         {
             InitializeComponent();
             downloader = new Downloader();
-            
+
         }
 
         protected override async void OnLoad(EventArgs e)
@@ -81,7 +81,7 @@
             var kml = await Task.Factory.StartNew(() => GetKml(path));
             lblStatus.Text = "Done Reading File";
             var coordinates = ExtractCoordinates(kml);
-            var folderName = await await Task.Factory.StartNew(() => { return downloader.DownloadTiles(coordinates, zoomLevels, source); });
+            var folderName = await await Task.Factory.StartNew(() => downloader.DownloadTiles(coordinates, zoomLevels, source));
             lblStatus.Text = "Done Downloading";
             if (chkBxZip.Checked)
             {
