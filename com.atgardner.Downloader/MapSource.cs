@@ -74,10 +74,10 @@
             return this.Name.GetHashCode() ^ this.Address.GetHashCode();
         }
 
-        public static MapSource[] LoadSources(string path)
+        public static async Task<MapSource[]> LoadSources(string path)
         {
             var json = File.ReadAllText("sources.json");
-            return JsonConvert.DeserializeObject<MapSource[]>(json);
+            return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<MapSource[]>(json));
         }
 
         public static void SaveSources(string path, MapSource[] sources)

@@ -8,11 +8,13 @@ namespace com.atgardner.Downloader
 {
     public class DownloadTileEventArgs : EventArgs
     {
-        public int ProgressPercentage { get; private set; }
+        public int Current { get; private set; }
+        public int Total { get; private set; }
 
-        public DownloadTileEventArgs(int progressPercentage)
+        public DownloadTileEventArgs(int current, int total)
         {
-            this.ProgressPercentage = progressPercentage;
+            this.Current = current;
+            this.Total = total;
         }
     }
 }

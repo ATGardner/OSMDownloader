@@ -18,14 +18,13 @@
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
         private static readonly int[] degrees = new[] { 0, 90, 180, 270 };
-        private static readonly int limit = 100;
 
         public event EventHandler<DownloadTileEventArgs> TileDownloaded;
         private int subDomainNum;
         private int counter;
         private int total;
 
-        public string DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
+        public async Task<string> DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
         {
             var hash = ComputeHash(coordinates);
             var folderName = string.Format("{0}-{1}", source.Name, hash);
@@ -45,7 +44,7 @@
                 tasks.Add(task);
             }
 
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks);
             return folderName;
         }
 
@@ -64,7 +63,7 @@
                         uniqueTiles.Add(tile);
                     }
 
-                    if (zoom > 13)
+                    if (zoom > 12)
                     {
                         foreach (var c2 in GetCoordinatesAround(c, 1609.34))
                         {
@@ -81,46 +80,34 @@
             return uniqueTiles;
         }
 
-        private async Task<Tile> DownloadTileAsync(string folderName, MapSource source, Tile tile)
+        private async Task DownloadTileAsync(string folderName, MapSource source, Tile tile)
         {
             var address = GetAddress(source.Address, tile);
             var ext = Path.GetExtension(address);
             var fileName = string.Format("{0}/{1}/{2}/{3}{4}", folderName, tile.Zoom, tile.X, tile.Y, ext);
-            var fi = new FileInfo(fileName);
-            if (fi.Exists && fi.Length > 3072)
+            if (File.Exists(fileName))
             {
                 IncreaseCounter();
-                return tile;
+                return;
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             source.LastAccess = DateTime.Today;
             source.Ammount--;
             await PerformDownload(address, fileName);
-            var fi2 = new FileInfo(fileName);
-            if (fi2.Length < 3072)
-            {
-                throw new Exception("Server returning blank tiles");
-            }
-
-            IncreaseCounter();
-            return tile;
         }
 
-        private static async Task PerformDownload(string address, string fileName)
+        private async Task PerformDownload(string address, string fileName)
         {
-            var webClient = new WebClient();
-            await webClient.DownloadFileTaskAsync(address, fileName);
-            //(new Thread(() =>
+            //using (var webClient = new WebClient())
             //{
-            //    await Task.Delay(100);
-            //    Console.WriteLine("downloadig {0}", address);
-            //})).Start();
+            //    await webClient.DownloadFileTaskAsync(address, fileName);
+            //    IncreaseCounter();
+            //}
 
-            //await Task.Run(new Action(async () =>
-            //{
-            //    await Task.Delay(1000);
-            //}));
+            await Task.Delay(100);
+            Console.WriteLine("downloaded {0}", address);
+            IncreaseCounter();
         }
 
         private void IncreaseCounter()
@@ -130,14 +117,14 @@
             var newPercentage = 100 * counter / total;
             if (prevPercentage < newPercentage)
             {
-                FireTileDownloaded(newPercentage);
+                FireTileDownloaded(counter, total);
             }
         }
 
-        private void FireTileDownloaded(int progressPercentage)
+        private void FireTileDownloaded(int current, int total)
         {
             var handler = TileDownloaded;
-            var args = new DownloadTileEventArgs(progressPercentage);
+            var args = new DownloadTileEventArgs(current, total);
             if (handler != null)
             {
                 handler(null, args);
@@ -146,9 +133,13 @@
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)
         {
-            foreach (var startBearing in degrees)
+            for (var i = 500; i < distance; i += 500)
             {
-                yield return calc.CalculateEndingGlobalCoordinates(Ellipsoid.WGS84, origin, startBearing, distance);
+
+                foreach (var startBearing in degrees)
+                {
+                    yield return calc.CalculateEndingGlobalCoordinates(Ellipsoid.WGS84, origin, startBearing, i);
+                }
             }
         }
 

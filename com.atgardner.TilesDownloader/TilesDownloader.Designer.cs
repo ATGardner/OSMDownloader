@@ -37,14 +37,13 @@
             this.lblZoomLevels = new System.Windows.Forms.Label();
             this.flpZoomLevels = new System.Windows.Forms.FlowLayoutPanel();
             this.chkBxZip = new System.Windows.Forms.CheckBox();
+            this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
-            this.worker = new System.ComponentModel.BackgroundWorker();
             this.status = new System.Windows.Forms.StatusStrip();
             this.prgBar = new System.Windows.Forms.ToolStripProgressBar();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
-            this.lnk = new System.Windows.Forms.LinkLabel();
             this.tlpContainer.SuspendLayout();
             this.status.SuspendLayout();
             this.tspContainer.BottomToolStripPanel.SuspendLayout();
@@ -162,6 +161,17 @@
             this.chkBxZip.Text = "Zip for Mobile Atlas Creator";
             this.chkBxZip.UseVisualStyleBackColor = true;
             // 
+            // lnk
+            // 
+            this.lnk.AllowDrop = true;
+            this.lnk.AutoSize = true;
+            this.tlpContainer.SetColumnSpan(this.lnk, 3);
+            this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lnk.Location = new System.Drawing.Point(13, 79);
+            this.lnk.Name = "lnk";
+            this.lnk.Size = new System.Drawing.Size(558, 20);
+            this.lnk.TabIndex = 11;
+            // 
             // btnRun
             // 
             this.btnRun.AutoSize = true;
@@ -178,14 +188,6 @@
             this.dlgOpenFile.DefaultExt = "kml";
             this.dlgOpenFile.Filter = "Google Earth Files (*.kml, *.kmz)|*.kml;*.kmz|All files|*.*";
             this.dlgOpenFile.SupportMultiDottedExtensions = true;
-            // 
-            // worker
-            // 
-            this.worker.WorkerReportsProgress = true;
-            this.worker.WorkerSupportsCancellation = true;
-            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.worker_DoWork);
-            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.worker_ProgressChanged);
-            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.worker_RunWorkerCompleted);
             // 
             // status
             // 
@@ -227,17 +229,6 @@
             this.tspContainer.TabIndex = 2;
             this.tspContainer.Text = "toolStripContainer1";
             // 
-            // lnk
-            // 
-            this.lnk.AllowDrop = true;
-            this.lnk.AutoSize = true;
-            this.tlpContainer.SetColumnSpan(this.lnk, 3);
-            this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lnk.Location = new System.Drawing.Point(13, 79);
-            this.lnk.Name = "lnk";
-            this.lnk.Size = new System.Drawing.Size(558, 20);
-            this.lnk.TabIndex = 11;
-            // 
             // TilesDownloaderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -267,7 +258,6 @@
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.OpenFileDialog dlgOpenFile;
-        private System.ComponentModel.BackgroundWorker worker;
         private System.Windows.Forms.StatusStrip status;
         private System.Windows.Forms.ToolStripContainer tspContainer;
         private System.Windows.Forms.ToolStripProgressBar prgBar;

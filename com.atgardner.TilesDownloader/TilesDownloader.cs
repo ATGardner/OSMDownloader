@@ -10,6 +10,7 @@
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     public partial class TilesDownloaderForm : Form
@@ -17,27 +18,32 @@
         private static readonly string SourceFile = "sources.json";
 
         private readonly Downloader downloader;
-        private readonly MapSource[] sources;
-        private string folderName;
+        private MapSource[] sources;
 
         public TilesDownloaderForm()
         {
             InitializeComponent();
             downloader = new Downloader();
-            sources = MapSource.LoadSources(SourceFile);
+            
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             CreateZoomCheckBoxes();
-            cmbMapSource.DataSource = sources;
             downloader.TileDownloaded += Downloader_TileDownloaded;
+            sources = await MapSource.LoadSources(SourceFile);
+            cmbMapSource.DataSource = sources;
         }
 
         private void Downloader_TileDownloaded(object sender, DownloadTileEventArgs e)
         {
-            worker.ReportProgress(e.ProgressPercentage);
+            BeginInvoke((MethodInvoker)(() =>
+            {
+                var progressPercentage = 100 * e.Current / e.Total;
+                prgBar.Value = progressPercentage;
+                lblStatus.Text = string.Format("{0}/{1} Tiles Downloaded", e.Current, e.Total);
+            }));
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -64,49 +70,23 @@
                 return;
             }
 
+            var source = cmbMapSource.SelectedItem as MapSource;
+            DownloadTiles(path, zoomLevels, source);
+        }
+
+        private async void DownloadTiles(string path, int[] zoomLevels, MapSource source)
+        {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            var source = cmbMapSource.SelectedItem as MapSource;
-            var argument = new Tuple<string, int[], MapSource>(path, zoomLevels, source);
-            worker.RunWorkerAsync(argument);
-        }
-
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var argument = e.Argument as Tuple<string, int[], MapSource>;
-            var path = argument.Item1;
-            var zoomLevels = argument.Item2;
-            MapSource source = argument.Item3;
-            var kml = GetKml(path);
-            worker.ReportProgress(0, "Done Reading File");
+            var kml = await Task.Factory.StartNew(() => GetKml(path));
+            lblStatus.Text = "Done Reading File";
             var coordinates = ExtractCoordinates(kml);
-            folderName = downloader.DownloadTiles(coordinates, zoomLevels, source);
-            worker.ReportProgress(0, "Done Downloading");
+            var folderName = await await Task.Factory.StartNew(() => { return downloader.DownloadTiles(coordinates, zoomLevels, source); });
+            lblStatus.Text = "Done Downloading";
             if (chkBxZip.Checked)
             {
-                ZipResult(folderName, source.Name);
-            }
-
-            worker.ReportProgress(0, "Done Zipping");
-        }
-
-        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            prgBar.Value = e.ProgressPercentage;
-            if (e.UserState is string)
-            {
-                lblStatus.Text = (string)e.UserState;
-            }
-        }
-
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            MapSource.SaveSources(SourceFile, sources);
-            var source = cmbMapSource.SelectedItem as MapSource;
-            if (source.Ammount == 0)
-            {
-                var message = string.Format("Your daily download limit for {0} has been reached. Please try again tomorrow.", source.Name);
-                MessageBox.Show(message, "Limit Reached", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                await Task.Factory.StartNew(() => ZipResult(folderName, source.Name));
+                lblStatus.Text = "Done Zipping";
             }
 
             tlpContainer.Enabled = true;
