@@ -31,19 +31,8 @@
         {
             base.OnLoad(e);
             CreateZoomCheckBoxes();
-            downloader.TileDownloaded += Downloader_TileDownloaded;
             sources = await MapSource.LoadSources(SourceFile);
             cmbMapSource.DataSource = sources;
-        }
-
-        private void Downloader_TileDownloaded(object sender, DownloadTileEventArgs e)
-        {
-            BeginInvoke((MethodInvoker)(() =>
-            {
-                var progressPercentage = 100 * e.Current / e.Total;
-                prgBar.Value = progressPercentage;
-                lblStatus.Text = string.Format("{0}/{1} Tiles Downloaded", e.Current, e.Total);
-            }));
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -81,11 +70,32 @@
             var kml = await Task.Factory.StartNew(() => GetKml(path));
             lblStatus.Text = "Done Reading File";
             var coordinates = ExtractCoordinates(kml);
-            var folderName = await await Task.Factory.StartNew(() => downloader.DownloadTiles(coordinates, zoomLevels, source));
-            lblStatus.Text = "Done Downloading";
+            var tileFiles = downloader.DownloadTiles(coordinates, zoomLevels, source);
+            var prevPercentage = 0;
+            var current = 0;
+            var total = tileFiles.Count;
+            while (tileFiles.Count > 0)
+            {
+                var task = await Task.WhenAny(tileFiles);
+                tileFiles.Remove(task);
+                var tileFile = await task;
+                await HandleResult(path, source, tileFile);
+                current++;
+                var progressPercentage = 100 * current / total;
+                if (progressPercentage > prevPercentage)
+                {
+                    prevPercentage = progressPercentage;
+                    prgBar.Value = progressPercentage;
+                    lblStatus.Text = string.Format("{0}/{1} Tiles Downloaded", current, total);
+                }
+            }
+
+            lblStatus.Text = string.Format("Done Downloading {0} tiles", total);
             if (chkBxZip.Checked)
             {
-                await Task.Factory.StartNew(() => ZipResult(folderName, source.Name));
+                lblStatus.Text = "Zipping Resulting Tiles";
+                var outputFolder = CreateOutputFolder(path, source);
+                await Task.Factory.StartNew(() => ZipResult(outputFolder));
                 lblStatus.Text = "Done Zipping";
             }
 
@@ -125,24 +135,42 @@
         {
             foreach (var element in kml.Root.Flatten().OfType<Geometry>())
             {
-                if (element is LineString)
+                foreach (var c in ExtractCoordinate(element))
                 {
-                    foreach (var vector in ((LineString)element).Coordinates)
+                    yield return c;
+                }
+            }
+        }
+
+        private IEnumerable<GlobalCoordinates> ExtractCoordinate(Geometry element)
+        {
+            if (element is MultipleGeometry)
+            {
+                foreach (var g in ((MultipleGeometry)element).Geometry)
+                {
+                    foreach (var c in ExtractCoordinate(g))
                     {
-                        var lon = new Gavaghan.Geodesy.Angle(vector.Longitude);
-                        var lat = new Gavaghan.Geodesy.Angle(vector.Latitude);
-                        yield return new GlobalCoordinates(lat, lon);
+                        yield return c;
                     }
                 }
-                else if (element is Point)
+            }
+            else if (element is LineString)
+            {
+                foreach (var vector in ((LineString)element).Coordinates)
                 {
-                    var vector = ((Point)element).Coordinate;
-                    yield return new GlobalCoordinates(vector.Latitude, vector.Longitude);
+                    var lon = new Gavaghan.Geodesy.Angle(vector.Longitude);
+                    var lat = new Gavaghan.Geodesy.Angle(vector.Latitude);
+                    yield return new GlobalCoordinates(lat, lon);
                 }
-                else
-                {
-                    throw new Exception("Unrecognized element type");
-                }
+            }
+            else if (element is Point)
+            {
+                var vector = ((Point)element).Coordinate;
+                yield return new GlobalCoordinates(vector.Latitude, vector.Longitude);
+            }
+            else
+            {
+                throw new Exception("Unrecognized element type");
             }
         }
 
@@ -188,9 +216,36 @@
             }
         }
 
-        private static void ZipResult(string folderName, string sourceName)
+        private async Task HandleResult(string sourceFile, MapSource source, string tileFile)
         {
-            using (var zip = new ZipFile(sourceName + ".zip"))
+            if (!File.Exists(tileFile))
+            {
+                return;
+            }
+
+            var outputFolder = CreateOutputFolder(sourceFile, source);
+            var outputFile = tileFile.Replace(source.Name, outputFolder);
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+            using (FileStream srcStream = File.Open(tileFile, FileMode.Open))
+            {
+                using (FileStream destStream = File.Create(outputFile))
+                {
+                    await srcStream.CopyToAsync(destStream);
+                }
+            }
+        }
+
+        private static string CreateOutputFolder(string sourceFile, MapSource source)
+        {
+            var sourceFileName = Path.GetFileNameWithoutExtension(sourceFile);
+            var outputFolder = String.Format("{0} - {1}", sourceFileName, source.Name);
+            Directory.CreateDirectory(outputFolder);
+            return outputFolder;
+        }
+
+        private static void ZipResult(string folderName)
+        {
+            using (var zip = new ZipFile(folderName + ".zip"))
             {
                 zip.AddDirectory(folderName);
                 zip.Save();

@@ -19,20 +19,13 @@
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
         private static readonly int[] degrees = new[] { 0, 90, 180, 270 };
 
-        public event EventHandler<DownloadTileEventArgs> TileDownloaded;
         private int subDomainNum;
-        private int counter;
-        private int total;
 
-        public async Task<string> DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
+        public IList<Task<string>> DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
         {
-            var hash = ComputeHash(coordinates);
-            var folderName = string.Format("{0}-{1}", source.Name, hash);
             subDomainNum = 0;
-            counter = 0;
-            var tiles = GenerateTiles(coordinates, zoomLevels).ToArray();
-            total = tiles.Count();
-            var tasks = new List<Task>();
+            var tiles = GenerateTiles(coordinates, zoomLevels);
+            var tasks = new List<Task<string>>();
             foreach (var tile in tiles)
             {
                 //if (source.Ammount == 0)
@@ -40,12 +33,11 @@
                 //    break;
                 //}
 
-                var task = DownloadTileAsync(folderName, source, tile);
+                var task = DownloadTileAsync(source, tile);
                 tasks.Add(task);
             }
 
-            await Task.WhenAll(tasks);
-            return folderName;
+            return tasks;
         }
 
         private IEnumerable<Tile> GenerateTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
@@ -61,6 +53,7 @@
                     if (!uniqueTiles.Contains(tile))
                     {
                         uniqueTiles.Add(tile);
+                        yield return tile;
                     }
 
                     if (zoom > 12)
@@ -71,30 +64,29 @@
                             if (!uniqueTiles.Contains(tile))
                             {
                                 uniqueTiles.Add(tile);
+                                yield return tile;
                             }
                         }
                     }
                 }
             }
-
-            return uniqueTiles;
         }
 
-        private async Task DownloadTileAsync(string folderName, MapSource source, Tile tile)
+        private async Task<string> DownloadTileAsync(MapSource source, Tile tile)
         {
             var address = GetAddress(source.Address, tile);
             var ext = Path.GetExtension(address);
-            var fileName = string.Format("{0}/{1}/{2}/{3}{4}", folderName, tile.Zoom, tile.X, tile.Y, ext);
+            var fileName = string.Format("{0}/{1}/{2}/{3}{4}", source.Name, tile.Zoom, tile.X, tile.Y, ext);
             if (File.Exists(fileName))
             {
-                IncreaseCounter();
-                return;
+                return fileName;
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             source.LastAccess = DateTime.Today;
             source.Ammount--;
             await PerformDownload(address, fileName);
+            return fileName;
         }
 
         private async Task PerformDownload(string address, string fileName)
@@ -107,28 +99,6 @@
 
             await Task.Delay(100);
             Console.WriteLine("downloaded {0}", address);
-            IncreaseCounter();
-        }
-
-        private void IncreaseCounter()
-        {
-            var prevPercentage = 100 * counter / total;
-            counter++;
-            var newPercentage = 100 * counter / total;
-            if (prevPercentage < newPercentage)
-            {
-                FireTileDownloaded(counter, total);
-            }
-        }
-
-        private void FireTileDownloaded(int current, int total)
-        {
-            var handler = TileDownloaded;
-            var args = new DownloadTileEventArgs(current, total);
-            if (handler != null)
-            {
-                handler(null, args);
-            }
         }
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)
@@ -166,19 +136,19 @@
             return addressTemplate.Replace("{z}", "{zoom}").Replace("{zoom}", tile.Zoom.ToString()).Replace("{x}", tile.X.ToString()).Replace("{y}", tile.Y.ToString());
         }
 
-        private static string ComputeHash(IEnumerable<GlobalCoordinates> coordinates)
-        {
-            byte[] bytes;
-            using (var stream = new MemoryStream())
-            {
-                var bf = new BinaryFormatter();
-                bf.Serialize(stream, coordinates.ToArray());
-                bytes = stream.ToArray();
-            }
+        //private static string ComputeHash(IEnumerable<GlobalCoordinates> coordinates)
+        //{
+        //    byte[] bytes;
+        //    using (var stream = new MemoryStream())
+        //    {
+        //        var bf = new BinaryFormatter();
+        //        bf.Serialize(stream, coordinates.ToArray());
+        //        bytes = stream.ToArray();
+        //    }
 
-            var md5 = MD5.Create();
-            var hash = md5.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
+        //    var md5 = MD5.Create();
+        //    var hash = md5.ComputeHash(bytes);
+        //    return Convert.ToBase64String(hash);
+        //}
     }
 }
