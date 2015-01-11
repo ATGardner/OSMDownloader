@@ -16,6 +16,7 @@
     public class Downloader
     {
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
+        private static readonly Regex md5RegEx = new Regex(@"\*(.*)\*");
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
         private static readonly int[] degrees = new[] { 0, 90, 180, 270 };
 
@@ -133,22 +134,25 @@
                 addressTemplate = subDomainRegExp.Replace(addressTemplate, currentSubDomain);
             }
 
-            return addressTemplate.Replace("{z}", "{zoom}").Replace("{zoom}", tile.Zoom.ToString()).Replace("{x}", tile.X.ToString()).Replace("{y}", tile.Y.ToString());
+            var address = addressTemplate.Replace("{z}", "{zoom}").Replace("{zoom}", tile.Zoom.ToString()).Replace("{x}", tile.X.ToString()).Replace("{y}", tile.Y.ToString());
+            match = md5RegEx.Match(address);
+            if (match.Success)
+            {
+                var md5Section = match.Groups[1].Value;
+                var md5Value = ComputeHash(md5Section);
+                address = md5RegEx.Replace(address, md5Value);
+            }
+
+            return address;
         }
 
-        //private static string ComputeHash(IEnumerable<GlobalCoordinates> coordinates)
-        //{
-        //    byte[] bytes;
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        var bf = new BinaryFormatter();
-        //        bf.Serialize(stream, coordinates.ToArray());
-        //        bytes = stream.ToArray();
-        //    }
-
-        //    var md5 = MD5.Create();
-        //    var hash = md5.ComputeHash(bytes);
-        //    return Convert.ToBase64String(hash);
-        //}
+        private static string ComputeHash(string str)
+        {
+            var md5 = MD5.Create();
+            var bytes = System.Text.Encoding.ASCII.GetBytes(str);
+            var hash = md5.ComputeHash(bytes);
+            var hashStr = BitConverter.ToString(hash);
+            return hashStr.Replace("-", string.Empty).ToLower();
+        }
     }
 }
