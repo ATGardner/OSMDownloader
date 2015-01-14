@@ -105,7 +105,7 @@
         "Name": "MAPI New",
         "Address": "http://[abc].amudanan.co.il/tiles/I50N64/*Copyrighted AmudAnan {z}/{y}/{x}*.png",
         "minZoom": 7,
-        "maxZoom": 14,
+        "maxZoom": 15,
         "attribution": "© <a href='http://mapi.gov.il/'>המרכז למיפוי ישראל</a>"
     }
 ]

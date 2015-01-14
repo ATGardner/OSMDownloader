@@ -59,7 +59,7 @@
 
                     if (zoom > 12)
                     {
-                        foreach (var c2 in GetCoordinatesAround(c, 1609.34))
+                        foreach (var c2 in GetCoordinatesAround(c, 1500))
                         {
                             tile = WorldToTilePos(c2, zoom);
                             if (!uniqueTiles.Contains(tile))
@@ -78,7 +78,8 @@
             var address = GetAddress(source.Address, tile);
             var ext = Path.GetExtension(address);
             var fileName = string.Format("{0}/{1}/{2}/{3}{4}", source.Name, tile.Zoom, tile.X, tile.Y, ext);
-            if (File.Exists(fileName))
+            var fi = new FileInfo(fileName);
+            if (fi.Exists && fi.Length > 0)
             {
                 return fileName;
             }
@@ -92,19 +93,25 @@
 
         private async Task PerformDownload(string address, string fileName)
         {
-            //using (var webClient = new WebClient())
-            //{
-            //    await webClient.DownloadFileTaskAsync(address, fileName);
-            //    IncreaseCounter();
-            //}
+            using (var webClient = new WebClient())
+            {
+                try
+                {
+                    await webClient.DownloadFileTaskAsync(address, fileName);
+                }
+                catch (Exception e)
+                {
+                    var a = 123;
+                }
+            }
 
-            await Task.Delay(100);
-            Console.WriteLine("downloaded {0}", address);
+            //await Task.Delay(100);
+            //Console.WriteLine("After downloading {0}", address);
         }
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)
         {
-            for (var i = 500; i < distance; i += 500)
+            for (var i = 500; i <= distance; i += 500)
             {
 
                 foreach (var startBearing in degrees)
