@@ -18,6 +18,7 @@
         private static readonly string SourceFile = "sources.json";
 
         private readonly Downloader downloader;
+        private readonly SQLitePackager packager;
         private MapSource[] sources;
 
         public TilesDownloaderForm()
@@ -62,6 +63,7 @@
             var source = cmbMapSource.SelectedItem as MapSource;
             DownloadTiles(path, zoomLevels, source);
         }
+
 
         private async void DownloadTiles(string path, int[] zoomLevels, MapSource source)
         {
@@ -223,6 +225,7 @@
                 return;
             }
 
+            
             var outputFolder = CreateOutputFolder(sourceFile, source);
             var outputFile = tileFile.Replace(source.Name, outputFolder);
             Directory.CreateDirectory(Path.GetDirectoryName(outputFile));

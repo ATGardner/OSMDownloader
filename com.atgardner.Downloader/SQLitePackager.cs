@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace com.atgardner.Downloader
 {
-    class SQLitePackager : IDisposable
+    public class SQLitePackager : IDisposable
     {
         private static readonly String TABLE_DDL = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s))";
         private static readonly String INDEX_DDL = "CREATE INDEX IF NOT EXISTS IND on tiles (x,y,z,s)";
@@ -23,7 +23,11 @@ namespace com.atgardner.Downloader
         public SQLitePackager(string sourceFile)
         {
             var dbFile = Path.ChangeExtension(sourceFile, "sqlitedb");
-            SQLiteConnection.CreateFile(dbFile);
+            if (!File.Exists(dbFile))
+            {
+                SQLiteConnection.CreateFile(dbFile);
+            }
+
             connection = new SQLiteConnection("Data Source=MyDatabase.sqlite;Version=3;");
         }
 
@@ -35,6 +39,11 @@ namespace com.atgardner.Downloader
 
         public void AddTile(string tileFile)
         {
+            
+        }
+
+        private void CreateTables()
+        {
             using (var scope = connection.BeginTransaction())
             {
                 var command = connection.CreateCommand();
@@ -44,13 +53,7 @@ namespace com.atgardner.Downloader
                 command.ExecuteNonQuery();
                 command.CommandText = RMAPS_TABLE_INFO_DDL;
                 command.ExecuteNonQuery();
-
             }
-        }
-
-        private void CreateTables()
-        {
-
         }
 
         public void Dispose()
