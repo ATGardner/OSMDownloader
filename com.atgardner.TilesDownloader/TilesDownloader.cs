@@ -18,14 +18,12 @@
         private static readonly string SourceFile = "sources.json";
 
         private readonly Downloader downloader;
-        private readonly SQLitePackager packager;
         private MapSource[] sources;
 
         public TilesDownloaderForm()
         {
             InitializeComponent();
             downloader = new Downloader();
-
         }
 
         protected override async void OnLoad(EventArgs e)
@@ -76,30 +74,34 @@
             var prevPercentage = 0;
             var current = 0;
             var total = tileFiles.Count;
-            while (tileFiles.Count > 0)
+            using (var packager = new SQLitePackager(path))
             {
-                var task = await Task.WhenAny(tileFiles);
-                tileFiles.Remove(task);
-                var tileFile = await task;
-                await HandleResult(path, source, tileFile);
-                current++;
-                var progressPercentage = 100 * current / total;
-                if (progressPercentage > prevPercentage)
+                await packager.Init();
+                while (tileFiles.Count > 0)
                 {
-                    prevPercentage = progressPercentage;
-                    prgBar.Value = progressPercentage;
-                    lblStatus.Text = string.Format("{0}/{1} Tiles Downloaded", current, total);
+                    var task = await Task.WhenAny(tileFiles);
+                    tileFiles.Remove(task);
+                    var tileFile = await task;
+                    await HandleResult(path, source, tileFile);
+                    current++;
+                    var progressPercentage = 100 * current / total;
+                    if (progressPercentage > prevPercentage)
+                    {
+                        prevPercentage = progressPercentage;
+                        prgBar.Value = progressPercentage;
+                        lblStatus.Text = string.Format("{0}/{1} Tiles Downloaded", current, total);
+                    }
                 }
             }
 
             lblStatus.Text = string.Format("Done Downloading {0} tiles", total);
-            if (chkBxZip.Checked)
-            {
-                lblStatus.Text = "Zipping Resulting Tiles";
-                var outputFolder = CreateOutputFolder(path, source);
-                await Task.Factory.StartNew(() => ZipResult(outputFolder));
-                lblStatus.Text = "Done Zipping";
-            }
+            //if (chkBxZip.Checked)
+            //{
+            //    lblStatus.Text = "Zipping Resulting Tiles";
+            //    var outputFolder = CreateOutputFolder(path, source);
+            //    await Task.Factory.StartNew(() => ZipResult(outputFolder));
+            //    lblStatus.Text = "Done Zipping";
+            //}
 
             tlpContainer.Enabled = true;
         }
@@ -225,17 +227,16 @@
                 return;
             }
 
-            
-            var outputFolder = CreateOutputFolder(sourceFile, source);
-            var outputFile = tileFile.Replace(source.Name, outputFolder);
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
-            using (FileStream srcStream = File.Open(tileFile, FileMode.Open))
-            {
-                using (FileStream destStream = File.Create(outputFile))
-                {
-                    await srcStream.CopyToAsync(destStream);
-                }
-            }
+            //var outputFolder = CreateOutputFolder(sourceFile, source);
+            //var outputFile = tileFile.Replace(source.Name, outputFolder);
+            //Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+            //using (FileStream srcStream = File.Open(tileFile, FileMode.Open))
+            //{
+            //    using (FileStream destStream = File.Create(outputFile))
+            //    {
+            //        await srcStream.CopyToAsync(destStream);
+            //    }
+            //}
         }
 
         private static string CreateOutputFolder(string sourceFile, MapSource source)

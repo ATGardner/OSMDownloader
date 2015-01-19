@@ -93,20 +93,20 @@
 
         private async Task PerformDownload(string address, string fileName)
         {
-            using (var webClient = new WebClient())
-            {
-                try
-                {
-                    await webClient.DownloadFileTaskAsync(address, fileName);
-                }
-                catch (Exception e)
-                {
-                    var a = 123;
-                }
-            }
+            //using (var webClient = new WebClient())
+            //{
+            //    try
+            //    {
+            //        await webClient.DownloadFileTaskAsync(address, fileName);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        var a = 123;
+            //    }
+            //}
 
-            //await Task.Delay(100);
-            //Console.WriteLine("After downloading {0}", address);
+            await Task.Delay(100);
+            Console.WriteLine("After downloading {0}", address);
         }
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)
