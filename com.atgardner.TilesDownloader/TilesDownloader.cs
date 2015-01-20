@@ -42,7 +42,7 @@
             }
         }
 
-        private void btnRun_Click(object sender, EventArgs e)
+        private async void btnRun_Click(object sender, EventArgs e)
         {
             var path = txtBxInput.Text;
             if (string.IsNullOrEmpty(path))
@@ -59,7 +59,11 @@
             }
 
             var source = cmbMapSource.SelectedItem as MapSource;
-            DownloadTiles(path, zoomLevels, source);
+            tlpContainer.Enabled = false;
+            prgBar.Value = 0;
+            await Task.Factory.StartNew(() => DownloadTiles(path, zoomLevels, source));
+            lblStatus.Text = string.Format("Done Downloading tiles");
+            tlpContainer.Enabled = true;
         }
 
 
@@ -68,15 +72,15 @@
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             var kml = await Task.Factory.StartNew(() => GetKml(path));
-            lblStatus.Text = "Done Reading File";
+            UpdateStatus("Done Reading File");
             var coordinates = ExtractCoordinates(kml);
             var tileFiles = downloader.DownloadTiles(coordinates, zoomLevels, source);
             var prevPercentage = 0;
             var current = 0;
             var total = tileFiles.Count;
-            using (var packager = new SQLitePackager(path))
+            //using (var packager = new SQLitePackager(path))
             {
-                await packager.Init();
+                //await packager.Init();
                 while (tileFiles.Count > 0)
                 {
                     var task = await Task.WhenAny(tileFiles);
@@ -88,22 +92,32 @@
                     if (progressPercentage > prevPercentage)
                     {
                         prevPercentage = progressPercentage;
-                        prgBar.Value = progressPercentage;
-                        lblStatus.Text = string.Format("{0}/{1} Tiles Downloaded", current, total);
+                        UpdateProgBar(progressPercentage);
+                        UpdateStatus(string.Format("{0}/{1} Tiles Downloaded", current, total));
                     }
                 }
             }
 
-            lblStatus.Text = string.Format("Done Downloading {0} tiles", total);
+            UpdateStatus(string.Format("Done Downloading {0} tiles", total));
             //if (chkBxZip.Checked)
             //{
-            //    lblStatus.Text = "Zipping Resulting Tiles";
+            //    UpdateStatus("Zipping Resulting Tiles");
             //    var outputFolder = CreateOutputFolder(path, source);
             //    await Task.Factory.StartNew(() => ZipResult(outputFolder));
-            //    lblStatus.Text = "Done Zipping";
+            //    UpdateStatus("Done Zipping");
             //}
 
             tlpContainer.Enabled = true;
+        }
+
+        private void UpdateStatus(string status)
+        {
+            BeginInvoke((MethodInvoker)(() => lblStatus.Text = status));
+        }
+
+        private void UpdateProgBar(int value)
+        {
+            BeginInvoke((MethodInvoker)(() => prgBar.Value = value));
         }
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
