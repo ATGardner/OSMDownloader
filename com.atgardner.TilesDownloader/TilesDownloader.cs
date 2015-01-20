@@ -71,22 +71,22 @@
         {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            var kml = await Task.Factory.StartNew(() => GetKml(path));
+            var kml = GetKml(path);
             UpdateStatus("Done Reading File");
             var coordinates = ExtractCoordinates(kml);
             var tileFiles = downloader.DownloadTiles(coordinates, zoomLevels, source);
             var prevPercentage = 0;
             var current = 0;
             var total = tileFiles.Count;
-            //using (var packager = new SQLitePackager(path))
+            using (var packager = new SQLitePackager(path))
             {
-                //await packager.Init();
+                await packager.Init();
                 while (tileFiles.Count > 0)
                 {
                     var task = await Task.WhenAny(tileFiles);
                     tileFiles.Remove(task);
                     var tileFile = await task;
-                    await HandleResult(path, source, tileFile);
+                    //await HandleResult(path, source, tileFile);
                     current++;
                     var progressPercentage = 100 * current / total;
                     if (progressPercentage > prevPercentage)
@@ -103,7 +103,7 @@
             //{
             //    UpdateStatus("Zipping Resulting Tiles");
             //    var outputFolder = CreateOutputFolder(path, source);
-            //    await Task.Factory.StartNew(() => ZipResult(outputFolder));
+            //    ZipResult(outputFolder);
             //    UpdateStatus("Done Zipping");
             //}
 
@@ -241,16 +241,16 @@
                 return;
             }
 
-            //var outputFolder = CreateOutputFolder(sourceFile, source);
-            //var outputFile = tileFile.Replace(source.Name, outputFolder);
-            //Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
-            //using (FileStream srcStream = File.Open(tileFile, FileMode.Open))
-            //{
-            //    using (FileStream destStream = File.Create(outputFile))
-            //    {
-            //        await srcStream.CopyToAsync(destStream);
-            //    }
-            //}
+            var outputFolder = CreateOutputFolder(sourceFile, source);
+            var outputFile = tileFile.Replace(source.Name, outputFolder);
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+            using (FileStream srcStream = File.Open(tileFile, FileMode.Open))
+            {
+                using (FileStream destStream = File.Create(outputFile))
+                {
+                    await srcStream.CopyToAsync(destStream);
+                }
+            }
         }
 
         private static string CreateOutputFolder(string sourceFile, MapSource source)
