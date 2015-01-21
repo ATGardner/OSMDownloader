@@ -48,14 +48,15 @@
             var uniqueTiles = new HashSet<Tile>();
             foreach (var c in coordinates)
             {
+                var skipZoom = true;
                 var lon = c.Longitude.Degrees;
                 var lat = c.Latitude.Degrees;
                 foreach (var zoom in zoomLevels)
                 {
                     var tile = WorldToTilePos(c, zoom);
-                    if (!uniqueTiles.Contains(tile))
+                    if (uniqueTiles.Add(tile))
                     {
-                        uniqueTiles.Add(tile);
+                        skipZoom = false;
                         yield return tile;
                     }
 
@@ -64,12 +65,17 @@
                         foreach (var c2 in GetCoordinatesAround(c, 1500))
                         {
                             tile = WorldToTilePos(c2, zoom);
-                            if (!uniqueTiles.Contains(tile))
+                            if (uniqueTiles.Add(tile))
                             {
-                                uniqueTiles.Add(tile);
+                                skipZoom = false;
                                 yield return tile;
                             }
                         }
+                    }
+
+                    if (skipZoom)
+                    {
+                        break;
                     }
                 }
             }
