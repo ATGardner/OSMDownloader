@@ -85,8 +85,9 @@
                 {
                     var task = await Task.WhenAny(tileFiles);
                     tileFiles.Remove(task);
-                    var tileFile = await task;
-                    //await HandleResult(path, source, tileFile);
+                    var tile = await task;
+                    //await HandleResult(path, source, tile);
+                    packager.AddTile(tile);
                     current++;
                     var progressPercentage = 100 * current / total;
                     if (progressPercentage > prevPercentage)
@@ -106,8 +107,6 @@
             //    ZipResult(outputFolder);
             //    UpdateStatus("Done Zipping");
             //}
-
-            tlpContainer.Enabled = true;
         }
 
         private void UpdateStatus(string status)

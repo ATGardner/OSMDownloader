@@ -11,6 +11,8 @@ namespace com.atgardner.Downloader
         public int X { get; private set; }
         public int Y { get; private set; }
         public int Zoom { get; private set; }
+        public byte[] Image { get; set; }
+
         public Tile(int x, int y, int zoom)
         {
             this.X = x;

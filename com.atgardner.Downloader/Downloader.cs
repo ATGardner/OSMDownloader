@@ -22,11 +22,11 @@
 
         private int subDomainNum;
 
-        public IList<Task<string>> DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
+        public IList<Task<Tile>> DownloadTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels, MapSource source)
         {
             subDomainNum = 0;
             var tiles = GenerateTiles(coordinates, zoomLevels);
-            var tasks = new List<Task<string>>();
+            var tasks = new List<Task<Tile>>();
             foreach (var tile in tiles)
             {
                 //if (source.Ammount == 0)
@@ -43,6 +43,8 @@
 
         private IEnumerable<Tile> GenerateTiles(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
         {
+            // reverse zoomLevels, to start with the most detailed tile
+            zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
             var uniqueTiles = new HashSet<Tile>();
             foreach (var c in coordinates)
             {
@@ -73,7 +75,7 @@
             }
         }
 
-        private async Task<string> DownloadTileAsync(MapSource source, Tile tile)
+        private async Task<Tile> DownloadTileAsync(MapSource source, Tile tile)
         {
             var address = GetAddress(source.Address, tile);
             var ext = Path.GetExtension(address);
@@ -81,32 +83,35 @@
             var fi = new FileInfo(fileName);
             if (fi.Exists && fi.Length > 0)
             {
-                return fileName;
+                tile.Image = File.ReadAllBytes(fileName);
+                return tile;
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             source.LastAccess = DateTime.Today;
             source.Ammount--;
-            await PerformDownload(address, fileName);
-            return fileName;
+            tile.Image = await PerformDownload(address);
+            File.WriteAllBytes(fileName, tile.Image);
+            return tile;
         }
 
-        private async Task PerformDownload(string address, string fileName)
+        private async Task<byte[]> PerformDownload(string address)
         {
-            //using (var webClient = new WebClient())
-            //{
-            //    try
-            //    {
-            //        await webClient.DownloadFileTaskAsync(address, fileName);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        var a = 123;
-            //    }
-            //}
+            using (var webClient = new WebClient())
+            {
+                try
+                {
+                    return await webClient.DownloadDataTaskAsync(address);
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+            }
 
-            await Task.Delay(100);
-            Console.WriteLine("After downloading {0}", address);
+            //await Task.Delay(100);
+            //Console.WriteLine("After downloading {0}", address);
+            //return null;
         }
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)

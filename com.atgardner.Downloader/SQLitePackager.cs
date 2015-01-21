@@ -36,14 +36,14 @@ namespace com.atgardner.Downloader
             return CreateTables();
         }
 
-        public async void AddTile(Tile tile, string tileFile)
+        public async void AddTile(Tile tile)
         {
             var command = connection.CreateCommand();
             command.CommandText = INSERT_SQL;
             AddParameter(command, DbType.UInt32, "x", tile.X);
             AddParameter(command, DbType.UInt32, "y", tile.Y);
-            AddParameter(command, DbType.UInt32, "z", tile.Zoom);
-            AddParameter(command, DbType.Binary, "image", File.ReadAllBytes(tileFile));
+            AddParameter(command, DbType.UInt32, "z", 17 - tile.Zoom);
+            AddParameter(command, DbType.Binary, "image", tile.Image);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -78,7 +78,7 @@ namespace com.atgardner.Downloader
             }
         }
 
-        private async void UpdateTileMetaInfo()
+        private async Task UpdateTileMetaInfo()
         {
             using (var scope = connection.BeginTransaction())
             {
@@ -100,10 +100,11 @@ namespace com.atgardner.Downloader
             command.Parameters.Add(param);
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
             if (connection != null)
             {
+                await UpdateTileMetaInfo();
                 connection.Dispose();
             }
         }
