@@ -27,41 +27,6 @@
         "maxZoom": 18
     },
     {
-        "Name": "ThunderForest OpenCycleMap",
-        "Address": "http://[abc].tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
-        "minZoom": 0,
-        "maxZoom": 18,
-        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
-    },
-    {
-        "Name": "ThunderForest Transport",
-        "Address": "http://[abc].tile.thunderforest.com/transport/{z}/{x}/{y}.png",
-        "minZoom": 0,
-        "maxZoom": 18,
-        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
-    },
-    {
-        "Name": "ThunderForest Landscape",
-        "Address": "http://[abc].tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
-        "minZoom": 0,
-        "maxZoom": 18,
-        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
-    },
-    {
-        "Name": "ThunderForest Transport Dark",
-        "Address": "http://[abc].tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png",
-        "minZoom": 0,
-        "maxZoom": 18,
-        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
-    },
-    {
-        "Name": "ThunderForest Terrain",
-        "Address": "http://[abcd].tile.stamen.com/terrain-background/zoom/x/y.jpg",
-        "minZoom": 0,
-        "maxZoom": 18,
-        "attribution": "Maps © <a href=\"http://www.thunderforest.com\">Thunderforest</a>, Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
-    },
-    {
         "Name": "CALTopo",
         "Address": "http://caltopo.com/resource/imagery/tiles/eus/{zoom}/{x}/{y}",
         "minZoom": 0,
@@ -93,19 +58,5 @@
         "minZoom": 0,
         "maxZoom": 18,
         "attribution": "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."
-    },
-    {
-        "Name": "MAPI",
-        "Address": "http://[abc].amudanan.co.il/tiles/I50_0908_copyrighted/*Copyrighted AmudAnan Z{z}/{y}/{x}*.png",
-        "minZoom": 7,
-        "maxZoom": 15,
-        "attribution": "© <a href='http://mapi.gov.il/'>המרכז למיפוי ישראל</a>"
-    },
-    {
-        "Name": "MAPI New",
-        "Address": "http://[abc].amudanan.co.il/tiles/I50N64/*Copyrighted AmudAnan {z}/{y}/{x}*.png",
-        "minZoom": 7,
-        "maxZoom": 15,
-        "attribution": "© <a href='http://mapi.gov.il/'>המרכז למיפוי ישראל</a>"
     }
 ]
