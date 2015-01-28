@@ -3,6 +3,7 @@
     using com.atgardner.Downloader;
     using Gavaghan.Geodesy;
     using Ionic.Zip;
+    using MKCoolsoft.GPXLib;
     using SharpKml.Dom;
     using SharpKml.Engine;
     using System;
@@ -38,16 +39,16 @@
         {
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {
-                txtBxInput.Text = dlgOpenFile.FileName;
+                txtBxInput.Text = string.Join("; ", dlgOpenFile.FileNames);
             }
         }
 
         private async void btnRun_Click(object sender, EventArgs e)
         {
-            var path = txtBxInput.Text;
-            if (string.IsNullOrEmpty(path))
+            var fileNames = dlgOpenFile.FileNames;
+            if (fileNames.Length == 0)
             {
-                MessageBox.Show("Please specify an input KML or KMZ file", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please specify an input file or files", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -61,24 +62,22 @@
             var source = cmbMapSource.SelectedItem as MapSource;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => DownloadTiles(path, zoomLevels, source));
+            await Task.Factory.StartNew(() => DownloadTiles(fileNames, zoomLevels, source));
             lblStatus.Text = string.Format("Done Downloading tiles");
             tlpContainer.Enabled = true;
         }
 
-
-        private async void DownloadTiles(string path, int[] zoomLevels, MapSource source)
+        private async void DownloadTiles(string[] fileNames, int[] zoomLevels, MapSource source)
         {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            var kml = GetKml(path);
             UpdateStatus("Done Reading File");
-            var coordinates = ExtractCoordinates(kml);
+            var coordinates = FileUtils.ExtractCoordinates(fileNames);
             var tileFiles = downloader.DownloadTiles(coordinates, zoomLevels, source);
             var prevPercentage = 0;
             var current = 0;
             var total = tileFiles.Count;
-            using (var packager = new SQLitePackager(path))
+            using (var packager = new SQLitePackager(fileNames[0]))
             {
                 await packager.Init();
                 while (tileFiles.Count > 0)
@@ -100,13 +99,6 @@
             }
 
             UpdateStatus(string.Format("Done Downloading {0} tiles", total));
-            //if (chkBxZip.Checked)
-            //{
-            //    UpdateStatus("Zipping Resulting Tiles");
-            //    var outputFolder = CreateOutputFolder(path, source);
-            //    ZipResult(outputFolder);
-            //    UpdateStatus("Done Zipping");
-            //}
         }
 
         private void UpdateStatus(string status)
@@ -124,71 +116,6 @@
             var mapSource = cmbMapSource.SelectedItem as MapSource;
             ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
             lnk.Text = mapSource.Attribution;
-        }
-
-        private KmlFile GetKml(string path)
-        {
-            var ext = Path.GetExtension(path);
-            KmlFile kml;
-            if (string.Equals(ext, ".kmz", StringComparison.InvariantCultureIgnoreCase))
-            {
-                using (var kmz = KmzFile.Open(path))
-                {
-                    kml = kmz.GetDefaultKmlFile();
-                }
-            }
-            else
-            {
-                using (var stream = File.OpenRead(path))
-                {
-                    kml = KmlFile.Load(stream);
-                }
-            }
-
-            return kml;
-        }
-
-        private IEnumerable<GlobalCoordinates> ExtractCoordinates(KmlFile kml)
-        {
-            foreach (var element in kml.Root.Flatten().OfType<Geometry>())
-            {
-                foreach (var c in ExtractCoordinate(element))
-                {
-                    yield return c;
-                }
-            }
-        }
-
-        private IEnumerable<GlobalCoordinates> ExtractCoordinate(Geometry element)
-        {
-            if (element is MultipleGeometry)
-            {
-                foreach (var g in ((MultipleGeometry)element).Geometry)
-                {
-                    foreach (var c in ExtractCoordinate(g))
-                    {
-                        yield return c;
-                    }
-                }
-            }
-            else if (element is LineString)
-            {
-                foreach (var vector in ((LineString)element).Coordinates)
-                {
-                    var lon = new Gavaghan.Geodesy.Angle(vector.Longitude);
-                    var lat = new Gavaghan.Geodesy.Angle(vector.Latitude);
-                    yield return new GlobalCoordinates(lat, lon);
-                }
-            }
-            else if (element is Point)
-            {
-                var vector = ((Point)element).Coordinate;
-                yield return new GlobalCoordinates(vector.Latitude, vector.Longitude);
-            }
-            else
-            {
-                throw new Exception("Unrecognized element type");
-            }
         }
 
         private void CreateZoomCheckBoxes()
@@ -258,17 +185,6 @@
             var outputFolder = String.Format("{0} - {1}", sourceFileName, source.Name);
             Directory.CreateDirectory(outputFolder);
             return outputFolder;
-        }
-
-        private static void ZipResult(string folderName)
-        {
-            using (var zip = new ZipFile(folderName + ".zip"))
-            {
-                zip.AddDirectory(folderName);
-                zip.Save();
-            }
-
-            Directory.Delete(folderName, true);
         }
     }
 }

@@ -36,7 +36,6 @@
             this.cmbMapSource = new System.Windows.Forms.ComboBox();
             this.lblZoomLevels = new System.Windows.Forms.Label();
             this.flpZoomLevels = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkBxZip = new System.Windows.Forms.CheckBox();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
@@ -64,7 +63,6 @@
             this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 1);
             this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 2);
             this.tlpContainer.Controls.Add(this.flpZoomLevels, 1, 2);
-            this.tlpContainer.Controls.Add(this.chkBxZip, 0, 5);
             this.tlpContainer.Controls.Add(this.lnk, 0, 3);
             this.tlpContainer.Controls.Add(this.btnRun, 2, 5);
             this.tlpContainer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -149,18 +147,6 @@
             this.flpZoomLevels.Size = new System.Drawing.Size(410, 7);
             this.flpZoomLevels.TabIndex = 8;
             // 
-            // chkBxZip
-            // 
-            this.chkBxZip.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkBxZip.AutoSize = true;
-            this.tlpContainer.SetColumnSpan(this.chkBxZip, 2);
-            this.chkBxZip.Location = new System.Drawing.Point(13, 281);
-            this.chkBxZip.Name = "chkBxZip";
-            this.chkBxZip.Size = new System.Drawing.Size(153, 17);
-            this.chkBxZip.TabIndex = 10;
-            this.chkBxZip.Text = "Zip for Mobile Atlas Creator";
-            this.chkBxZip.UseVisualStyleBackColor = true;
-            // 
             // lnk
             // 
             this.lnk.AllowDrop = true;
@@ -186,7 +172,9 @@
             // dlgOpenFile
             // 
             this.dlgOpenFile.DefaultExt = "kml";
-            this.dlgOpenFile.Filter = "Google Earth Files (*.kml, *.kmz)|*.kml;*.kmz|All files|*.*";
+            this.dlgOpenFile.Filter = "Google Earth Files (*.kml, *.kmz)|*.kml;*.kmz|GPS Exchange Format|*.gpx|All files" +
+    "|*.*";
+            this.dlgOpenFile.Multiselect = true;
             this.dlgOpenFile.SupportMultiDottedExtensions = true;
             // 
             // status
@@ -266,7 +254,6 @@
         private System.Windows.Forms.ComboBox cmbMapSource;
         private System.Windows.Forms.Label lblZoomLevels;
         private System.Windows.Forms.FlowLayoutPanel flpZoomLevels;
-        private System.Windows.Forms.CheckBox chkBxZip;
         private System.Windows.Forms.LinkLabel lnk;
     }
 }

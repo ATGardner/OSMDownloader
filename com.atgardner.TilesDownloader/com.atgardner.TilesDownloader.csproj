@@ -59,6 +59,9 @@
     <Reference Include="Ionic.Zip.Reduced">
       <HintPath>..\packages\DotNetZip.Reduced.1.9.1.8\lib\net20\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
+    <Reference Include="MKCoolsoft.GPXLib">
+      <HintPath>..\packages\MKCoolsoft.GPXLib.1.0.2\lib\MKCoolsoft.GPXLib.dll</HintPath>
+    </Reference>
     <Reference Include="SharpKml">
       <HintPath>..\packages\SharpKml.Core.2.0.3\lib\portable-net4+sl5+wp8+win8\SharpKml.dll</HintPath>
     </Reference>
@@ -78,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileUtils.cs" />
     <Compile Include="TilesDownloader.cs">
       <SubType>Form</SubType>
     </Compile>
