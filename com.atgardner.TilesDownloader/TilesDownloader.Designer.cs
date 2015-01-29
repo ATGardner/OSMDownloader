@@ -33,21 +33,27 @@
             this.txtBxInput = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.lblMapSource = new System.Windows.Forms.Label();
-            this.cmbMapSource = new System.Windows.Forms.ComboBox();
+            this.lblOutput = new System.Windows.Forms.Label();
+            this.txtBxOutput = new System.Windows.Forms.TextBox();
             this.lblZoomLevels = new System.Windows.Forms.Label();
             this.flpZoomLevels = new System.Windows.Forms.FlowLayoutPanel();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
+            this.cmbMapSource = new System.Windows.Forms.ComboBox();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.status = new System.Windows.Forms.StatusStrip();
             this.prgBar = new System.Windows.Forms.ToolStripProgressBar();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpContainer.SuspendLayout();
             this.status.SuspendLayout();
             this.tspContainer.BottomToolStripPanel.SuspendLayout();
             this.tspContainer.ContentPanel.SuspendLayout();
+            this.tspContainer.TopToolStripPanel.SuspendLayout();
             this.tspContainer.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpContainer
@@ -59,24 +65,27 @@
             this.tlpContainer.Controls.Add(this.lblInput, 0, 0);
             this.tlpContainer.Controls.Add(this.txtBxInput, 1, 0);
             this.tlpContainer.Controls.Add(this.btnBrowse, 2, 0);
-            this.tlpContainer.Controls.Add(this.lblMapSource, 0, 1);
-            this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 1);
-            this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 2);
-            this.tlpContainer.Controls.Add(this.flpZoomLevels, 1, 2);
-            this.tlpContainer.Controls.Add(this.lnk, 0, 3);
-            this.tlpContainer.Controls.Add(this.btnRun, 2, 5);
+            this.tlpContainer.Controls.Add(this.lblMapSource, 0, 2);
+            this.tlpContainer.Controls.Add(this.lblOutput, 0, 1);
+            this.tlpContainer.Controls.Add(this.txtBxOutput, 1, 1);
+            this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 3);
+            this.tlpContainer.Controls.Add(this.flpZoomLevels, 1, 3);
+            this.tlpContainer.Controls.Add(this.lnk, 0, 4);
+            this.tlpContainer.Controls.Add(this.btnRun, 2, 6);
+            this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 2);
             this.tlpContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContainer.Location = new System.Drawing.Point(0, 0);
             this.tlpContainer.Name = "tlpContainer";
             this.tlpContainer.Padding = new System.Windows.Forms.Padding(10);
-            this.tlpContainer.RowCount = 6;
+            this.tlpContainer.RowCount = 7;
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpContainer.Size = new System.Drawing.Size(584, 314);
+            this.tlpContainer.Size = new System.Drawing.Size(584, 415);
             this.tlpContainer.TabIndex = 0;
             // 
             // lblInput
@@ -113,26 +122,34 @@
             // 
             this.lblMapSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMapSource.AutoSize = true;
-            this.lblMapSource.Location = new System.Drawing.Point(13, 46);
+            this.lblMapSource.Location = new System.Drawing.Point(13, 72);
             this.lblMapSource.Name = "lblMapSource";
             this.lblMapSource.Size = new System.Drawing.Size(68, 13);
             this.lblMapSource.TabIndex = 6;
             this.lblMapSource.Text = "Map Source:";
             // 
-            // cmbMapSource
+            // lblOutput
             // 
-            this.cmbMapSource.DisplayMember = "Name";
-            this.cmbMapSource.FormattingEnabled = true;
-            this.cmbMapSource.Location = new System.Drawing.Point(90, 42);
-            this.cmbMapSource.Name = "cmbMapSource";
-            this.cmbMapSource.Size = new System.Drawing.Size(121, 21);
-            this.cmbMapSource.TabIndex = 7;
-            this.cmbMapSource.SelectedIndexChanged += new System.EventHandler(this.cmbMapSource_SelectedIndexChanged);
+            this.lblOutput.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOutput.AutoSize = true;
+            this.lblOutput.Location = new System.Drawing.Point(13, 45);
+            this.lblOutput.Name = "lblOutput";
+            this.lblOutput.Size = new System.Drawing.Size(58, 13);
+            this.lblOutput.TabIndex = 12;
+            this.lblOutput.Text = "Output file:";
+            // 
+            // txtBxOutput
+            // 
+            this.txtBxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBxOutput.Location = new System.Drawing.Point(90, 42);
+            this.txtBxOutput.Name = "txtBxOutput";
+            this.txtBxOutput.Size = new System.Drawing.Size(410, 20);
+            this.txtBxOutput.TabIndex = 13;
             // 
             // lblZoomLevels
             // 
             this.lblZoomLevels.AutoSize = true;
-            this.lblZoomLevels.Location = new System.Drawing.Point(13, 66);
+            this.lblZoomLevels.Location = new System.Drawing.Point(13, 92);
             this.lblZoomLevels.Name = "lblZoomLevels";
             this.lblZoomLevels.Size = new System.Drawing.Size(71, 13);
             this.lblZoomLevels.TabIndex = 9;
@@ -142,7 +159,7 @@
             // 
             this.flpZoomLevels.AutoSize = true;
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpZoomLevels.Location = new System.Drawing.Point(90, 69);
+            this.flpZoomLevels.Location = new System.Drawing.Point(90, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
             this.flpZoomLevels.Size = new System.Drawing.Size(410, 7);
             this.flpZoomLevels.TabIndex = 8;
@@ -151,23 +168,34 @@
             // 
             this.lnk.AllowDrop = true;
             this.lnk.AutoSize = true;
-            this.tlpContainer.SetColumnSpan(this.lnk, 3);
+            this.tlpContainer.SetColumnSpan(this.lnk, 2);
             this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lnk.Location = new System.Drawing.Point(13, 79);
+            this.lnk.Location = new System.Drawing.Point(13, 105);
             this.lnk.Name = "lnk";
-            this.lnk.Size = new System.Drawing.Size(558, 20);
+            this.lnk.Size = new System.Drawing.Size(487, 13);
             this.lnk.TabIndex = 11;
+            this.lnk.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk_LinkClicked);
             // 
             // btnRun
             // 
             this.btnRun.AutoSize = true;
-            this.btnRun.Location = new System.Drawing.Point(506, 278);
+            this.btnRun.Location = new System.Drawing.Point(506, 379);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(65, 23);
             this.btnRun.TabIndex = 0;
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
+            // 
+            // cmbMapSource
+            // 
+            this.cmbMapSource.DisplayMember = "Name";
+            this.cmbMapSource.FormattingEnabled = true;
+            this.cmbMapSource.Location = new System.Drawing.Point(90, 68);
+            this.cmbMapSource.Name = "cmbMapSource";
+            this.cmbMapSource.Size = new System.Drawing.Size(121, 21);
+            this.cmbMapSource.TabIndex = 7;
+            this.cmbMapSource.SelectedIndexChanged += new System.EventHandler(this.cmbMapSource_SelectedIndexChanged);
             // 
             // dlgOpenFile
             // 
@@ -209,20 +237,42 @@
             // tspContainer.ContentPanel
             // 
             this.tspContainer.ContentPanel.Controls.Add(this.tlpContainer);
-            this.tspContainer.ContentPanel.Size = new System.Drawing.Size(584, 314);
+            this.tspContainer.ContentPanel.Size = new System.Drawing.Size(584, 415);
             this.tspContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tspContainer.Location = new System.Drawing.Point(0, 0);
             this.tspContainer.Name = "tspContainer";
-            this.tspContainer.Size = new System.Drawing.Size(584, 361);
+            this.tspContainer.Size = new System.Drawing.Size(584, 461);
             this.tspContainer.TabIndex = 2;
             this.tspContainer.Text = "toolStripContainer1";
+            // 
+            // tspContainer.TopToolStripPanel
+            // 
+            this.tspContainer.TopToolStripPanel.Controls.Add(this.menuStrip1);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
+            this.menuStrip1.TabIndex = 0;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
             // 
             // TilesDownloaderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 361);
+            this.ClientSize = new System.Drawing.Size(584, 461);
             this.Controls.Add(this.tspContainer);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "TilesDownloaderForm";
             this.Text = "Tiles Downloader";
             this.tlpContainer.ResumeLayout(false);
@@ -232,8 +282,12 @@
             this.tspContainer.BottomToolStripPanel.ResumeLayout(false);
             this.tspContainer.BottomToolStripPanel.PerformLayout();
             this.tspContainer.ContentPanel.ResumeLayout(false);
+            this.tspContainer.TopToolStripPanel.ResumeLayout(false);
+            this.tspContainer.TopToolStripPanel.PerformLayout();
             this.tspContainer.ResumeLayout(false);
             this.tspContainer.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -255,6 +309,10 @@
         private System.Windows.Forms.Label lblZoomLevels;
         private System.Windows.Forms.FlowLayoutPanel flpZoomLevels;
         private System.Windows.Forms.LinkLabel lnk;
+        private System.Windows.Forms.Label lblOutput;
+        private System.Windows.Forms.TextBox txtBxOutput;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

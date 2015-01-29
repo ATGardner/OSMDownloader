@@ -9,6 +9,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -39,16 +40,28 @@
         {
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {
-                txtBxInput.Text = string.Join("; ", dlgOpenFile.FileNames);
+                var fileNames = from f in dlgOpenFile.FileNames select Path.GetFileName(f);
+                txtBxInput.Text = string.Join("; ", fileNames);
+                if (string.IsNullOrWhiteSpace(txtBxOutput.Text))
+                {
+                    txtBxOutput.Text = Path.GetFileNameWithoutExtension(fileNames.First());
+                }
             }
         }
 
         private async void btnRun_Click(object sender, EventArgs e)
         {
-            var fileNames = dlgOpenFile.FileNames;
-            if (fileNames.Length == 0)
+            var inputFiles = dlgOpenFile.FileNames;
+            if (inputFiles.Length == 0)
             {
                 MessageBox.Show("Please specify an input file or files", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var outputFile = txtBxOutput.Text;
+            if (string.IsNullOrWhiteSpace(outputFile))
+            {
+                MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -62,22 +75,22 @@
             var source = cmbMapSource.SelectedItem as MapSource;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => DownloadTiles(fileNames, zoomLevels, source));
+            await Task.Factory.StartNew(() => DownloadTiles(inputFiles, outputFile, zoomLevels, source));
             lblStatus.Text = string.Format("Done Downloading tiles");
             tlpContainer.Enabled = true;
         }
 
-        private async void DownloadTiles(string[] fileNames, int[] zoomLevels, MapSource source)
+        private async void DownloadTiles(string[] inputFiles, string outputFile, int[] zoomLevels, MapSource source)
         {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             UpdateStatus("Done Reading File");
-            var coordinates = FileUtils.ExtractCoordinates(fileNames);
+            var coordinates = FileUtils.ExtractCoordinates(inputFiles);
             var tileFiles = downloader.DownloadTiles(coordinates, zoomLevels, source);
-            var prevPercentage = 0;
+            var prevPercentage = -1;
             var current = 0;
             var total = tileFiles.Count;
-            using (var packager = new SQLitePackager(fileNames[0]))
+            using (var packager = new SQLitePackager(outputFile))
             {
                 await packager.Init();
                 while (tileFiles.Count > 0)
@@ -115,7 +128,7 @@
         {
             var mapSource = cmbMapSource.SelectedItem as MapSource;
             ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
-            lnk.Text = mapSource.Attribution;
+            HtmlUtils.ConfigLinkLabel(lnk, mapSource.Attribution);
         }
 
         private void CreateZoomCheckBoxes()
@@ -185,6 +198,13 @@
             var outputFolder = String.Format("{0} - {1}", sourceFileName, source.Name);
             Directory.CreateDirectory(outputFolder);
             return outputFolder;
+        }
+
+        private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var lnk = (LinkLabel)sender;
+            lnk.Links[lnk.Links.IndexOf(e.Link)].Visited = true;
+            Process.Start(e.Link.LinkData.ToString());
         }
     }
 }

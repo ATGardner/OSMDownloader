@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileUtils.cs" />
+    <Compile Include="HtmlUtils.cs" />
     <Compile Include="TilesDownloader.cs">
       <SubType>Form</SubType>
     </Compile>
