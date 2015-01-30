@@ -1,18 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="com.atgardner.TilesDownloader" Label="com.atgardner.TilesDownloader" Category="Project" />
+    <Node Id="com.atgardner.OfflineMapCreator" Label="com.atgardner.OfflineMapCreator" Category="Project" />
     <Node Id="DotNetZip.Reduced 1.9.1.8" Label="DotNetZip.Reduced 1.9.1.8" Category="Package" />
+    <Node Id="MKCoolsoft.GPXLib 1.0.2" Label="MKCoolsoft.GPXLib 1.0.2" Category="Package" />
     <Node Id="SharpKml.Core 2.0.3" Label="SharpKml.Core 2.0.3" Category="Package" />
     <Node Id="SharpKml.Kmz 2.0.2" Label="SharpKml.Kmz 2.0.2" Category="Package" />
     <Node Id="com.atgardner.Downloader" Label="com.atgardner.Downloader" Category="Project" />
+    <Node Id="EntityFramework 6.1.1" Label="EntityFramework 6.1.1" Category="Package" />
     <Node Id="Newtonsoft.Json 6.0.7" Label="Newtonsoft.Json 6.0.7" Category="Package" />
+    <Node Id="System.Data.SQLite 1.0.94.1" Label="System.Data.SQLite 1.0.94.1" Category="Package" />
+    <Node Id="System.Data.SQLite.Core 1.0.94.0" Label="System.Data.SQLite.Core 1.0.94.0" Category="Package" />
+    <Node Id="System.Data.SQLite.EF6 1.0.94.0" Label="System.Data.SQLite.EF6 1.0.94.0" Category="Package" />
+    <Node Id="System.Data.SQLite.Linq 1.0.94.1" Label="System.Data.SQLite.Linq 1.0.94.1" Category="Package" />
   </Nodes>
   <Links>
     <Link Source="SharpKml.Kmz 2.0.2" Target="DotNetZip.Reduced 1.9.1.8" Category="Package Dependency" />
     <Link Source="SharpKml.Kmz 2.0.2" Target="SharpKml.Core 2.0.3" Category="Package Dependency" />
-    <Link Source="com.atgardner.TilesDownloader" Target="SharpKml.Kmz 2.0.2" Category="Installed Package" />
+    <Link Source="com.atgardner.OfflineMapCreator" Target="MKCoolsoft.GPXLib 1.0.2" Category="Installed Package" />
+    <Link Source="com.atgardner.OfflineMapCreator" Target="SharpKml.Kmz 2.0.2" Category="Installed Package" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Linq 1.0.94.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Linq 1.0.94.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.EF6 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Linq 1.0.94.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.EF6 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.Linq 1.0.94.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite 1.0.94.1" Target="System.Data.SQLite.EF6 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.94.0" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.94.0" Target="EntityFramework 6.1.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.94.0" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.94.0" Target="EntityFramework 6.1.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.94.0" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.EF6 1.0.94.0" Target="EntityFramework 6.1.1" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.Linq 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.Linq 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.Linq 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
+    <Link Source="System.Data.SQLite.Linq 1.0.94.1" Target="System.Data.SQLite.Core 1.0.94.0" Category="Package Dependency" />
     <Link Source="com.atgardner.Downloader" Target="Newtonsoft.Json 6.0.7" Category="Installed Package" />
+    <Link Source="com.atgardner.Downloader" Target="System.Data.SQLite 1.0.94.1" Category="Installed Package" />
   </Links>
   <Categories>
     <Category Id="Project" />

@@ -265,15 +265,16 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // TilesDownloaderForm
+            // OfflineMapCreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 461);
             this.Controls.Add(this.tspContainer);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "TilesDownloaderForm";
+            this.Name = "OfflineMapCreatorForm";
             this.Text = "Offline Map Creator";
             this.tlpContainer.ResumeLayout(false);
             this.tlpContainer.PerformLayout();

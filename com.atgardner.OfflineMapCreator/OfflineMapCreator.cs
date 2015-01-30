@@ -206,5 +206,13 @@
             lnk.Links[lnk.Links.IndexOf(e.Link)].Visited = true;
             Process.Start(e.Link.LinkData.ToString());
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var about = new AboutBox())
+            {
+                about.ShowDialog(this);
+            }
+        }
     }
 }
