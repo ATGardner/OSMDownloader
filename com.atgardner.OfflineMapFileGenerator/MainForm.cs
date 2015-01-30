@@ -1,11 +1,9 @@
 ﻿namespace com.atgardner.OMFG
 {
-    using com.atgardner.Downloader;
-    using Gavaghan.Geodesy;
-    using Ionic.Zip;
-    using MKCoolsoft.GPXLib;
-    using SharpKml.Dom;
-    using SharpKml.Engine;
+    using com.atgardner.OMFG.packagers;
+    using com.atgardner.OMFG.sources;
+    using com.atgardner.OMFG.tiles;
+    using com.atgardner.OMFG.utils;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -17,7 +15,7 @@
 
     public partial class MainForm : Form
     {
-        private static readonly string SourceFile = "sources.json";
+        private static readonly string SourceFile = @"sources\sources.json";
 
         private readonly Downloader downloader;
         private MapSource[] sources;
@@ -32,8 +30,16 @@
         {
             base.OnLoad(e);
             CreateZoomCheckBoxes();
-            sources = await MapSource.LoadSources(SourceFile);
-            cmbMapSource.DataSource = sources;
+            try
+            {
+                sources = await MapSource.LoadSources(SourceFile);
+                cmbMapSource.DataSource = sources;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)

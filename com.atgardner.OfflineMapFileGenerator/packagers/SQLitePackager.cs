@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.SQLite;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace com.atgardner.Downloader
+﻿namespace com.atgardner.OMFG.packagers
 {
+    using com.atgardner.OMFG.tiles;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Common;
+    using System.Data.SQLite;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public class SQLitePackager : IDisposable
     {
         private static readonly string TABLE_DDL = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s))";

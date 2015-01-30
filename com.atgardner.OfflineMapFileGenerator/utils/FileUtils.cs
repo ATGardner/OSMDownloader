@@ -1,16 +1,14 @@
-﻿using Gavaghan.Geodesy;
-using MKCoolsoft.GPXLib;
-using SharpKml.Dom;
-using SharpKml.Engine;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace com.atgardner.OMFG
+﻿namespace com.atgardner.OMFG.utils
 {
+    using Gavaghan.Geodesy;
+    using MKCoolsoft.GPXLib;
+    using SharpKml.Dom;
+    using SharpKml.Engine;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     static class FileUtils
     {
         public static IEnumerable<GlobalCoordinates> ExtractCoordinates(string[] fileNames)
@@ -37,7 +35,7 @@ namespace com.atgardner.OMFG
             }
         }
 
-        private static KmlFile GetKml(string path)
+        private static Element GetKmlRoot(string path)
         {
             var ext = Path.GetExtension(path);
             KmlFile kml;
@@ -56,13 +54,13 @@ namespace com.atgardner.OMFG
                 }
             }
 
-            return kml;
+            return kml.Root;
         }
 
         private static IEnumerable<GlobalCoordinates> ExtractCoordinatesFromKml(string fileName)
         {
-            var kml = GetKml(fileName);
-            foreach (var element in kml.Root.Flatten().OfType<Geometry>())
+            var root = GetKmlRoot(fileName);
+            foreach (var element in root.Flatten().OfType<Geometry>())
             {
                 foreach (var c in ExtractCoordinate(element))
                 {

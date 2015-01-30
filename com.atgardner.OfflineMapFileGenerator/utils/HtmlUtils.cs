@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace com.atgardner.OMFG
+﻿namespace com.atgardner.OMFG.utils
 {
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+
     static class HtmlUtils
     {
         private static readonly Regex hrefRegex = new Regex(@"<a href=""(?<href>[^""]*)"">(?<text>[^<]*)</a>");

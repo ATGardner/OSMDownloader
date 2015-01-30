@@ -1,6 +1,6 @@
-﻿namespace com.atgardner.Downloader
+﻿namespace com.atgardner.OMFG.tiles
 {
-    using com.atgardner.Downloader.Properties;
+    using com.atgardner.OMFG.sources;
     using Gavaghan.Geodesy;
     using System;
     using System.Collections.Generic;

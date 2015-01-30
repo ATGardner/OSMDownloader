@@ -1,4 +1,4 @@
-﻿namespace com.atgardner.Downloader
+﻿namespace com.atgardner.OMFG.sources
 {
     using Newtonsoft.Json;
     using System;
@@ -76,14 +76,14 @@
 
         public static async Task<MapSource[]> LoadSources(string path)
         {
-            var json = File.ReadAllText("sources.json");
+            var json = File.ReadAllText(path);
             return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<MapSource[]>(json));
         }
 
         public static void SaveSources(string path, MapSource[] sources)
         {
             var json = JsonConvert.SerializeObject(sources);
-            File.WriteAllText("sources.json", json);
+            File.WriteAllText(path, json);
         }
     }
 }

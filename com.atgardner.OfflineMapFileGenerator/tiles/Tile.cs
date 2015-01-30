@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace com.atgardner.Downloader
+﻿namespace com.atgardner.OMFG.tiles
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public class Tile : IEquatable<Tile>
     {
         public int X { get; private set; }
