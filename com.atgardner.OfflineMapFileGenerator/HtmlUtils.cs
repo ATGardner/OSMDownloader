@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace com.atgardner.OfflineMapCreator
+namespace com.atgardner.OMFG
 {
     static class HtmlUtils
     {

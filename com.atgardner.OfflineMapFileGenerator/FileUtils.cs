@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace com.atgardner.OfflineMapCreator
+namespace com.atgardner.OMFG
 {
     static class FileUtils
     {

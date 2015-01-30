@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace com.atgardner.OfflineMapCreator
+namespace com.atgardner.OMFG
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace com.atgardner.OfflineMapCreator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new OfflineMapCreatorForm());
+            Application.Run(new MainForm());
         }
     }
 }

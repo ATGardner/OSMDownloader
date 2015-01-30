@@ -1,4 +1,4 @@
-﻿namespace com.atgardner.OfflineMapCreator
+﻿namespace com.atgardner.OMFG
 {
     using com.atgardner.Downloader;
     using Gavaghan.Geodesy;
@@ -15,14 +15,14 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
 
-    public partial class OfflineMapCreatorForm : Form
+    public partial class MainForm : Form
     {
         private static readonly string SourceFile = "sources.json";
 
         private readonly Downloader downloader;
         private MapSource[] sources;
 
-        public OfflineMapCreatorForm()
+        public MainForm()
         {
             InitializeComponent();
             downloader = new Downloader();

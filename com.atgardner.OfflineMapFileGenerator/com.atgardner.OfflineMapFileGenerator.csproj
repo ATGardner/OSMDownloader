@@ -7,8 +7,8 @@
     <ProjectGuid>{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com.atgardner.OfflineMapCreator</RootNamespace>
-    <AssemblyName>OfflineMapCreator</AssemblyName>
+    <RootNamespace>com.atgardner.OMFG</RootNamespace>
+    <AssemblyName>OMFG</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>com.atgardner.OfflineMapCreator.Program</StartupObject>
+    <StartupObject>com.atgardner.OMFG.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gavaghan.Geodesy">
@@ -89,19 +89,19 @@
     </Compile>
     <Compile Include="FileUtils.cs" />
     <Compile Include="HtmlUtils.cs" />
-    <Compile Include="OfflineMapCreator.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OfflineMapCreator.Designer.cs">
-      <DependentUpon>OfflineMapCreator.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OfflineMapCreator.resx">
-      <DependentUpon>OfflineMapCreator.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

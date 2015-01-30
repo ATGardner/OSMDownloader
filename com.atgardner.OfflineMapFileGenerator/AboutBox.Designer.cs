@@ -1,4 +1,4 @@
-﻿namespace com.atgardner.OfflineMapCreator
+﻿namespace com.atgardner.OMFG
 {
     partial class AboutBox
     {

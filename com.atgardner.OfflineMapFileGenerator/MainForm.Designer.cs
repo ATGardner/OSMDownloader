@@ -1,6 +1,6 @@
-﻿namespace com.atgardner.OfflineMapCreator
+﻿namespace com.atgardner.OMFG
 {
-    partial class OfflineMapCreatorForm
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.

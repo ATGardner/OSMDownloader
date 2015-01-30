@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Offline Map Creator")]
-[assembly: AssemblyDescription("Create offline map files for use on your Smart Device.\r\n\r\nUsed Libraries:\r\nSharpKml (http://sharpkml.codeplex.com/)\r\nDotNetZip (http://dotnetzip.codeplex.com/)\r\nGPXLib (http://gpxlib.codeplex.com/)\r\nJson.NET (http://www.newtonsoft.com/json)\r\nSQLite  (http://www.sqlite.org/)\r\n")]
+[assembly: AssemblyTitle("Offline Map File Generator")]
+[assembly: AssemblyDescription("Generate offline map files for use on your Smart Device.\r\n\r\nUsed Libraries:\r\nSharpKml (http://sharpkml.codeplex.com/)\r\nDotNetZip (http://dotnetzip.codeplex.com/)\r\nGPXLib (http://gpxlib.codeplex.com/)\r\nJson.NET (http://www.newtonsoft.com/json)\r\nSQLite  (http://www.sqlite.org/)\r\n")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OfflineMapCreator")]
+[assembly: AssemblyProduct("Offline Map File Generator")]
 [assembly: AssemblyCopyright("Copyright ©  2015 Noam Gal")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

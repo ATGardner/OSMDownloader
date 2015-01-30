@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace com.atgardner.OfflineMapCreator
+namespace com.atgardner.OMFG
 {
     partial class AboutBox : Form
     {

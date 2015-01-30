@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.Downloader", "com.atgardner.Downloader\com.atgardner.Downloader.csproj", "{E44AE7E7-9DEC-46E1-8A82-8316997C36B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.OfflineMapCreator", "com.atgardner.OfflineMapCreator\com.atgardner.OfflineMapCreator.csproj", "{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.OfflineMapFileGenerator", "com.atgardner.com.atgardner.OfflineMapFileGenerator\com.atgardner.OfflineMapFileGenerator.csproj", "{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
