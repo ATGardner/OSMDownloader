@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace com.atgardner.TilesDownloader
+namespace com.atgardner.OfflineMapCreator
 {
     static class HtmlUtils
     {

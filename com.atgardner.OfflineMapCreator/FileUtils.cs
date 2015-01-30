@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace com.atgardner.TilesDownloader
+namespace com.atgardner.OfflineMapCreator
 {
     static class FileUtils
     {

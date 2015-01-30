@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace com.atgardner.TilesDownloader
+namespace com.atgardner.OfflineMapCreator
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace com.atgardner.TilesDownloader
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TilesDownloaderForm());
+            Application.Run(new OfflineMapCreatorForm());
         }
     }
 }

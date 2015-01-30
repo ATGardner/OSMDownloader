@@ -1,6 +1,6 @@
-﻿namespace com.atgardner.TilesDownloader
+﻿namespace com.atgardner.OfflineMapCreator
 {
-    partial class TilesDownloaderForm
+    partial class OfflineMapCreatorForm
     {
         /// <summary>
         /// Required designer variable.
@@ -274,7 +274,7 @@
             this.Controls.Add(this.tspContainer);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "TilesDownloaderForm";
-            this.Text = "Tiles Downloader";
+            this.Text = "Offline Map Creator";
             this.tlpContainer.ResumeLayout(false);
             this.tlpContainer.PerformLayout();
             this.status.ResumeLayout(false);

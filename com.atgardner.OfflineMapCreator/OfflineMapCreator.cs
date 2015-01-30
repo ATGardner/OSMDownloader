@@ -1,4 +1,4 @@
-﻿namespace com.atgardner.TilesDownloader
+﻿namespace com.atgardner.OfflineMapCreator
 {
     using com.atgardner.Downloader;
     using Gavaghan.Geodesy;
@@ -15,14 +15,14 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
 
-    public partial class TilesDownloaderForm : Form
+    public partial class OfflineMapCreatorForm : Form
     {
         private static readonly string SourceFile = "sources.json";
 
         private readonly Downloader downloader;
         private MapSource[] sources;
 
-        public TilesDownloaderForm()
+        public OfflineMapCreatorForm()
         {
             InitializeComponent();
             downloader = new Downloader();
