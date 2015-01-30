@@ -27,10 +27,16 @@
         "maxZoom": 18
     },
     {
-        "Name": "CALTopo",
-        "Address": "http://caltopo.com/resource/imagery/tiles/eus/{zoom}/{x}/{y}",
+        "Name": "CALTopo US Forest Service",
+        "Address": "http://s3-us-west-1.amazonaws.com/caltopo/topo/{zoom}/{x}/{y}.png",
         "minZoom": 0,
-        "maxZoom": 18
+        "maxZoom": 16
+    },
+    {
+        "Name": "CALTopo USGS 7.5' Topos",
+        "Address": "http://s3-us-west-1.amazonaws.com/ctusfs/fstopo/{zoom}/{x}/{y}.png",
+        "minZoom": 0,
+        "maxZoom": 16
     },
     {
         "Name": "USA Topo Maps",
