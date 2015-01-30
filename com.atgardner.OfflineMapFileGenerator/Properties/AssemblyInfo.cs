@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Offline Map File Generator")]
-[assembly: AssemblyDescription("Generate offline map files for use on your Smart Device.\r\n\r\nUsed Libraries:\r\nSharpKml (http://sharpkml.codeplex.com/)\r\nDotNetZip (http://dotnetzip.codeplex.com/)\r\nGPXLib (http://gpxlib.codeplex.com/)\r\nJson.NET (http://www.newtonsoft.com/json)\r\nSQLite  (http://www.sqlite.org/)\r\n")]
+[assembly: AssemblyDescription("Generate offline map files for use on your Smart Device.\r\n\r\nWebsite: http://atgardner.github.io/OfflineMapFileGenerator\r\n\r\nUsed Libraries:\r\nSharpKml (http://sharpkml.codeplex.com)\r\nDotNetZip (http://dotnetzip.codeplex.com)\r\nGPXLib (http://gpxlib.codeplex.com)\r\nJson.NET (http://www.newtonsoft.com/json)\r\nSQLite (http://www.sqlite.org)\r\nGavaghan Geodesy (http://www.gavaghan.org/blog/free-source-code/geodesy-library-vincentys-formula)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Offline Map File Generator")]
