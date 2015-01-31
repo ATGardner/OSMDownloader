@@ -32,8 +32,7 @@
         {
             var ext = Path.GetExtension(source.Address);
             var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var processName = Process.GetCurrentProcess().ProcessName;
-            var folder = Path.Combine(applicationData, processName, source.Name, tile.Zoom.ToString(), tile.X.ToString(), tile.Y.ToString());
+            var folder = Path.Combine(applicationData, "OMFG", source.Name, tile.Zoom.ToString(), tile.X.ToString(), tile.Y.ToString());
             return Path.ChangeExtension(folder, ext);
         }
     }
