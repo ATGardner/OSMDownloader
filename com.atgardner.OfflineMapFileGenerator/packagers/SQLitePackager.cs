@@ -41,9 +41,9 @@
         {
             var command = connection.CreateCommand();
             command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.UInt32, "x", tile.X);
-            AddParameter(command, DbType.UInt32, "y", tile.Y);
-            AddParameter(command, DbType.UInt32, "z", 17 - tile.Zoom);
+            AddParameter(command, DbType.Int32, "x", tile.X);
+            AddParameter(command, DbType.Int32, "y", tile.Y);
+            AddParameter(command, DbType.Int32, "z", 17 - tile.Zoom);
             AddParameter(command, DbType.Binary, "image", tile.Image);
             await command.ExecuteNonQueryAsync();
         }
