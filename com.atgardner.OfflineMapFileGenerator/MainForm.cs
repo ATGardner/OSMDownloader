@@ -17,13 +17,13 @@
     {
         private static readonly string SourceFile = @"sources\sources.json";
 
-        private readonly Downloader downloader;
+        private readonly TilesManager manager;
         private MapSource[] sources;
 
         public MainForm()
         {
             InitializeComponent();
-            downloader = new Downloader();
+            manager = new TilesManager();
         }
 
         protected override async void OnLoad(EventArgs e)
@@ -92,19 +92,19 @@
             prgBar.Value = 0;
             UpdateStatus("Done Reading File");
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
-            var tileFiles = downloader.DownloadTiles(coordinates, zoomLevels, source);
+            var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
+            var tasks = manager.GetTileData(source, tiles).ToList();
             var prevPercentage = -1;
             var current = 0;
-            var total = tileFiles.Count;
+            var total = tasks.Count;
             using (var packager = new SQLitePackager(outputFile))
             {
                 await packager.Init();
-                while (tileFiles.Count > 0)
+                while (tasks.Count > 0)
                 {
-                    var task = await Task.WhenAny(tileFiles);
-                    tileFiles.Remove(task);
+                    var task = await Task.WhenAny(tasks);
+                    tasks.Remove(task);
                     var tile = await task;
-                    //await HandleResult(path, source, tile);
                     packager.AddTile(tile);
                     current++;
                     var progressPercentage = 100 * current / total;

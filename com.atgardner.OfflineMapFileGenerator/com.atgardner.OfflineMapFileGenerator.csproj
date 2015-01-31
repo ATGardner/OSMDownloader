@@ -97,8 +97,10 @@
     </Compile>
     <Compile Include="packagers\SQLitePackager.cs" />
     <Compile Include="sources\MapSource.cs" />
-    <Compile Include="tiles\Downloader.cs" />
+    <Compile Include="tiles\FileDataCache.cs" />
+    <Compile Include="tiles\IDataCache.cs" />
     <Compile Include="tiles\Tile.cs" />
+    <Compile Include="tiles\TilesManager.cs" />
     <Compile Include="utils\FileUtils.cs" />
     <Compile Include="utils\HtmlUtils.cs" />
     <Compile Include="MainForm.cs">
