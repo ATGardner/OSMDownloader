@@ -142,8 +142,26 @@
             for (int i = 0; i <= 20; i++)
             {
                 var chkBx = new CheckBox();
+                chkBx.Width = 40;
                 chkBx.Text = i.ToString();
                 flpZoomLevels.Controls.Add(chkBx);
+            }
+
+            var chkBxAll = new CheckBox();
+            chkBxAll.Text = "Check All";
+            chkBxAll.CheckedChanged += chkBxAll_CheckedChanged;
+            flpZoomLevels.Controls.Add(chkBxAll);
+        }
+
+        void chkBxAll_CheckedChanged(object sender, EventArgs e)
+        {
+            var chkBxAll = (CheckBox)sender;
+            foreach (CheckBox chkBx in flpZoomLevels.Controls)
+            {
+                if (chkBx.Enabled)
+                {
+                    chkBx.Checked = chkBxAll.Checked;
+                }
             }
         }
 
@@ -152,9 +170,10 @@
             var levels = new List<int>();
             foreach (CheckBox chkBx in flpZoomLevels.Controls)
             {
-                if (chkBx.Enabled && chkBx.Checked)
+                int zoomLevel;
+                if (chkBx.Enabled && chkBx.Checked && int.TryParse(chkBx.Text, out zoomLevel))
                 {
-                    levels.Add(int.Parse(chkBx.Text));
+                    levels.Add(zoomLevel);
                 }
             }
 
@@ -177,33 +196,6 @@
             {
                 flpZoomLevels.Controls[i].Enabled = false;
             }
-        }
-
-        private async Task HandleResult(string sourceFile, MapSource source, string tileFile)
-        {
-            if (!File.Exists(tileFile))
-            {
-                return;
-            }
-
-            var outputFolder = CreateOutputFolder(sourceFile, source);
-            var outputFile = tileFile.Replace(source.Name, outputFolder);
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
-            using (FileStream srcStream = File.Open(tileFile, FileMode.Open))
-            {
-                using (FileStream destStream = File.Create(outputFile))
-                {
-                    await srcStream.CopyToAsync(destStream);
-                }
-            }
-        }
-
-        private static string CreateOutputFolder(string sourceFile, MapSource source)
-        {
-            var sourceFileName = Path.GetFileNameWithoutExtension(sourceFile);
-            var outputFolder = String.Format("{0} - {1}", sourceFileName, source.Name);
-            Directory.CreateDirectory(outputFolder);
-            return outputFolder;
         }
 
         private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -85,7 +85,7 @@
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpContainer.Size = new System.Drawing.Size(584, 415);
+            this.tlpContainer.Size = new System.Drawing.Size(584, 315);
             this.tlpContainer.TabIndex = 0;
             // 
             // lblInput
@@ -151,7 +151,8 @@
             this.lblZoomLevels.AutoSize = true;
             this.lblZoomLevels.Location = new System.Drawing.Point(13, 92);
             this.lblZoomLevels.Name = "lblZoomLevels";
-            this.lblZoomLevels.Size = new System.Drawing.Size(71, 13);
+            this.lblZoomLevels.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.lblZoomLevels.Size = new System.Drawing.Size(71, 17);
             this.lblZoomLevels.TabIndex = 9;
             this.lblZoomLevels.Text = "Zoom Levels:";
             // 
@@ -161,7 +162,7 @@
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpZoomLevels.Location = new System.Drawing.Point(90, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
-            this.flpZoomLevels.Size = new System.Drawing.Size(410, 7);
+            this.flpZoomLevels.Size = new System.Drawing.Size(410, 11);
             this.flpZoomLevels.TabIndex = 8;
             // 
             // lnk
@@ -170,7 +171,7 @@
             this.lnk.AutoSize = true;
             this.tlpContainer.SetColumnSpan(this.lnk, 2);
             this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lnk.Location = new System.Drawing.Point(13, 105);
+            this.lnk.Location = new System.Drawing.Point(13, 109);
             this.lnk.Name = "lnk";
             this.lnk.Size = new System.Drawing.Size(487, 13);
             this.lnk.TabIndex = 11;
@@ -179,7 +180,7 @@
             // btnRun
             // 
             this.btnRun.AutoSize = true;
-            this.btnRun.Location = new System.Drawing.Point(506, 379);
+            this.btnRun.Location = new System.Drawing.Point(506, 279);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(65, 23);
             this.btnRun.TabIndex = 0;
@@ -237,11 +238,11 @@
             // tspContainer.ContentPanel
             // 
             this.tspContainer.ContentPanel.Controls.Add(this.tlpContainer);
-            this.tspContainer.ContentPanel.Size = new System.Drawing.Size(584, 415);
+            this.tspContainer.ContentPanel.Size = new System.Drawing.Size(584, 315);
             this.tspContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tspContainer.Location = new System.Drawing.Point(0, 0);
             this.tspContainer.Name = "tspContainer";
-            this.tspContainer.Size = new System.Drawing.Size(584, 461);
+            this.tspContainer.Size = new System.Drawing.Size(584, 361);
             this.tspContainer.TabIndex = 2;
             this.tspContainer.Text = "toolStripContainer1";
             // 
@@ -267,14 +268,14 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // OfflineMapCreatorForm
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 461);
+            this.ClientSize = new System.Drawing.Size(584, 361);
             this.Controls.Add(this.tspContainer);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "OfflineMapCreatorForm";
+            this.Name = "MainForm";
             this.Text = "Offline Map Creator";
             this.tlpContainer.ResumeLayout(false);
             this.tlpContainer.PerformLayout();
