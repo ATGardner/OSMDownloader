@@ -12,12 +12,19 @@
         public int Y { get; private set; }
         public int Zoom { get; private set; }
         public byte[] Image { get; set; }
+        public bool FromCache { get; set; }
 
         public Tile(int x, int y, int zoom)
         {
             this.X = x;
             this.Y = y;
             this.Zoom = zoom;
+            this.FromCache = false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}/{1}/{2}", Zoom, X, Y);
         }
 
         public override bool Equals(object other)

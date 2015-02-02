@@ -11,7 +11,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class SQLitePackager : IDisposable
+    public class SQLitePackager : IPackager
     {
         private static readonly string TABLE_DDL = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s))";
         private static readonly string INDEX_DDL = "CREATE INDEX IF NOT EXISTS IND on tiles (x, y, z, s)";
@@ -31,13 +31,13 @@
             connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
         }
 
-        public Task Init()
+        public async Task Init()
         {
             connection.Open();
-            return CreateTables();
+            await CreateTables();
         }
 
-        public async void AddTile(Tile tile)
+        public async Task AddTile(Tile tile)
         {
             var command = connection.CreateCommand();
             command.CommandText = INSERT_SQL;
@@ -101,8 +101,19 @@
             command.Parameters.Add(param);
         }
 
-        public async void Dispose()
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
             if (connection != null)
             {
                 await UpdateTileMetaInfo();

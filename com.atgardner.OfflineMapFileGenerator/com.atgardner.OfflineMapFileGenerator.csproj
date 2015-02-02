@@ -95,6 +95,8 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="packagers\DummyPackager.cs" />
+    <Compile Include="packagers\IPackager.cs" />
     <Compile Include="packagers\SQLitePackager.cs" />
     <Compile Include="sources\MapSource.cs" />
     <Compile Include="tiles\FileDataCache.cs" />

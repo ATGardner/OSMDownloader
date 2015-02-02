@@ -64,11 +64,20 @@
                 return;
             }
 
-            var outputFile = txtBxOutput.Text;
-            if (string.IsNullOrWhiteSpace(outputFile))
+            var dryRun = chkBxDryRun.Checked;
+            string outputFile;
+            if (dryRun)
             {
-                MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                outputFile = null;
+            }
+            else
+            {
+                outputFile = txtBxOutput.Text;
+                if (string.IsNullOrWhiteSpace(outputFile) && !dryRun)
+                {
+                    MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
             }
 
             var zoomLevels = GetZoomLevels();
@@ -82,59 +91,23 @@
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             await Task.Factory.StartNew(() => DownloadTiles(inputFiles, outputFile, zoomLevels, source));
-            lblStatus.Text = string.Format("Done Downloading tiles");
             tlpContainer.Enabled = true;
-        }
-
-        private async void DownloadTiles(string[] inputFiles, string outputFile, int[] zoomLevels, MapSource source)
-        {
-            tlpContainer.Enabled = false;
-            prgBar.Value = 0;
-            UpdateStatus("Done Reading File");
-            var coordinates = FileUtils.ExtractCoordinates(inputFiles);
-            var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
-            var tasks = manager.GetTileData(source, tiles).ToList();
-            var prevPercentage = -1;
-            var current = 0;
-            var total = tasks.Count;
-            using (var packager = new SQLitePackager(outputFile))
-            {
-                await packager.Init();
-                while (tasks.Count > 0)
-                {
-                    var task = await Task.WhenAny(tasks);
-                    tasks.Remove(task);
-                    var tile = await task;
-                    packager.AddTile(tile);
-                    current++;
-                    var progressPercentage = 100 * current / total;
-                    if (progressPercentage > prevPercentage)
-                    {
-                        prevPercentage = progressPercentage;
-                        UpdateProgBar(progressPercentage);
-                        UpdateStatus(string.Format("{0}/{1} Tiles Downloaded", current, total));
-                    }
-                }
-            }
-
-            UpdateStatus(string.Format("Done Downloading {0} tiles", total));
-        }
-
-        private void UpdateStatus(string status)
-        {
-            BeginInvoke((MethodInvoker)(() => lblStatus.Text = status));
-        }
-
-        private void UpdateProgBar(int value)
-        {
-            BeginInvoke((MethodInvoker)(() => prgBar.Value = value));
         }
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
         {
             var mapSource = cmbMapSource.SelectedItem as MapSource;
-            ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
-            HtmlUtils.ConfigLinkLabel(lnk, mapSource.Attribution);
+            if (mapSource != null)
+            {
+                ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
+                HtmlUtils.ConfigLinkLabel(lnk, mapSource.Attribution);
+            }
+            else
+            {
+                ResetZoomCheckBoxes(0, 20);
+                HtmlUtils.ConfigLinkLabel(lnk, string.Empty);
+            }
+            
         }
 
         private void CreateZoomCheckBoxes()
@@ -153,7 +126,7 @@
             flpZoomLevels.Controls.Add(chkBxAll);
         }
 
-        void chkBxAll_CheckedChanged(object sender, EventArgs e)
+        private void chkBxAll_CheckedChanged(object sender, EventArgs e)
         {
             var chkBxAll = (CheckBox)sender;
             foreach (CheckBox chkBx in flpZoomLevels.Controls)
@@ -162,6 +135,38 @@
                 {
                     chkBx.Checked = chkBxAll.Checked;
                 }
+            }
+        }
+
+        private void chkBxDryRun_CheckedChanged(object sender, EventArgs e)
+        {
+            var chkBx = (CheckBox)sender;
+            txtBxOutput.Enabled = !chkBx.Checked;
+            //cmbMapSource.Enabled = !chkBx.Checked;
+            //if (chkBx.Checked)
+            //{
+            //    cmbMapSource.Tag = cmbMapSource.SelectedItem;
+            //    cmbMapSource.SelectedItem = null;
+            //}
+            //else
+            //{
+            //    cmbMapSource.SelectedItem = cmbMapSource.Tag;
+            //    cmbMapSource.Tag = null;
+            //}
+        }
+
+        private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var lnk = (LinkLabel)sender;
+            lnk.Links[lnk.Links.IndexOf(e.Link)].Visited = true;
+            Process.Start(e.Link.LinkData.ToString());
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var about = new AboutBox())
+            {
+                about.ShowDialog(this);
             }
         }
 
@@ -198,18 +203,49 @@
             }
         }
 
-        private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void UpdateStatus(string status)
         {
-            var lnk = (LinkLabel)sender;
-            lnk.Links[lnk.Links.IndexOf(e.Link)].Visited = true;
-            Process.Start(e.Link.LinkData.ToString());
+            BeginInvoke((MethodInvoker)(() => lblStatus.Text = status));
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UpdateProgBar(int value)
         {
-            using (var about = new AboutBox())
+            BeginInvoke((MethodInvoker)(() => prgBar.Value = value));
+        }
+
+        private async void DownloadTiles(string[] inputFiles, string outputFile, int[] zoomLevels, MapSource source)
+        {
+            tlpContainer.Enabled = false;
+            prgBar.Value = 0;
+            UpdateStatus("Done Reading File");
+            var dryRun = outputFile == null;
+            var coordinates = FileUtils.ExtractCoordinates(inputFiles);
+            var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
+            var tasks = manager.GetTileData(source, tiles, dryRun).ToList();
+            var prevPercentage = -1;
+            var current = 0;
+            var total = tasks.Count;
+            var packager = dryRun ? (IPackager)new DummyPackager(lblStatus) : new SQLitePackager(outputFile);
+            using (packager)
             {
-                about.ShowDialog(this);
+                await packager.Init();
+                while (tasks.Count > 0)
+                {
+                    var task = await Task.WhenAny(tasks);
+                    tasks.Remove(task);
+                    var tile = await task;
+                    await packager.AddTile(tile);
+                    current++;
+                    var progressPercentage = 100 * current / total;
+                    if (progressPercentage > prevPercentage)
+                    {
+                        prevPercentage = progressPercentage;
+                        UpdateProgBar(progressPercentage);
+                        UpdateStatus(string.Format("{0}/{1} Tiles Downloaded", current, total));
+                    }
+                }
+
+                UpdateStatus(string.Format("Done Downloading {0} tiles", total));
             }
         }
     }

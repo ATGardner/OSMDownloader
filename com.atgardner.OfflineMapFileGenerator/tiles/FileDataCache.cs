@@ -7,12 +7,18 @@
 
     class FileDataCache : IDataCache
     {
-        public byte[] GetData(MapSource source, Tile tile)
+        public Boolean HasData(MapSource source, Tile tile)
         {
             var filePath = CalculateFilePath(source, tile);
             var fi = new FileInfo(filePath);
-            if (fi.Exists && fi.Length > 0)
+            return fi.Exists && fi.Length > 0;
+        }
+
+        public byte[] GetData(MapSource source, Tile tile)
+        {
+            if (HasData(source, tile))
             {
+                var filePath = CalculateFilePath(source, tile);
                 return File.ReadAllBytes(filePath);
             }
             else

@@ -40,6 +40,7 @@
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
             this.cmbMapSource = new System.Windows.Forms.ComboBox();
+            this.chkBxDryRun = new System.Windows.Forms.CheckBox();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.status = new System.Windows.Forms.StatusStrip();
             this.prgBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -65,14 +66,15 @@
             this.tlpContainer.Controls.Add(this.lblInput, 0, 0);
             this.tlpContainer.Controls.Add(this.txtBxInput, 1, 0);
             this.tlpContainer.Controls.Add(this.btnBrowse, 2, 0);
-            this.tlpContainer.Controls.Add(this.lblMapSource, 0, 2);
             this.tlpContainer.Controls.Add(this.lblOutput, 0, 1);
             this.tlpContainer.Controls.Add(this.txtBxOutput, 1, 1);
+            this.tlpContainer.Controls.Add(this.chkBxDryRun, 2, 1);
+            this.tlpContainer.Controls.Add(this.lblMapSource, 0, 2);
+            this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 2);
             this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 3);
             this.tlpContainer.Controls.Add(this.flpZoomLevels, 1, 3);
             this.tlpContainer.Controls.Add(this.lnk, 0, 4);
             this.tlpContainer.Controls.Add(this.btnRun, 2, 6);
-            this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 2);
             this.tlpContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContainer.Location = new System.Drawing.Point(0, 0);
             this.tlpContainer.Name = "tlpContainer";
@@ -198,6 +200,18 @@
             this.cmbMapSource.TabIndex = 7;
             this.cmbMapSource.SelectedIndexChanged += new System.EventHandler(this.cmbMapSource_SelectedIndexChanged);
             // 
+            // chkBxDryRun
+            // 
+            this.chkBxDryRun.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBxDryRun.AutoSize = true;
+            this.chkBxDryRun.Location = new System.Drawing.Point(506, 43);
+            this.chkBxDryRun.Name = "chkBxDryRun";
+            this.chkBxDryRun.Size = new System.Drawing.Size(65, 17);
+            this.chkBxDryRun.TabIndex = 14;
+            this.chkBxDryRun.Text = "Dry Run";
+            this.chkBxDryRun.UseVisualStyleBackColor = true;
+            this.chkBxDryRun.CheckedChanged += new System.EventHandler(this.chkBxDryRun_CheckedChanged);
+            // 
             // dlgOpenFile
             // 
             this.dlgOpenFile.DefaultExt = "kml";
@@ -315,6 +329,7 @@
         private System.Windows.Forms.TextBox txtBxOutput;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkBxDryRun;
     }
 }
 

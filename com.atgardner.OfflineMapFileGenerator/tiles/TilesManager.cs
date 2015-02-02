@@ -61,26 +61,26 @@
             }
         }
 
-        public IEnumerable<Task<Tile>> GetTileData(MapSource source, IEnumerable<Tile> tiles)
+        public IEnumerable<Task<Tile>> GetTileData(MapSource source, IEnumerable<Tile> tiles, bool dryRun)
         {
             var tasks = new List<Task<Tile>>();
             foreach (var tile in tiles)
             {
-                var task = GetTileData(source, tile);
+                var task = GetTileData(source, tile, dryRun);
                 tasks.Add(task);
             }
 
             return tasks;
         }
 
-        private async Task<Tile> GetTileData(MapSource source, Tile tile)
+        private async Task<Tile> GetTileData(MapSource source, Tile tile, bool dryRun)
         {
-            byte[] data =  dataCache.GetData(source, tile);
-            if (data != null)
+            if (dataCache.HasData(source, tile))
             {
-                tile.Image = data;
+                tile.Image = dataCache.GetData(source, tile);
+                tile.FromCache = true;
             }
-            else
+            else if (!dryRun)
             {
                 var address = source.CreateAddress(tile);
                 tile.Image = await PerformDownload(address);
