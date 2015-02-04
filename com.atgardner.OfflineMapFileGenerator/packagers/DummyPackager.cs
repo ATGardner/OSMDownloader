@@ -25,6 +25,7 @@ using System.Windows.Forms;
 
         public async Task AddTile(Tile tile)
         {
+            //Console.WriteLine(tile);
             total++;
             if (tile.FromCache)
             {

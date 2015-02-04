@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Offline Map File Generator")]
 [assembly: AssemblyDescription("Generate offline map files for use on your Smart Device.\r\n\r\nWebsite: http://atgardner.github.io/OfflineMapFileGenerator\r\n\r\nUsed Libraries:\r\nSharpKml (http://sharpkml.codeplex.com)\r\nDotNetZip (http://dotnetzip.codeplex.com)\r\nGPXLib (http://gpxlib.codeplex.com)\r\nJson.NET (http://www.newtonsoft.com/json)\r\nSQLite (http://www.sqlite.org)\r\nGavaghan Geodesy (http://www.gavaghan.org/blog/free-source-code/geodesy-library-vincentys-formula)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Noam \"Amtrak\" Gal")]
 [assembly: AssemblyProduct("Offline Map File Generator")]
-[assembly: AssemblyCopyright("Copyright ©  2015 Noam Gal")]
+[assembly: AssemblyCopyright("Copyright © 2015 Noam Gal")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
