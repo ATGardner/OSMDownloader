@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/ATGardner/OfflineMapFileGenerator/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/ATGardner/OfflineMapFileGenerator</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/ATGardner/OfflineMapFileGenerator/master/com.atgardner.OfflineMapFileGenerator/icon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <summary>Generate offline map files for use on your Smart Device.</summary>
+    <releaseNotes>Checking Installer.</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags></tags>
+  </metadata>
+</package>
