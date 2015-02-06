@@ -4,6 +4,7 @@
     using com.atgardner.OMFG.sources;
     using com.atgardner.OMFG.tiles;
     using com.atgardner.OMFG.utils;
+    using NLog;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -15,6 +16,7 @@
 
     public partial class MainForm : Form
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly string SourceFile = @"sources\sources.json";
 
         private readonly TilesManager manager;
@@ -37,6 +39,7 @@
             }
             catch (Exception ex)
             {
+                logger.FatalException("Failed reading sources", ex);
                 MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
@@ -48,9 +51,12 @@
             {
                 var fileNames = from f in dlgOpenFile.FileNames select Path.GetFileName(f);
                 txtBxInput.Text = string.Join("; ", fileNames);
+                logger.Debug("Input files: {0}", txtBxInput.Text);
                 if (string.IsNullOrWhiteSpace(txtBxOutput.Text))
                 {
-                    txtBxOutput.Text = Path.GetFileNameWithoutExtension(fileNames.First());
+                    var outputFileName = Path.GetFileNameWithoutExtension(fileNames.First());
+                    txtBxOutput.Text = outputFileName;
+                    logger.Debug("Automatically selected output file name: {0}", outputFileName);
                 }
             }
         }
@@ -60,6 +66,7 @@
             var inputFiles = dlgOpenFile.FileNames;
             if (inputFiles.Length == 0)
             {
+                logger.Warn("No input files selected");
                 MessageBox.Show("Please specify an input file or files", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -68,6 +75,7 @@
             string outputFile;
             if (dryRun)
             {
+                logger.Debug("Performing dry run");
                 outputFile = null;
             }
             else
@@ -75,6 +83,7 @@
                 outputFile = txtBxOutput.Text;
                 if (string.IsNullOrWhiteSpace(outputFile) && !dryRun)
                 {
+                    logger.Warn("No output file name selected");
                     MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -83,6 +92,7 @@
             var zoomLevels = GetZoomLevels();
             if (zoomLevels.Length == 0)
             {
+                logger.Warn("No zoom level selected");
                 MessageBox.Show("Please chose at least one zoom level", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -99,15 +109,10 @@
             var mapSource = cmbMapSource.SelectedItem as MapSource;
             if (mapSource != null)
             {
+                logger.Debug("Changed source to {0}", mapSource);
                 ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
                 HtmlUtils.ConfigLinkLabel(lnk, mapSource.Attribution);
             }
-            else
-            {
-                ResetZoomCheckBoxes(0, 20);
-                HtmlUtils.ConfigLinkLabel(lnk, string.Empty);
-            }
-            
         }
 
         private void CreateZoomCheckBoxes()
@@ -142,17 +147,6 @@
         {
             var chkBx = (CheckBox)sender;
             txtBxOutput.Enabled = !chkBx.Checked;
-            //cmbMapSource.Enabled = !chkBx.Checked;
-            //if (chkBx.Checked)
-            //{
-            //    cmbMapSource.Tag = cmbMapSource.SelectedItem;
-            //    cmbMapSource.SelectedItem = null;
-            //}
-            //else
-            //{
-            //    cmbMapSource.SelectedItem = cmbMapSource.Tag;
-            //    cmbMapSource.Tag = null;
-            //}
         }
 
         private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -217,10 +211,13 @@
         {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
+            logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
             UpdateStatus("Done Reading File");
             var dryRun = outputFile == null;
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
+            logger.Trace("Got coordinates stream from input files");
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
+            logger.Trace("Got tile definition stream from coordinates");
             var tasks = manager.GetTileData(source, tiles, dryRun).ToList();
             var prevPercentage = -1;
             var current = 0;

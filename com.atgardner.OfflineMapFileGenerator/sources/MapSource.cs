@@ -53,6 +53,11 @@
             return this.Equals(other as MapSource);
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public bool Equals(MapSource other)
         {
             if (other == null)
