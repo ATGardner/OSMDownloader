@@ -2,6 +2,7 @@
 {
     using Gavaghan.Geodesy;
     using MKCoolsoft.GPXLib;
+    using SharpKml.Base;
     using SharpKml.Dom;
     using SharpKml.Engine;
     using System;
@@ -35,26 +36,26 @@
             }
         }
 
-        private static Element GetKmlRoot(string path)
+        private static string GetKmlString(string path)
         {
             var ext = Path.GetExtension(path);
-            KmlFile kml;
-            if (string.Equals(ext, ".kmz", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(ext, ".kml", StringComparison.InvariantCultureIgnoreCase))
             {
-                using (var kmz = KmzFile.Open(path))
-                {
-                    kml = kmz.GetDefaultKmlFile();
-                }
-            }
-            else
-            {
-                using (var stream = File.OpenRead(path))
-                {
-                    kml = KmlFile.Load(stream);
-                }
+                File.ReadAllText(path);
             }
 
-            return kml.Root;
+            using (var kmz = KmzFile.Open(path))
+            {
+                return kmz.ReadKml();
+            }
+        }
+
+        private static Element GetKmlRoot(string path)
+        {
+            var kmlString = GetKmlString(path);
+            var parser = new Parser();
+            parser.ParseString(kmlString, false);
+            return parser.Root;
         }
 
         private static IEnumerable<GlobalCoordinates> ExtractCoordinatesFromKml(string fileName)
