@@ -32,15 +32,14 @@
             this.lblInput = new System.Windows.Forms.Label();
             this.txtBxInput = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
-            this.lblMapSource = new System.Windows.Forms.Label();
             this.lblOutput = new System.Windows.Forms.Label();
             this.txtBxOutput = new System.Windows.Forms.TextBox();
+            this.lblMapSource = new System.Windows.Forms.Label();
+            this.cmbMapSource = new System.Windows.Forms.ComboBox();
             this.lblZoomLevels = new System.Windows.Forms.Label();
             this.flpZoomLevels = new System.Windows.Forms.FlowLayoutPanel();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
-            this.cmbMapSource = new System.Windows.Forms.ComboBox();
-            this.chkBxDryRun = new System.Windows.Forms.CheckBox();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.status = new System.Windows.Forms.StatusStrip();
             this.prgBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -68,7 +67,6 @@
             this.tlpContainer.Controls.Add(this.btnBrowse, 2, 0);
             this.tlpContainer.Controls.Add(this.lblOutput, 0, 1);
             this.tlpContainer.Controls.Add(this.txtBxOutput, 1, 1);
-            this.tlpContainer.Controls.Add(this.chkBxDryRun, 2, 1);
             this.tlpContainer.Controls.Add(this.lblMapSource, 0, 2);
             this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 2);
             this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 3);
@@ -120,16 +118,6 @@
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
-            // lblMapSource
-            // 
-            this.lblMapSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMapSource.AutoSize = true;
-            this.lblMapSource.Location = new System.Drawing.Point(13, 72);
-            this.lblMapSource.Name = "lblMapSource";
-            this.lblMapSource.Size = new System.Drawing.Size(68, 13);
-            this.lblMapSource.TabIndex = 6;
-            this.lblMapSource.Text = "Map Source:";
-            // 
             // lblOutput
             // 
             this.lblOutput.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -147,6 +135,26 @@
             this.txtBxOutput.Name = "txtBxOutput";
             this.txtBxOutput.Size = new System.Drawing.Size(410, 20);
             this.txtBxOutput.TabIndex = 13;
+            // 
+            // lblMapSource
+            // 
+            this.lblMapSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMapSource.AutoSize = true;
+            this.lblMapSource.Location = new System.Drawing.Point(13, 72);
+            this.lblMapSource.Name = "lblMapSource";
+            this.lblMapSource.Size = new System.Drawing.Size(68, 13);
+            this.lblMapSource.TabIndex = 6;
+            this.lblMapSource.Text = "Map Source:";
+            // 
+            // cmbMapSource
+            // 
+            this.cmbMapSource.DisplayMember = "Name";
+            this.cmbMapSource.FormattingEnabled = true;
+            this.cmbMapSource.Location = new System.Drawing.Point(90, 68);
+            this.cmbMapSource.Name = "cmbMapSource";
+            this.cmbMapSource.Size = new System.Drawing.Size(121, 21);
+            this.cmbMapSource.TabIndex = 7;
+            this.cmbMapSource.SelectedIndexChanged += new System.EventHandler(this.cmbMapSource_SelectedIndexChanged);
             // 
             // lblZoomLevels
             // 
@@ -189,28 +197,6 @@
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
-            // 
-            // cmbMapSource
-            // 
-            this.cmbMapSource.DisplayMember = "Name";
-            this.cmbMapSource.FormattingEnabled = true;
-            this.cmbMapSource.Location = new System.Drawing.Point(90, 68);
-            this.cmbMapSource.Name = "cmbMapSource";
-            this.cmbMapSource.Size = new System.Drawing.Size(121, 21);
-            this.cmbMapSource.TabIndex = 7;
-            this.cmbMapSource.SelectedIndexChanged += new System.EventHandler(this.cmbMapSource_SelectedIndexChanged);
-            // 
-            // chkBxDryRun
-            // 
-            this.chkBxDryRun.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkBxDryRun.AutoSize = true;
-            this.chkBxDryRun.Location = new System.Drawing.Point(506, 43);
-            this.chkBxDryRun.Name = "chkBxDryRun";
-            this.chkBxDryRun.Size = new System.Drawing.Size(65, 17);
-            this.chkBxDryRun.TabIndex = 14;
-            this.chkBxDryRun.Text = "Dry Run";
-            this.chkBxDryRun.UseVisualStyleBackColor = true;
-            this.chkBxDryRun.CheckedChanged += new System.EventHandler(this.chkBxDryRun_CheckedChanged);
             // 
             // dlgOpenFile
             // 
@@ -329,7 +315,6 @@
         private System.Windows.Forms.TextBox txtBxOutput;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.CheckBox chkBxDryRun;
     }
 }
 

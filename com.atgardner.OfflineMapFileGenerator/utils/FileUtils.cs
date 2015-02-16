@@ -41,7 +41,7 @@
             var ext = Path.GetExtension(path);
             if (string.Equals(ext, ".kml", StringComparison.InvariantCultureIgnoreCase))
             {
-                File.ReadAllText(path);
+                return File.ReadAllText(path);
             }
 
             using (var kmz = KmzFile.Open(path))

@@ -71,22 +71,12 @@
                 return;
             }
 
-            var dryRun = chkBxDryRun.Checked;
-            string outputFile;
-            if (dryRun)
+            string outputFile = txtBxOutput.Text;
+            if (string.IsNullOrWhiteSpace(outputFile))
             {
-                logger.Debug("Performing dry run");
-                outputFile = null;
-            }
-            else
-            {
-                outputFile = txtBxOutput.Text;
-                if (string.IsNullOrWhiteSpace(outputFile) && !dryRun)
-                {
-                    logger.Warn("No output file name selected");
-                    MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                logger.Warn("No output file name selected");
+                MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
             var zoomLevels = GetZoomLevels();
@@ -141,12 +131,6 @@
                     chkBx.Checked = chkBxAll.Checked;
                 }
             }
-        }
-
-        private void chkBxDryRun_CheckedChanged(object sender, EventArgs e)
-        {
-            var chkBx = (CheckBox)sender;
-            txtBxOutput.Enabled = !chkBx.Checked;
         }
 
         private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -207,22 +191,41 @@
             BeginInvoke((MethodInvoker)(() => prgBar.Value = value));
         }
 
+        private bool PromptUser(int total, int cached)
+        {
+            var text = string.Format("Are you sure you whish to download {0} tiles?", total - cached);
+            DialogResult result = DialogResult.No;
+            Invoke((MethodInvoker)(() =>
+            {
+                result = MessageBox.Show(this, text, "Offline Map File Generator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }));
+            return result == DialogResult.Yes;
+        }
+
         private async void DownloadTiles(string[] inputFiles, string outputFile, int[] zoomLevels, MapSource source)
         {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
             UpdateStatus("Done Reading File");
-            var dryRun = outputFile == null;
+
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
             logger.Trace("Got coordinates stream from input files");
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
             logger.Trace("Got tile definition stream from coordinates");
-            var tasks = manager.GetTileData(source, tiles, dryRun).ToList();
+            tiles = manager.CheckTileCache(source, tiles);
+            var cached = (from t in tiles where t.FromCache select t).Count();
+            var total = tiles.Count();
+            var text = string.Format("Are you sure you whish to download {0} tiles?", total - cached);
+            if (!PromptUser(total, cached))
+            {
+                return;
+            }
+
+            var tasks = manager.GetTileData(source, tiles).ToList();
             var prevPercentage = -1;
             var current = 0;
-            var total = tasks.Count;
-            var packager = dryRun ? (IPackager)new DummyPackager(lblStatus) : new SQLitePackager(outputFile);
+            var packager = new SQLitePackager(outputFile);
             using (packager)
             {
                 await packager.Init();
