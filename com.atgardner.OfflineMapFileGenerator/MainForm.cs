@@ -225,7 +225,7 @@
             var tasks = manager.GetTileData(source, tiles).ToList();
             var prevPercentage = -1;
             var current = 0;
-            var packager = new SQLitePackager(outputFile);
+            var packager = new BCNavPackager(outputFile);
             using (packager)
             {
                 await packager.Init();

@@ -11,35 +11,39 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class SQLitePackager : IPackager
+    public abstract class SQLitePackager : IPackager
     {
-        private static readonly string TABLE_DDL = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s))";
-        private static readonly string INDEX_DDL = "CREATE INDEX IF NOT EXISTS IND on tiles (x, y, z, s)";
-        private static readonly string INSERT_SQL = "INSERT or REPLACE INTO tiles (x, y, z, s, image) VALUES (@x, @y, @z, 0, @image)";
-        private static readonly string RMAPS_TABLE_INFO_DDL = "CREATE TABLE IF NOT EXISTS info AS SELECT 99 AS minzoom, 0 AS maxzoom";
-        private static readonly string RMAPS_CLEAR_INFO_SQL = "DELETE FROM info;";
-        private static readonly string RMAPS_UPDATE_INFO_MINMAX_SQL = "insert into info(minzoom, maxzoom) values((select min(z) from tiles), (select max(z) from tiles));";
-        private static readonly string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
-        private static readonly string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
-        private static readonly string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
+        protected abstract string TABLE_DDL { get; }
+        protected abstract string INDEX_DDL { get; }
+        protected abstract string INSERT_SQL { get; }
+        protected abstract string GetDbFileName(string fileName);
+        protected abstract Task UpdateTileMetaInfo();
 
-        private readonly DbConnection connection;
+        private string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
+        private string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
+        private string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
+
+        protected DbConnection Connection { get; private set; }
+
+
 
         public SQLitePackager(string sourceFile)
         {
-            var dbFile = Path.ChangeExtension(Path.GetFileNameWithoutExtension(sourceFile), "sqlitedb");
-            connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
+            var dbFile = Path.GetFullPath(GetDbFileName(sourceFile));
+            var directoryName = Path.GetDirectoryName(dbFile);
+            Directory.CreateDirectory(directoryName);
+            Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
         }
 
         public async Task Init()
         {
-            connection.Open();
+            Connection.Open();
             await CreateTables();
         }
 
         public async Task AddTile(Tile tile)
         {
-            var command = connection.CreateCommand();
+            var command = Connection.CreateCommand();
             command.CommandText = INSERT_SQL;
             AddParameter(command, DbType.Int32, "x", tile.X);
             AddParameter(command, DbType.Int32, "y", tile.Y);
@@ -50,21 +54,19 @@
 
         private async Task CreateTables()
         {
-            using (var scope = connection.BeginTransaction())
+            using (var scope = Connection.BeginTransaction())
             {
-                var command = connection.CreateCommand();
+                var command = Connection.CreateCommand();
                 command.CommandText = TABLE_DDL;
                 await command.ExecuteNonQueryAsync();
                 command.CommandText = INDEX_DDL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = RMAPS_TABLE_INFO_DDL;
                 await command.ExecuteNonQueryAsync();
                 await UpdateLocale(command);
                 scope.Commit();
             }
         }
 
-        private static async Task UpdateLocale(DbCommand command)
+        private async Task UpdateLocale(DbCommand command)
         {
             command.CommandText = METADATA_DDL;
             await command.ExecuteNonQueryAsync();
@@ -76,19 +78,6 @@
                 AddParameter(command, DbType.String, "locale", CultureInfo.CurrentCulture.Name);
                 await command.ExecuteNonQueryAsync();
                 command.Parameters.Clear();
-            }
-        }
-
-        private async Task UpdateTileMetaInfo()
-        {
-            using (var scope = connection.BeginTransaction())
-            {
-                var command = connection.CreateCommand();
-                command.CommandText = RMAPS_CLEAR_INFO_SQL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = RMAPS_UPDATE_INFO_MINMAX_SQL;
-                await command.ExecuteNonQueryAsync();
-                scope.Commit();
             }
         }
 
@@ -114,10 +103,10 @@
                 return;
             }
 
-            if (connection != null)
+            if (Connection != null)
             {
                 await UpdateTileMetaInfo();
-                connection.Dispose();
+                Connection.Dispose();
             }
         }
     }
