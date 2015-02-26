@@ -212,6 +212,7 @@
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
             logger.Trace("Got coordinates stream from input files");
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
+            var tiles2 = manager.GetTileDefinitions2(coordinates, zoomLevels);
             logger.Trace("Got tile definition stream from coordinates");
             tiles = manager.CheckTileCache(source, tiles);
             var cached = (from t in tiles where t.FromCache select t).Count();

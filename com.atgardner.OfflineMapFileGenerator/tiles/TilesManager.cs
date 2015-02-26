@@ -59,6 +59,60 @@
             }
         }
 
+        public IDictionary<int, IEnumerable<Tile>> GetTileDefinitions2(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
+        {
+            // reverse zoomLevels, to start with the most detailed tile
+            zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
+            var result = new Dictionary<int, IEnumerable<Tile>>();
+            var biggestZoom = zoomLevels[0];
+            result[biggestZoom] = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom);
+            for (var i = 1; i < zoomLevels.Length; i++)
+            {
+                var zoom = zoomLevels[i];
+                var prevZoom = zoomLevels[i - 1];
+                var tiles = new HashSet<Tile>();
+                var prevTiles = result[prevZoom];
+                foreach (var prevTile in prevTiles)
+                {
+                    var tile = GetTileDefinitionFromOtherTile(prevTile, prevZoom, zoom);
+                    tiles.Add(tile);
+                }
+
+                result[zoom] = tiles;
+            }
+
+            return result;
+        }
+
+        private static IEnumerable<Tile> GetTilesDefinitionsFromCoordinates(IEnumerable<GlobalCoordinates> coordinates, int zoom)
+        {
+            var tiles = new HashSet<Tile>();
+            foreach (var c in coordinates)
+            {
+                var tile = WorldToTilePos(c, zoom);
+                tiles.Add(tile);
+
+                if (zoom > 12)
+                {
+                    foreach (var c2 in GetCoordinatesAround(c, 1500))
+                    {
+                        tile = WorldToTilePos(c2, zoom);
+                        tiles.Add(tile);
+                    }
+                }
+            }
+
+            return tiles;
+        }
+
+        private static Tile GetTileDefinitionFromOtherTile(Tile prevTile, int prevZoom, int zoom)
+        {
+            var x = prevTile.X % 2 == 0 ? prevTile.X : prevTile.X - 1;
+            var y = prevTile.Y % 2 == 0 ? prevTile.Y : prevTile.Y - 1;
+            var denominator = (int)Math.Pow(2, prevZoom - zoom);
+            return new Tile(prevTile.X / denominator, prevTile.Y / denominator, zoom);
+        }
+
         public IEnumerable<Tile> CheckTileCache(MapSource source, IEnumerable<Tile> tiles)
         {
             foreach (var tile in tiles)
@@ -117,7 +171,7 @@
             }
         }
 
-        private async Task<byte[]> PerformDownload(string address)
+        private static async Task<byte[]> PerformDownload(string address)
         {
             using (var webClient = new WebClient())
             {
