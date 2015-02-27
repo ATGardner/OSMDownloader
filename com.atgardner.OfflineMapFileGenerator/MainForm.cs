@@ -191,9 +191,9 @@
             BeginInvoke((MethodInvoker)(() => prgBar.Value = value));
         }
 
-        private bool PromptUser(int total, int cached)
+        private bool PromptUser(int toDownload)
         {
-            var text = string.Format("Are you sure you whish to download {0} tiles?", total - cached);
+            var text = string.Format("Are you sure you whish to download {0} tiles?", toDownload);
             DialogResult result = DialogResult.No;
             Invoke((MethodInvoker)(() =>
             {
@@ -209,16 +209,14 @@
             logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
             UpdateStatus("Done Reading File");
 
+            
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
             logger.Trace("Got coordinates stream from input files");
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
-            var tiles2 = manager.GetTileDefinitions2(coordinates, zoomLevels);
             logger.Trace("Got tile definition stream from coordinates");
-            tiles = manager.CheckTileCache(source, tiles);
-            var cached = (from t in tiles where t.FromCache select t).Count();
+            var toDownload = manager.CheckTileCache(source, tiles);
             var total = tiles.Count();
-            var text = string.Format("Are you sure you whish to download {0} tiles?", total - cached);
-            if (!PromptUser(total, cached))
+            if (toDownload != 0 && !PromptUser(toDownload))
             {
                 return;
             }

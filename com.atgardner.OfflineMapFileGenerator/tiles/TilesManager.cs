@@ -25,63 +25,59 @@
         {
             // reverse zoomLevels, to start with the most detailed tile
             zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
-            var uniqueTiles = new HashSet<Tile>();
-            foreach (var c in coordinates)
-            {
-                var skipZoom = true;
-                foreach (var zoom in zoomLevels)
-                {
-                    var tile = WorldToTilePos(c, zoom);
-                    if (uniqueTiles.Add(tile))
-                    {
-                        skipZoom = false;
-                        yield return tile;
-                    }
-
-                    if (zoom > 12)
-                    {
-                        foreach (var c2 in GetCoordinatesAround(c, 1500))
-                        {
-                            tile = WorldToTilePos(c2, zoom);
-                            if (uniqueTiles.Add(tile))
-                            {
-                                skipZoom = false;
-                                yield return tile;
-                            }
-                        }
-                    }
-
-                    if (skipZoom)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        public IDictionary<int, IEnumerable<Tile>> GetTileDefinitions2(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
-        {
-            // reverse zoomLevels, to start with the most detailed tile
-            zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
-            var result = new Dictionary<int, IEnumerable<Tile>>();
+            var dict = new Dictionary<int, IEnumerable<Tile>>();
             var biggestZoom = zoomLevels[0];
-            result[biggestZoom] = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom);
+            dict[biggestZoom] = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom);
             for (var i = 1; i < zoomLevels.Length; i++)
             {
                 var zoom = zoomLevels[i];
                 var prevZoom = zoomLevels[i - 1];
                 var tiles = new HashSet<Tile>();
-                var prevTiles = result[prevZoom];
+                var prevTiles = dict[prevZoom];
                 foreach (var prevTile in prevTiles)
                 {
                     var tile = GetTileDefinitionFromOtherTile(prevTile, prevZoom, zoom);
                     tiles.Add(tile);
                 }
 
-                result[zoom] = tiles;
+                dict[zoom] = tiles;
+            }
+
+            var result = dict[biggestZoom];
+            for (var i = 1; i < zoomLevels.Length; i++)
+            {
+                var zoom = zoomLevels[i];
+                result = result.Concat(dict[zoom]);
             }
 
             return result;
+        }
+
+        public int CheckTileCache(MapSource source, IEnumerable<Tile> tiles)
+        {
+            var result = 0;
+            foreach (var tile in tiles)
+            {
+                tile.FromCache = dataCache.HasData(source, tile);
+                if (!tile.FromCache)
+                {
+                    result++;
+                }
+            }
+
+            return result;
+        }
+
+        public IEnumerable<Task<Tile>> GetTileData(MapSource source, IEnumerable<Tile> tiles)
+        {
+            var tasks = new List<Task<Tile>>();
+            foreach (var tile in tiles)
+            {
+                var task = GetTileData(source, tile);
+                tasks.Add(task);
+            }
+
+            return tasks;
         }
 
         private static IEnumerable<Tile> GetTilesDefinitionsFromCoordinates(IEnumerable<GlobalCoordinates> coordinates, int zoom)
@@ -111,27 +107,6 @@
             var y = prevTile.Y % 2 == 0 ? prevTile.Y : prevTile.Y - 1;
             var denominator = (int)Math.Pow(2, prevZoom - zoom);
             return new Tile(prevTile.X / denominator, prevTile.Y / denominator, zoom);
-        }
-
-        public IEnumerable<Tile> CheckTileCache(MapSource source, IEnumerable<Tile> tiles)
-        {
-            foreach (var tile in tiles)
-            {
-                tile.FromCache = dataCache.HasData(source, tile);
-                yield return tile;
-            }
-        }
-
-        public IEnumerable<Task<Tile>> GetTileData(MapSource source, IEnumerable<Tile> tiles)
-        {
-            var tasks = new List<Task<Tile>>();
-            foreach (var tile in tiles)
-            {
-                var task = GetTileData(source, tile);
-                tasks.Add(task);
-            }
-
-            return tasks;
         }
 
         private async Task<Tile> GetTileData(MapSource source, Tile tile)
