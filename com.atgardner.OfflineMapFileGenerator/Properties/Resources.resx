@@ -121,4 +121,29 @@
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="OruxLayerTemplate" xml:space="preserve">
+    <value>&lt;OruxTracker xmlns="http://oruxtracker.com/app/res/calibration" versionCode="2.1"&gt;
+			&lt;MapCalibration layers="false" layerLevel="{1}"&gt;
+				&lt;MapName&gt;&lt;![CDATA[{0} {1}]]&gt;&lt;/MapName&gt;
+				&lt;MapChunks xMax="{2}" yMax="{3}" datum="WGS84" projection="Mercator" img_height="512" img_width="512" file_name="{0} {1}" /&gt;
+				&lt;MapDimensions height="{4}" width="{5}" /&gt;
+				&lt;MapBounds minLat="{6}" maxLat="{7}" minLon="{8}" maxLon="{9}" /&gt;
+				&lt;CalibrationPoints&gt;
+					&lt;CalibrationPoint corner="TL" lon="{8:0.000000}" lat="{7:0.000000}" /&gt;
+					&lt;CalibrationPoint corner="BR" lon="{9:0.000000}" lat="{6:0.000000}" /&gt;
+					&lt;CalibrationPoint corner="TR" lon="{9:0.000000}" lat="{7:0.000000}" /&gt;
+					&lt;CalibrationPoint corner="BL" lon="{8:0.000000}" lat="{6:0.000000}" /&gt;
+				&lt;/CalibrationPoints&gt;
+			&lt;/MapCalibration&gt;
+		&lt;/OruxTracker&gt;</value>
+  </data>
+  <data name="OruxMapTemplate" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;OruxTracker xmlns="http://oruxtracker.com/app/res/calibration" versionCode="3.0"&gt;
+	&lt;MapCalibration layers="true" layerLevel="0"&gt;
+		&lt;MapName&gt;&lt;![CDATA[{0}]]&gt;&lt;/MapName&gt;
+		{1}
+	&lt;/MapCalibration&gt;
+&lt;/OruxTracker&gt;</value>
+  </data>
 </root>

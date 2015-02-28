@@ -47,6 +47,10 @@
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblTarget = new System.Windows.Forms.Label();
+            this.flpTarget = new System.Windows.Forms.FlowLayoutPanel();
+            this.rdBtnBCNav = new System.Windows.Forms.RadioButton();
+            this.rdBtnOruxMaps = new System.Windows.Forms.RadioButton();
             this.tlpContainer.SuspendLayout();
             this.status.SuspendLayout();
             this.tspContainer.BottomToolStripPanel.SuspendLayout();
@@ -54,6 +58,7 @@
             this.tspContainer.TopToolStripPanel.SuspendLayout();
             this.tspContainer.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.flpTarget.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpContainer
@@ -71,13 +76,16 @@
             this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 2);
             this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 3);
             this.tlpContainer.Controls.Add(this.flpZoomLevels, 1, 3);
-            this.tlpContainer.Controls.Add(this.lnk, 0, 4);
-            this.tlpContainer.Controls.Add(this.btnRun, 2, 6);
+            this.tlpContainer.Controls.Add(this.lblTarget, 0, 4);
+            this.tlpContainer.Controls.Add(this.flpTarget, 1, 4);
+            this.tlpContainer.Controls.Add(this.lnk, 0, 5);
+            this.tlpContainer.Controls.Add(this.btnRun, 2, 7);
             this.tlpContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContainer.Location = new System.Drawing.Point(0, 0);
             this.tlpContainer.Name = "tlpContainer";
             this.tlpContainer.Padding = new System.Windows.Forms.Padding(10);
-            this.tlpContainer.RowCount = 7;
+            this.tlpContainer.RowCount = 8;
+            this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -101,9 +109,9 @@
             // txtBxInput
             // 
             this.txtBxInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBxInput.Location = new System.Drawing.Point(90, 14);
+            this.txtBxInput.Location = new System.Drawing.Point(95, 14);
             this.txtBxInput.Name = "txtBxInput";
-            this.txtBxInput.Size = new System.Drawing.Size(410, 20);
+            this.txtBxInput.Size = new System.Drawing.Size(405, 20);
             this.txtBxInput.TabIndex = 2;
             // 
             // btnBrowse
@@ -131,9 +139,9 @@
             // txtBxOutput
             // 
             this.txtBxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBxOutput.Location = new System.Drawing.Point(90, 42);
+            this.txtBxOutput.Location = new System.Drawing.Point(95, 42);
             this.txtBxOutput.Name = "txtBxOutput";
-            this.txtBxOutput.Size = new System.Drawing.Size(410, 20);
+            this.txtBxOutput.Size = new System.Drawing.Size(405, 20);
             this.txtBxOutput.TabIndex = 13;
             // 
             // lblMapSource
@@ -150,7 +158,7 @@
             // 
             this.cmbMapSource.DisplayMember = "Name";
             this.cmbMapSource.FormattingEnabled = true;
-            this.cmbMapSource.Location = new System.Drawing.Point(90, 68);
+            this.cmbMapSource.Location = new System.Drawing.Point(95, 68);
             this.cmbMapSource.Name = "cmbMapSource";
             this.cmbMapSource.Size = new System.Drawing.Size(121, 21);
             this.cmbMapSource.TabIndex = 7;
@@ -170,9 +178,9 @@
             // 
             this.flpZoomLevels.AutoSize = true;
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpZoomLevels.Location = new System.Drawing.Point(90, 95);
+            this.flpZoomLevels.Location = new System.Drawing.Point(95, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
-            this.flpZoomLevels.Size = new System.Drawing.Size(410, 11);
+            this.flpZoomLevels.Size = new System.Drawing.Size(405, 11);
             this.flpZoomLevels.TabIndex = 8;
             // 
             // lnk
@@ -181,7 +189,7 @@
             this.lnk.AutoSize = true;
             this.tlpContainer.SetColumnSpan(this.lnk, 2);
             this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lnk.Location = new System.Drawing.Point(13, 109);
+            this.lnk.Location = new System.Drawing.Point(13, 138);
             this.lnk.Name = "lnk";
             this.lnk.Size = new System.Drawing.Size(487, 13);
             this.lnk.TabIndex = 11;
@@ -268,6 +276,50 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // lblTarget
+            // 
+            this.lblTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTarget.AutoSize = true;
+            this.lblTarget.Location = new System.Drawing.Point(13, 117);
+            this.lblTarget.Name = "lblTarget";
+            this.lblTarget.Size = new System.Drawing.Size(76, 13);
+            this.lblTarget.TabIndex = 14;
+            this.lblTarget.Text = "Target Format:";
+            // 
+            // flpTarget
+            // 
+            this.flpTarget.AutoSize = true;
+            this.flpTarget.Controls.Add(this.rdBtnBCNav);
+            this.flpTarget.Controls.Add(this.rdBtnOruxMaps);
+            this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTarget.Location = new System.Drawing.Point(95, 112);
+            this.flpTarget.Name = "flpTarget";
+            this.flpTarget.Size = new System.Drawing.Size(405, 23);
+            this.flpTarget.TabIndex = 15;
+            // 
+            // rdBtnBCNav
+            // 
+            this.rdBtnBCNav.AutoSize = true;
+            this.rdBtnBCNav.Checked = true;
+            this.rdBtnBCNav.Location = new System.Drawing.Point(3, 3);
+            this.rdBtnBCNav.Name = "rdBtnBCNav";
+            this.rdBtnBCNav.Size = new System.Drawing.Size(135, 17);
+            this.rdBtnBCNav.TabIndex = 0;
+            this.rdBtnBCNav.TabStop = true;
+            this.rdBtnBCNav.Text = "BackCountry Navigator";
+            this.rdBtnBCNav.UseVisualStyleBackColor = true;
+            // 
+            // rdBtnOruxMaps
+            // 
+            this.rdBtnOruxMaps.AutoSize = true;
+            this.rdBtnOruxMaps.Location = new System.Drawing.Point(144, 3);
+            this.rdBtnOruxMaps.Name = "rdBtnOruxMaps";
+            this.rdBtnOruxMaps.Size = new System.Drawing.Size(76, 17);
+            this.rdBtnOruxMaps.TabIndex = 1;
+            this.rdBtnOruxMaps.TabStop = true;
+            this.rdBtnOruxMaps.Text = "Orux Maps";
+            this.rdBtnOruxMaps.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,6 +342,8 @@
             this.tspContainer.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.flpTarget.ResumeLayout(false);
+            this.flpTarget.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -315,6 +369,10 @@
         private System.Windows.Forms.TextBox txtBxOutput;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.Label lblTarget;
+        private System.Windows.Forms.FlowLayoutPanel flpTarget;
+        private System.Windows.Forms.RadioButton rdBtnBCNav;
+        private System.Windows.Forms.RadioButton rdBtnOruxMaps;
     }
 }
 

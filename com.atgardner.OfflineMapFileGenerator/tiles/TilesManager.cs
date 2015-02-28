@@ -36,7 +36,7 @@
                 var prevTiles = dict[prevZoom];
                 foreach (var prevTile in prevTiles)
                 {
-                    var tile = GetTileDefinitionFromOtherTile(prevTile, prevZoom, zoom);
+                    var tile = Tile.FromTile(prevTile, prevZoom, zoom);
                     tiles.Add(tile);
                 }
 
@@ -85,28 +85,20 @@
             var tiles = new HashSet<Tile>();
             foreach (var c in coordinates)
             {
-                var tile = WorldToTilePos(c, zoom);
+                var tile = Tile.FromCoordinates(c, zoom);
                 tiles.Add(tile);
 
                 if (zoom > 12)
                 {
                     foreach (var c2 in GetCoordinatesAround(c, 1500))
                     {
-                        tile = WorldToTilePos(c2, zoom);
+                        tile = Tile.FromCoordinates(c2, zoom);
                         tiles.Add(tile);
                     }
                 }
             }
 
             return tiles;
-        }
-
-        private static Tile GetTileDefinitionFromOtherTile(Tile prevTile, int prevZoom, int zoom)
-        {
-            var x = prevTile.X % 2 == 0 ? prevTile.X : prevTile.X - 1;
-            var y = prevTile.Y % 2 == 0 ? prevTile.Y : prevTile.Y - 1;
-            var denominator = (int)Math.Pow(2, prevZoom - zoom);
-            return new Tile(prevTile.X / denominator, prevTile.Y / denominator, zoom);
         }
 
         private async Task<Tile> GetTileData(MapSource source, Tile tile)
@@ -123,15 +115,6 @@
             }
 
             return tile;
-        }
-
-        private static Tile WorldToTilePos(GlobalCoordinates coordinate, int zoom)
-        {
-            var lon = coordinate.Longitude.Degrees;
-            var lat = coordinate.Latitude.Degrees;
-            var x = (int)((lon + 180.0) / 360.0 * (1 << zoom));
-            var y = (int)((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) + 1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << zoom));
-            return new Tile(x, y, zoom);
         }
 
         private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)

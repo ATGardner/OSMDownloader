@@ -102,6 +102,7 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="packagers\FormatType.cs" />
     <Compile Include="packagers\OruxPackager.cs" />
     <Compile Include="packagers\BCNavPackager.cs" />
     <Compile Include="packagers\IPackager.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="tiles\IDataCache.cs" />
     <Compile Include="tiles\Tile.cs" />
     <Compile Include="tiles\TilesManager.cs" />
+    <Compile Include="utils\Bounds.cs" />
     <Compile Include="utils\FileUtils.cs" />
     <Compile Include="utils\HtmlUtils.cs" />
     <Compile Include="MainForm.cs">

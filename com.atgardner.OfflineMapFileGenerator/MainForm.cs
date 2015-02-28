@@ -71,14 +71,6 @@
                 return;
             }
 
-            string outputFile = txtBxOutput.Text;
-            if (string.IsNullOrWhiteSpace(outputFile))
-            {
-                logger.Warn("No output file name selected");
-                MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             var zoomLevels = GetZoomLevels();
             if (zoomLevels.Length == 0)
             {
@@ -88,9 +80,18 @@
             }
 
             var source = cmbMapSource.SelectedItem as MapSource;
+            string outputFile = txtBxOutput.Text;
+            if (string.IsNullOrWhiteSpace(outputFile))
+            {
+                logger.Warn("No output file name selected");
+                MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => DownloadTiles(inputFiles, outputFile, zoomLevels, source));
+            await Task.Factory.StartNew(() => DownloadTiles(inputFiles, zoomLevels, source, outputFile, formatType));
             tlpContainer.Enabled = true;
         }
 
@@ -202,14 +203,12 @@
             return result == DialogResult.Yes;
         }
 
-        private async void DownloadTiles(string[] inputFiles, string outputFile, int[] zoomLevels, MapSource source)
+        private async void DownloadTiles(string[] inputFiles, int[] zoomLevels, MapSource source, string outputFile, FormatType formatType)
         {
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
             UpdateStatus("Done Reading File");
-
-            
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
             logger.Trace("Got coordinates stream from input files");
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
@@ -224,7 +223,7 @@
             var tasks = manager.GetTileData(source, tiles).ToList();
             var prevPercentage = -1;
             var current = 0;
-            var packager = new BCNavPackager(outputFile);
+            var packager = SQLitePackager.GetPackager(formatType, outputFile);
             using (packager)
             {
                 await packager.Init();

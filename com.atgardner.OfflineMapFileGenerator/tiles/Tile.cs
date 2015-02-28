@@ -1,5 +1,6 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
+    using Gavaghan.Geodesy;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -60,6 +61,31 @@
         public override int GetHashCode()
         {
             return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Zoom.GetHashCode();
+        }
+
+        public GlobalCoordinates ToCoordinates()
+        {
+            double n = Math.PI - ((2.0 * Math.PI * Y) / Math.Pow(2.0, Zoom));
+            var longitude = (X / Math.Pow(2.0, Zoom) * 360.0) - 180.0;
+            var latitude = 180.0 / Math.PI * Math.Atan(Math.Sinh(n));
+            return new GlobalCoordinates(latitude, longitude);
+        }
+
+        public static Tile FromTile(Tile prevTile, int prevZoom, int zoom)
+        {
+            var x = prevTile.X % 2 == 0 ? prevTile.X : prevTile.X - 1;
+            var y = prevTile.Y % 2 == 0 ? prevTile.Y : prevTile.Y - 1;
+            var denominator = (int)Math.Pow(2, prevZoom - zoom);
+            return new Tile(prevTile.X / denominator, prevTile.Y / denominator, zoom);
+        }
+
+        public static Tile FromCoordinates(GlobalCoordinates coordinate, int zoom)
+        {
+            var lon = coordinate.Longitude.Degrees;
+            var lat = coordinate.Latitude.Degrees;
+            var x = (int)((lon + 180.0) / 360.0 * (1 << zoom));
+            var y = (int)((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) + 1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << zoom));
+            return new Tile(x, y, zoom);
         }
     }
 }

@@ -69,5 +69,36 @@ namespace com.atgardner.OMFG.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;OruxTracker xmlns=&quot;http://oruxtracker.com/app/res/calibration&quot; versionCode=&quot;2.1&quot;&gt;
+        ///			&lt;MapCalibration layers=&quot;false&quot; layerLevel=&quot;{1}&quot;&gt;
+        ///				&lt;MapName&gt;&lt;![CDATA[{0} {1}]]&gt;&lt;/MapName&gt;
+        ///				&lt;MapChunks xMax=&quot;{2}&quot; yMax=&quot;{3}&quot; datum=&quot;WGS84&quot; projection=&quot;Mercator&quot; img_height=&quot;512&quot; img_width=&quot;512&quot; file_name=&quot;{0} {1}&quot; /&gt;
+        ///				&lt;MapDimensions height=&quot;{4}&quot; width=&quot;{5}&quot; /&gt;
+        ///				&lt;MapBounds minLat=&quot;{6}&quot; maxLat=&quot;{7}&quot; minLon=&quot;{8}&quot; maxLon=&quot;{9}&quot; /&gt;
+        ///				&lt;CalibrationPoints&gt;
+        ///					&lt;CalibrationPoint corner=&quot;TL&quot; lon=&quot;{8:0.000000}&quot; lat [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string OruxLayerTemplate {
+            get {
+                return ResourceManager.GetString("OruxLayerTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        ///&lt;OruxTracker xmlns=&quot;http://oruxtracker.com/app/res/calibration&quot; versionCode=&quot;3.0&quot;&gt;
+        ///	&lt;MapCalibration layers=&quot;true&quot; layerLevel=&quot;0&quot;&gt;
+        ///		&lt;MapName&gt;&lt;![CDATA[{0}]]&gt;&lt;/MapName&gt;
+        ///		{1}
+        ///	&lt;/MapCalibration&gt;
+        ///&lt;/OruxTracker&gt;.
+        /// </summary>
+        internal static string OruxMapTemplate {
+            get {
+                return ResourceManager.GetString("OruxMapTemplate", resourceCulture);
+            }
+        }
     }
 }

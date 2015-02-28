@@ -1,6 +1,7 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
     using com.atgardner.OMFG.tiles;
+    using NLog;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -18,6 +19,7 @@
         protected abstract string INSERT_SQL { get; }
         protected abstract string GetDbFileName(string fileName);
         protected abstract Task UpdateTileMetaInfo();
+        public abstract Task AddTile(Tile tile);
 
         private string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
         private string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
@@ -25,11 +27,9 @@
 
         protected DbConnection Connection { get; private set; }
 
-
-
         public SQLitePackager(string sourceFile)
         {
-            var dbFile = Path.GetFullPath(GetDbFileName(sourceFile));
+            var dbFile = GetDbFileName(Path.GetFullPath(sourceFile));
             var directoryName = Path.GetDirectoryName(dbFile);
             Directory.CreateDirectory(directoryName);
             Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
@@ -41,15 +41,37 @@
             await CreateTables();
         }
 
-        public async Task AddTile(Tile tile)
+        public void Dispose()
         {
-            var command = Connection.CreateCommand();
-            command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
-            AddParameter(command, DbType.Int32, "z", 17 - tile.Zoom);
-            AddParameter(command, DbType.Binary, "image", tile.Image);
-            await command.ExecuteNonQueryAsync();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public static IPackager GetPackager(FormatType type, string fileName)
+        {
+            switch (type)
+            {
+                case FormatType.BCNav:
+                    return new BCNavPackager(fileName);
+                case FormatType.OruxMaps:
+                    return new OruxPackager(fileName);
+                default:
+                    throw new ArgumentException("Type must be either BCNav or OruxMaps", "type");
+            }
+        }
+
+        protected virtual async void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (Connection != null)
+            {
+                await UpdateTileMetaInfo();
+                Connection.Dispose();
+            }
         }
 
         private async Task CreateTables()
@@ -81,33 +103,13 @@
             }
         }
 
-        private static void AddParameter(DbCommand command, DbType type, string name, object value)
+        protected static void AddParameter(DbCommand command, DbType type, string name, object value)
         {
             var param = command.CreateParameter();
             param.DbType = type;
             param.ParameterName = name;
             param.Value = value;
             command.Parameters.Add(param);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual async void Dispose(bool disposing)
-        {
-            if (!disposing)
-            {
-                return;
-            }
-
-            if (Connection != null)
-            {
-                await UpdateTileMetaInfo();
-                Connection.Dispose();
-            }
         }
     }
 }

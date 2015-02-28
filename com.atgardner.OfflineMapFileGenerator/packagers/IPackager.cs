@@ -4,7 +4,7 @@
     using System;
     using System.Threading.Tasks;
 
-    interface IPackager : IDisposable
+    public interface IPackager : IDisposable
     {
         Task Init();
 

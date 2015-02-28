@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace com.atgardner.OMFG.packagers
+﻿namespace com.atgardner.OMFG.packagers
 {
+    using System.Data;
+    using System.IO;
+    using System.Threading.Tasks;
+
     class BCNavPackager : SQLitePackager
     {
         protected override string TABLE_DDL
@@ -39,19 +36,20 @@ namespace com.atgardner.OMFG.packagers
             return Path.ChangeExtension(Path.GetFileNameWithoutExtension(fileName), "sqlitedb");
         }
 
+        public override async Task AddTile(tiles.Tile tile)
+        {
+            var command = Connection.CreateCommand();
+            command.CommandText = INSERT_SQL;
+            AddParameter(command, DbType.Int32, "x", tile.X);
+            AddParameter(command, DbType.Int32, "y", tile.Y);
+            AddParameter(command, DbType.Int32, "z", 17 - tile.Zoom);
+            AddParameter(command, DbType.Binary, "image", tile.Image);
+            await command.ExecuteNonQueryAsync();
+        }
+
         protected override async Task UpdateTileMetaInfo()
         {
-            using (var scope = Connection.BeginTransaction())
-            {
-                var command = Connection.CreateCommand();
-                command.CommandText = RMAPS_TABLE_INFO_DDL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = RMAPS_CLEAR_INFO_SQL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = RMAPS_UPDATE_INFO_MINMAX_SQL;
-                await command.ExecuteNonQueryAsync();
-                scope.Commit();
-            }
+            await Task.FromResult(1);
         }
     }
 }
