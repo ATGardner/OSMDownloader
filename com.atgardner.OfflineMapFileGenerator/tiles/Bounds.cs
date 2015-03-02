@@ -1,6 +1,5 @@
-﻿namespace com.atgardner.OMFG.utils
+﻿namespace com.atgardner.OMFG.tiles
 {
-    using com.atgardner.OMFG.tiles;
     using System;
 
     class Bounds

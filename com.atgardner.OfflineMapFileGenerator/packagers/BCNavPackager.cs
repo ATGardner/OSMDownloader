@@ -49,7 +49,17 @@
 
         protected override async Task UpdateTileMetaInfo()
         {
-            await Task.FromResult(1);
+            using (var scope = Connection.BeginTransaction())
+            {
+                var command = Connection.CreateCommand();
+                command.CommandText = RMAPS_TABLE_INFO_DDL;
+                await command.ExecuteNonQueryAsync();
+                command.CommandText = RMAPS_CLEAR_INFO_SQL;
+                await command.ExecuteNonQueryAsync();
+                command.CommandText = RMAPS_UPDATE_INFO_MINMAX_SQL;
+                await command.ExecuteNonQueryAsync();
+                scope.Commit();
+            }
         }
     }
 }

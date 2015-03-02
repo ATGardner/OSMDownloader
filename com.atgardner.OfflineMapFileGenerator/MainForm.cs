@@ -211,16 +211,16 @@
             UpdateStatus("Done Reading File");
             var coordinates = FileUtils.ExtractCoordinates(inputFiles);
             logger.Trace("Got coordinates stream from input files");
-            var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
+            var map = manager.GetTileDefinitions(coordinates, zoomLevels);
             logger.Trace("Got tile definition stream from coordinates");
-            var toDownload = manager.CheckTileCache(source, tiles);
-            var total = tiles.Count();
+            var toDownload = manager.CheckTileCache(source, map);
+            var total = map.Count();
             if (toDownload != 0 && !PromptUser(toDownload))
             {
                 return;
             }
 
-            var tasks = manager.GetTileData(source, tiles).ToList();
+            var tasks = manager.GetTileData(source, map).ToList();
             var prevPercentage = -1;
             var current = 0;
             var packager = SQLitePackager.GetPackager(formatType, outputFile);

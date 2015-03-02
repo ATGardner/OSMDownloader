@@ -29,8 +29,9 @@
 
         public SQLitePackager(string sourceFile)
         {
-            var dbFile = GetDbFileName(Path.GetFullPath(sourceFile));
-            var directoryName = Path.GetDirectoryName(dbFile);
+            var fullPath = Path.GetFullPath(sourceFile);
+            var dbFile = GetDbFileName(fullPath);
+            var directoryName = Path.GetDirectoryName(fullPath);
             Directory.CreateDirectory(directoryName);
             Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
         }

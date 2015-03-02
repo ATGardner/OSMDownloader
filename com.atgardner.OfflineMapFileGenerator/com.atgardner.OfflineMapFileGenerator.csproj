@@ -110,9 +110,11 @@
     <Compile Include="sources\MapSource.cs" />
     <Compile Include="tiles\FileDataCache.cs" />
     <Compile Include="tiles\IDataCache.cs" />
+    <Compile Include="tiles\Layer.cs" />
+    <Compile Include="tiles\Map.cs" />
     <Compile Include="tiles\Tile.cs" />
     <Compile Include="tiles\TilesManager.cs" />
-    <Compile Include="utils\Bounds.cs" />
+    <Compile Include="tiles\Bounds.cs" />
     <Compile Include="utils\FileUtils.cs" />
     <Compile Include="utils\HtmlUtils.cs" />
     <Compile Include="MainForm.cs">
