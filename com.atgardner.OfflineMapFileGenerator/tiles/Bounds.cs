@@ -5,6 +5,8 @@
     class Bounds
     {
         private readonly int zoom;
+        private Tile tl;
+        private Tile br;
         private int minX;
         private int minY;
         private int maxX;
@@ -30,23 +32,7 @@
         {
             get
             {
-                return new Tile(minX, minY, zoom);
-            }
-        }
-
-        public Tile BL
-        {
-            get
-            {
-                return new Tile(minX, maxY + 1, zoom);
-            }
-        }
-
-        public Tile TR
-        {
-            get
-            {
-                return new Tile(maxX + 1, minY, zoom);
+                return tl ?? (tl = new Tile(minX, minY, zoom));
             }
         }
 
@@ -54,7 +40,7 @@
         {
             get
             {
-                return new Tile(maxX + 1, maxY + 1, zoom);
+                return br ?? (br = new Tile(maxX, maxY, zoom));
             }
         }
 
@@ -79,6 +65,8 @@
             minY = Math.Min(minY, tile.Y);
             maxX = Math.Max(maxX, tile.X);
             maxY = Math.Max(maxY, tile.Y);
+            tl = null;
+            br = null;
         }
     }
 }

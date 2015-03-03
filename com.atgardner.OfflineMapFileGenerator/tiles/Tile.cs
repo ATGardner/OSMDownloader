@@ -63,12 +63,14 @@
             return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Zoom.GetHashCode();
         }
 
-        public GlobalCoordinates ToCoordinates()
+        public GlobalCoordinates ToTlCoordinates()
         {
-            double n = Math.PI - ((2.0 * Math.PI * Y) / Math.Pow(2.0, Zoom));
-            var longitude = (X / Math.Pow(2.0, Zoom) * 360.0) - 180.0;
-            var latitude = 180.0 / Math.PI * Math.Atan(Math.Sinh(n));
-            return new GlobalCoordinates(latitude, longitude);
+            return ToCoordinates(X, Y, Zoom);
+        }
+
+        public GlobalCoordinates ToBrCoordinates()
+        {
+            return ToCoordinates(X + 1, Y + 1, Zoom);
         }
 
         public static Tile FromTile(Tile prevTile, int prevZoom, int zoom)
@@ -86,6 +88,14 @@
             var x = (int)((lon + 180.0) / 360.0 * (1 << zoom));
             var y = (int)((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) + 1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << zoom));
             return new Tile(x, y, zoom);
+        }
+
+        private static GlobalCoordinates ToCoordinates(int x, int y, int zoom)
+        {
+            double n = Math.PI - ((2.0 * Math.PI * y) / Math.Pow(2.0, zoom));
+            var longitude = (x / Math.Pow(2.0, zoom) * 360.0) - 180.0;
+            var latitude = 180.0 / Math.PI * Math.Atan(Math.Sinh(n));
+            return new GlobalCoordinates(latitude, longitude);
         }
     }
 }

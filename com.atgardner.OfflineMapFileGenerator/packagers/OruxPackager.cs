@@ -66,9 +66,9 @@
             foreach (var zoom in zoomLevels)
             {
                 Bounds bounds = null;// layers[zoom];
-                var tl = bounds.TL.ToCoordinates();
+                var tl = bounds.TL.ToTlCoordinates();
                 var tlLongitude = tl.Longitude == 180D ? -tl.Longitude.Degrees : tl.Longitude.Degrees;
-                var br = bounds.BR.ToCoordinates();
+                var br = bounds.BR.ToBrCoordinates();
                 var width = bounds.Width * Tile_Size;
                 var height = bounds.Height * Tile_Size;
                 var xMax = (width + Tile_Size - 1) / Tile_Size;
