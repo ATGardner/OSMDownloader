@@ -9,11 +9,47 @@
 
     public class Tile : IEquatable<Tile>
     {
+        private GlobalCoordinates? tl;
+        private GlobalCoordinates? br;
+
         public int X { get; private set; }
         public int Y { get; private set; }
         public int Zoom { get; private set; }
         public byte[] Image { get; set; }
         public bool FromCache { get; set; }
+
+        public GlobalCoordinates TL
+        {
+            get
+            {
+                return tl.HasValue ? tl.Value : (tl = ToCoordinates(X, Y, Zoom)).Value;
+            }
+        }
+
+        public GlobalCoordinates BR
+        {
+            get
+            {
+                return br.HasValue ? br.Value : (br = ToCoordinates(X + 1, Y + 1, Zoom)).Value;
+            }
+        }
+
+        public Tile(GlobalCoordinates coordinate, int zoom)
+        {
+            var lon = coordinate.Longitude.Degrees;
+            var lat = coordinate.Latitude.Degrees;
+            X = (int)((lon + 180.0) / 360.0 * (1 << zoom));
+            Y = (int)((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) + 1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << zoom));
+            Zoom = zoom;
+        }
+
+        public Tile(Tile other, int zoom)
+        {
+            var denominator = 2 * (int)Math.Pow(2, other.Zoom - zoom);
+            X = other.X / denominator;
+            Y = other.Y / denominator;
+            Zoom = zoom;
+        }
 
         public Tile(int x, int y, int zoom)
         {
@@ -61,16 +97,6 @@
         public override int GetHashCode()
         {
             return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Zoom.GetHashCode();
-        }
-
-        public GlobalCoordinates ToTlCoordinates()
-        {
-            return ToCoordinates(X, Y, Zoom);
-        }
-
-        public GlobalCoordinates ToBrCoordinates()
-        {
-            return ToCoordinates(X + 1, Y + 1, Zoom);
         }
 
         public static Tile FromTile(Tile prevTile, int prevZoom, int zoom)

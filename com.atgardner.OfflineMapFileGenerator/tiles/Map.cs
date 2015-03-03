@@ -1,9 +1,10 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
+    using System.Linq;
     using System.Collections;
     using System.Collections.Generic;
 
-    class Map : IEnumerable<Tile>
+    public class Map : IEnumerable<Tile>
     {
         IDictionary<int, Layer> layers;
 
@@ -13,6 +14,11 @@
             {
                 return layers[zoom];
             }
+        }
+
+        public int[] ZoomLevels
+        {
+            get { return layers.Keys.OrderBy(c => c).ToArray(); }
         }
 
         public Map()

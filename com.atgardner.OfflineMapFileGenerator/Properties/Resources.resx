@@ -125,7 +125,7 @@
     <value>&lt;OruxTracker xmlns="http://oruxtracker.com/app/res/calibration" versionCode="2.1"&gt;
 			&lt;MapCalibration layers="false" layerLevel="{1}"&gt;
 				&lt;MapName&gt;&lt;![CDATA[{0} {1}]]&gt;&lt;/MapName&gt;
-				&lt;MapChunks xMax="{2}" yMax="{3}" datum="WGS84" projection="Mercator" img_height="512" img_width="512" file_name="{0} {1}" /&gt;
+				&lt;MapChunks xMax="{2}" yMax="{3}" datum="WGS84" projection="Mercator" img_height="256" img_width="256" file_name="{0} {1}" /&gt;
 				&lt;MapDimensions height="{4}" width="{5}" /&gt;
 				&lt;MapBounds minLat="{6}" maxLat="{7}" minLon="{8}" maxLon="{9}" /&gt;
 				&lt;CalibrationPoints&gt;

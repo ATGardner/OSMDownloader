@@ -34,7 +34,7 @@
                 var prevLayer = map[prevZoom];
                 foreach (var prevTile in prevLayer)
                 {
-                    var tile = Tile.FromTile(prevTile, prevZoom, zoom);
+                    var tile = new Tile(prevTile, zoom);
                     map.AddTile(tile);
                 }
             }
@@ -74,14 +74,14 @@
             var map = new Map();
             foreach (var c in coordinates)
             {
-                var tile = Tile.FromCoordinates(c, zoom);
+                var tile = new Tile(c, zoom);
                 map.AddTile(tile);
 
                 if (zoom > 12)
                 {
                     foreach (var c2 in GetCoordinatesAround(c, 1500))
                     {
-                        tile = Tile.FromCoordinates(c2, zoom);
+                        tile = new Tile(c2, zoom);
                         map.AddTile(tile);
                     }
                 }

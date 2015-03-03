@@ -31,7 +31,7 @@
         {
             var fullPath = Path.GetFullPath(sourceFile);
             var dbFile = GetDbFileName(fullPath);
-            var directoryName = Path.GetDirectoryName(fullPath);
+            var directoryName = Path.GetDirectoryName(dbFile);
             Directory.CreateDirectory(directoryName);
             Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
         }
@@ -48,14 +48,14 @@
             GC.SuppressFinalize(this);
         }
 
-        public static IPackager GetPackager(FormatType type, string fileName)
+        public static IPackager GetPackager(FormatType type, string fileName, Map map)
         {
             switch (type)
             {
                 case FormatType.BCNav:
                     return new BCNavPackager(fileName);
                 case FormatType.OruxMaps:
-                    return new OruxPackager(fileName);
+                    return new OruxPackager(fileName, map);
                 default:
                     throw new ArgumentException("Type must be either BCNav or OruxMaps", "type");
             }

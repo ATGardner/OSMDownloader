@@ -1,8 +1,9 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
+    using Gavaghan.Geodesy;
     using System;
 
-    class Bounds
+    public class Bounds
     {
         private readonly int zoom;
         private Tile tl;
@@ -12,35 +13,49 @@
         private int maxX;
         private int maxY;
 
+        public int MinX
+        {
+            get { return minX; }
+        }
+
+        public int MinY
+        {
+            get { return minY; }
+        }
+
         public int Height
         {
-            get
-            {
-                return maxY - minY + 1;
-            }
+            get { return maxY - minY + 1; }
         }
 
         public int Width
         {
-            get
-            {
-                return maxX - minX + 1;
-            }
+            get { return maxX - minX + 1; }
         }
 
-        public Tile TL
+        public GlobalCoordinates TL
         {
             get
             {
-                return tl ?? (tl = new Tile(minX, minY, zoom));
+                if (tl == null)
+                {
+                    tl = new Tile(minX, minY, zoom);
+                }
+
+                return tl.TL;
             }
         }
 
-        public Tile BR
+        public GlobalCoordinates BR
         {
             get
             {
-                return br ?? (br = new Tile(maxX, maxY, zoom));
+                if (br == null)
+                {
+                    br = new Tile(maxX, maxY, zoom);
+                }
+
+                return br.BR;
             }
         }
 

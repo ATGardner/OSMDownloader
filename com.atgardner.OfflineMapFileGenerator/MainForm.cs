@@ -223,7 +223,7 @@
             var tasks = manager.GetTileData(source, map).ToList();
             var prevPercentage = -1;
             var current = 0;
-            var packager = SQLitePackager.GetPackager(formatType, outputFile);
+            var packager = SQLitePackager.GetPackager(formatType, outputFile, map);
             using (packager)
             {
                 await packager.Init();

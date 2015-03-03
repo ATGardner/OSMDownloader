@@ -74,7 +74,7 @@ namespace com.atgardner.OMFG.Properties {
         ///   Looks up a localized string similar to &lt;OruxTracker xmlns=&quot;http://oruxtracker.com/app/res/calibration&quot; versionCode=&quot;2.1&quot;&gt;
         ///			&lt;MapCalibration layers=&quot;false&quot; layerLevel=&quot;{1}&quot;&gt;
         ///				&lt;MapName&gt;&lt;![CDATA[{0} {1}]]&gt;&lt;/MapName&gt;
-        ///				&lt;MapChunks xMax=&quot;{2}&quot; yMax=&quot;{3}&quot; datum=&quot;WGS84&quot; projection=&quot;Mercator&quot; img_height=&quot;512&quot; img_width=&quot;512&quot; file_name=&quot;{0} {1}&quot; /&gt;
+        ///				&lt;MapChunks xMax=&quot;{2}&quot; yMax=&quot;{3}&quot; datum=&quot;WGS84&quot; projection=&quot;Mercator&quot; img_height=&quot;256&quot; img_width=&quot;256&quot; file_name=&quot;{0} {1}&quot; /&gt;
         ///				&lt;MapDimensions height=&quot;{4}&quot; width=&quot;{5}&quot; /&gt;
         ///				&lt;MapBounds minLat=&quot;{6}&quot; maxLat=&quot;{7}&quot; minLon=&quot;{8}&quot; maxLon=&quot;{9}&quot; /&gt;
         ///				&lt;CalibrationPoints&gt;

@@ -13,6 +13,7 @@
     {
         private const int Tile_Size = 256;
         private readonly string targetPath;
+        private readonly Map map;
 
         private string MapName
         {
@@ -37,10 +38,11 @@
             get { return "INSERT or IGNORE INTO tiles (x,y,z,image) VALUES (@x, @y, @z, @image)"; }
         }
 
-        public OruxPackager(string targetPath)
+        public OruxPackager(string targetPath, Map map)
             : base(targetPath)
         {
             this.targetPath = targetPath;
+            this.map = map;
         }
 
         protected override string GetDbFileName(string path)
@@ -50,10 +52,12 @@
 
         public override async Task AddTile(Tile tile)
         {
+            var layer = map[tile.Zoom];
+            var bounds = layer.Bounds;
             var command = Connection.CreateCommand();
             command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
+            AddParameter(command, DbType.Int32, "x", tile.X - bounds.MinX);
+            AddParameter(command, DbType.Int32, "y", tile.Y - bounds.MinY);
             AddParameter(command, DbType.Int32, "z", tile.Zoom);
             AddParameter(command, DbType.Binary, "image", tile.Image);
             await command.ExecuteNonQueryAsync();
@@ -62,13 +66,14 @@
         protected override async Task UpdateTileMetaInfo()
         {
             var sb = new StringBuilder();
-            var zoomLevels = new int[1, 2]; //layers.Keys.OrderBy(c => c).ToArray();
+            var zoomLevels = map.ZoomLevels;
             foreach (var zoom in zoomLevels)
             {
-                Bounds bounds = null;// layers[zoom];
-                var tl = bounds.TL.ToTlCoordinates();
+                var layer = map[zoom];
+                var bounds = layer.Bounds;
+                var tl = bounds.TL;
                 var tlLongitude = tl.Longitude == 180D ? -tl.Longitude.Degrees : tl.Longitude.Degrees;
-                var br = bounds.BR.ToBrCoordinates();
+                var br = bounds.BR;
                 var width = bounds.Width * Tile_Size;
                 var height = bounds.Height * Tile_Size;
                 var xMax = (width + Tile_Size - 1) / Tile_Size;

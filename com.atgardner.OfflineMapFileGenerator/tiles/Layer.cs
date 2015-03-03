@@ -5,7 +5,7 @@
     using System.Collections;
     using System.Collections.Generic;
 
-    class Layer : IEnumerable<Tile>
+    public class Layer : IEnumerable<Tile>
     {
         public Bounds Bounds { get; private set; }
         private readonly ICollection<Tile> tiles;
