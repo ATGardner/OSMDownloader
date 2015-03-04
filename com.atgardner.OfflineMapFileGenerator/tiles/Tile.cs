@@ -45,7 +45,7 @@
 
         public Tile(Tile other, int zoom)
         {
-            var denominator = 2 * (int)Math.Pow(2, other.Zoom - zoom);
+            var denominator = (int)Math.Pow(2, other.Zoom - zoom);
             X = other.X / denominator;
             Y = other.Y / denominator;
             Zoom = zoom;
