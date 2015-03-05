@@ -30,8 +30,11 @@
         public void PutData(MapSource source, Tile tile)
         {
             var filePath = CalculateFilePath(source, tile);
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            File.WriteAllBytes(filePath, tile.Image);
+            if (tile.Image != null)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                File.WriteAllBytes(filePath, tile.Image);
+            }
         }
 
         private static string CalculateFilePath(MapSource source, Tile tile)

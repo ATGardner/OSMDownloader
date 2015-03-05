@@ -58,6 +58,11 @@
 
         public override async Task AddTile(Tile tile)
         {
+            if (tile == null)
+            {
+                return;
+            }
+
             var layer = map[tile.Zoom];
             var bounds = layer.Bounds;
             var command = Connection.CreateCommand();
