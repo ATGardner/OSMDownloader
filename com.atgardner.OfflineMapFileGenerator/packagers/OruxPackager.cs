@@ -47,7 +47,9 @@
 
         protected override string GetDbFileName(string path)
         {
-            return Path.Combine(path, "OruxMapsImages.db");
+            var dbFileName = Path.Combine(path, "OruxMapsImages.db");
+            File.Delete(dbFileName);
+            return dbFileName;
         }
 
         public override async Task AddTile(Tile tile)

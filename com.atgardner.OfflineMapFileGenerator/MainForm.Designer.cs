@@ -209,8 +209,7 @@
             // dlgOpenFile
             // 
             this.dlgOpenFile.DefaultExt = "kml";
-            this.dlgOpenFile.Filter = "Google Earth Files (*.kml, *.kmz)|*.kml;*.kmz|GPS Exchange Format|*.gpx|All files" +
-    "|*.*";
+            this.dlgOpenFile.Filter = "GPS Data Files|*.kml;*.kmz;*.gpx";
             this.dlgOpenFile.Multiselect = true;
             this.dlgOpenFile.SupportMultiDottedExtensions = true;
             // 
