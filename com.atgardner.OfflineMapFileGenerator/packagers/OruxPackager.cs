@@ -48,7 +48,11 @@
         protected override string GetDbFileName(string path)
         {
             var dbFileName = Path.Combine(path, "OruxMapsImages.db");
-            File.Delete(dbFileName);
+            if (File.Exists(dbFileName))
+            {
+                File.Delete(dbFileName);
+            }
+
             return dbFileName;
         }
 
