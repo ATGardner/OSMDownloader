@@ -64,5 +64,12 @@
         "minZoom": 0,
         "maxZoom": 18,
         "attribution": "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. Data by <a href=\"http://openstreetmap.org\">OpenStreetMap</a>, under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."
+    },
+    {
+        "Name": "Israel Hiking Map",
+        "Address": "http://osm.org.il/IsraelHiking/Tiles/{zoom}/{x}/{y}.png",
+        "minZoom": 7,
+        "maxZoom": 16,
+        "attribution":  "Data © <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>"
     }
 ]
