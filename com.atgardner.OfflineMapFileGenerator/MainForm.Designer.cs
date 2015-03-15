@@ -38,6 +38,11 @@
             this.cmbMapSource = new System.Windows.Forms.ComboBox();
             this.lblZoomLevels = new System.Windows.Forms.Label();
             this.flpZoomLevels = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkBxAll = new System.Windows.Forms.CheckBox();
+            this.lblTarget = new System.Windows.Forms.Label();
+            this.flpTarget = new System.Windows.Forms.FlowLayoutPanel();
+            this.rdBtnBCNav = new System.Windows.Forms.RadioButton();
+            this.rdBtnOruxMaps = new System.Windows.Forms.RadioButton();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
@@ -47,18 +52,15 @@
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblTarget = new System.Windows.Forms.Label();
-            this.flpTarget = new System.Windows.Forms.FlowLayoutPanel();
-            this.rdBtnBCNav = new System.Windows.Forms.RadioButton();
-            this.rdBtnOruxMaps = new System.Windows.Forms.RadioButton();
             this.tlpContainer.SuspendLayout();
+            this.flpZoomLevels.SuspendLayout();
+            this.flpTarget.SuspendLayout();
             this.status.SuspendLayout();
             this.tspContainer.BottomToolStripPanel.SuspendLayout();
             this.tspContainer.ContentPanel.SuspendLayout();
             this.tspContainer.TopToolStripPanel.SuspendLayout();
             this.tspContainer.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.flpTarget.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpContainer
@@ -177,11 +179,66 @@
             // flpZoomLevels
             // 
             this.flpZoomLevels.AutoSize = true;
+            this.flpZoomLevels.Controls.Add(this.chkBxAll);
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpZoomLevels.Location = new System.Drawing.Point(95, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
-            this.flpZoomLevels.Size = new System.Drawing.Size(405, 11);
+            this.flpZoomLevels.Size = new System.Drawing.Size(405, 30);
             this.flpZoomLevels.TabIndex = 8;
+            // 
+            // chkBxAll
+            // 
+            this.chkBxAll.Location = new System.Drawing.Point(3, 3);
+            this.chkBxAll.Name = "chkBxAll";
+            this.chkBxAll.Size = new System.Drawing.Size(104, 24);
+            this.chkBxAll.TabIndex = 16;
+            this.chkBxAll.Text = "Check All";
+            this.chkBxAll.UseVisualStyleBackColor = true;
+            this.chkBxAll.CheckedChanged += new System.EventHandler(this.chkBxAll_CheckedChanged);
+            // 
+            // lblTarget
+            // 
+            this.lblTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTarget.AutoSize = true;
+            this.lblTarget.Location = new System.Drawing.Point(13, 136);
+            this.lblTarget.Name = "lblTarget";
+            this.lblTarget.Size = new System.Drawing.Size(76, 13);
+            this.lblTarget.TabIndex = 14;
+            this.lblTarget.Text = "Target Format:";
+            // 
+            // flpTarget
+            // 
+            this.flpTarget.AutoSize = true;
+            this.flpTarget.Controls.Add(this.rdBtnBCNav);
+            this.flpTarget.Controls.Add(this.rdBtnOruxMaps);
+            this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTarget.Location = new System.Drawing.Point(95, 131);
+            this.flpTarget.Name = "flpTarget";
+            this.flpTarget.Size = new System.Drawing.Size(405, 23);
+            this.flpTarget.TabIndex = 15;
+            // 
+            // rdBtnBCNav
+            // 
+            this.rdBtnBCNav.AutoSize = true;
+            this.rdBtnBCNav.Checked = true;
+            this.rdBtnBCNav.Location = new System.Drawing.Point(3, 3);
+            this.rdBtnBCNav.Name = "rdBtnBCNav";
+            this.rdBtnBCNav.Size = new System.Drawing.Size(135, 17);
+            this.rdBtnBCNav.TabIndex = 0;
+            this.rdBtnBCNav.TabStop = true;
+            this.rdBtnBCNav.Text = "BackCountry Navigator";
+            this.rdBtnBCNav.UseVisualStyleBackColor = true;
+            // 
+            // rdBtnOruxMaps
+            // 
+            this.rdBtnOruxMaps.AutoSize = true;
+            this.rdBtnOruxMaps.Location = new System.Drawing.Point(144, 3);
+            this.rdBtnOruxMaps.Name = "rdBtnOruxMaps";
+            this.rdBtnOruxMaps.Size = new System.Drawing.Size(76, 17);
+            this.rdBtnOruxMaps.TabIndex = 1;
+            this.rdBtnOruxMaps.TabStop = true;
+            this.rdBtnOruxMaps.Text = "Orux Maps";
+            this.rdBtnOruxMaps.UseVisualStyleBackColor = true;
             // 
             // lnk
             // 
@@ -189,7 +246,7 @@
             this.lnk.AutoSize = true;
             this.tlpContainer.SetColumnSpan(this.lnk, 2);
             this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lnk.Location = new System.Drawing.Point(13, 138);
+            this.lnk.Location = new System.Drawing.Point(13, 157);
             this.lnk.Name = "lnk";
             this.lnk.Size = new System.Drawing.Size(487, 13);
             this.lnk.TabIndex = 11;
@@ -275,50 +332,6 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // lblTarget
-            // 
-            this.lblTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTarget.AutoSize = true;
-            this.lblTarget.Location = new System.Drawing.Point(13, 117);
-            this.lblTarget.Name = "lblTarget";
-            this.lblTarget.Size = new System.Drawing.Size(76, 13);
-            this.lblTarget.TabIndex = 14;
-            this.lblTarget.Text = "Target Format:";
-            // 
-            // flpTarget
-            // 
-            this.flpTarget.AutoSize = true;
-            this.flpTarget.Controls.Add(this.rdBtnBCNav);
-            this.flpTarget.Controls.Add(this.rdBtnOruxMaps);
-            this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTarget.Location = new System.Drawing.Point(95, 112);
-            this.flpTarget.Name = "flpTarget";
-            this.flpTarget.Size = new System.Drawing.Size(405, 23);
-            this.flpTarget.TabIndex = 15;
-            // 
-            // rdBtnBCNav
-            // 
-            this.rdBtnBCNav.AutoSize = true;
-            this.rdBtnBCNav.Checked = true;
-            this.rdBtnBCNav.Location = new System.Drawing.Point(3, 3);
-            this.rdBtnBCNav.Name = "rdBtnBCNav";
-            this.rdBtnBCNav.Size = new System.Drawing.Size(135, 17);
-            this.rdBtnBCNav.TabIndex = 0;
-            this.rdBtnBCNav.TabStop = true;
-            this.rdBtnBCNav.Text = "BackCountry Navigator";
-            this.rdBtnBCNav.UseVisualStyleBackColor = true;
-            // 
-            // rdBtnOruxMaps
-            // 
-            this.rdBtnOruxMaps.AutoSize = true;
-            this.rdBtnOruxMaps.Location = new System.Drawing.Point(144, 3);
-            this.rdBtnOruxMaps.Name = "rdBtnOruxMaps";
-            this.rdBtnOruxMaps.Size = new System.Drawing.Size(76, 17);
-            this.rdBtnOruxMaps.TabIndex = 1;
-            this.rdBtnOruxMaps.TabStop = true;
-            this.rdBtnOruxMaps.Text = "Orux Maps";
-            this.rdBtnOruxMaps.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -330,6 +343,9 @@
             this.Text = "Offline Map Creator";
             this.tlpContainer.ResumeLayout(false);
             this.tlpContainer.PerformLayout();
+            this.flpZoomLevels.ResumeLayout(false);
+            this.flpTarget.ResumeLayout(false);
+            this.flpTarget.PerformLayout();
             this.status.ResumeLayout(false);
             this.status.PerformLayout();
             this.tspContainer.BottomToolStripPanel.ResumeLayout(false);
@@ -341,8 +357,6 @@
             this.tspContainer.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.flpTarget.ResumeLayout(false);
-            this.flpTarget.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -372,6 +386,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpTarget;
         private System.Windows.Forms.RadioButton rdBtnBCNav;
         private System.Windows.Forms.RadioButton rdBtnOruxMaps;
+        private System.Windows.Forms.CheckBox chkBxAll;
     }
 }
 

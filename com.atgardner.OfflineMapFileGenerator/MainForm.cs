@@ -21,6 +21,7 @@
 
         private readonly TilesManager manager;
         private MapSource[] sources;
+        private bool zoomChangeFromCode;
 
         public MainForm()
         {
@@ -91,7 +92,7 @@
             var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => DownloadTiles(inputFiles, zoomLevels, source, outputFile, formatType));
+            await Task.Factory.StartNew(() => DownloadTiles(inputFiles, zoomLevels, source, outputFile.Replace("\"", string.Empty), formatType));
             tlpContainer.Enabled = true;
         }
 
@@ -113,18 +114,48 @@
                 var chkBx = new CheckBox();
                 chkBx.Width = 40;
                 chkBx.Text = i.ToString();
+                chkBx.CheckedChanged += chkBxZoom_CheckedChanged;
                 flpZoomLevels.Controls.Add(chkBx);
             }
 
-            var chkBxAll = new CheckBox();
-            chkBxAll.Text = "Check All";
-            chkBxAll.CheckedChanged += chkBxAll_CheckedChanged;
-            flpZoomLevels.Controls.Add(chkBxAll);
+            flpZoomLevels.Controls.SetChildIndex(chkBxAll, 21);
+        }
+
+        private void chkBxZoom_CheckedChanged(object sender, EventArgs e)
+        {
+            if (zoomChangeFromCode)
+            {
+                return;
+            }
+
+            var zoomLevels = GetZoomLevels();
+            var mapSource = cmbMapSource.SelectedItem as MapSource;
+            var totalLevels = mapSource.MaxZoom - mapSource.MinZoom + 1;
+            var checkState = CheckState.Unchecked;
+            if (zoomLevels.Length > 0)
+            {
+                checkState = CheckState.Indeterminate;
+            }
+
+            if (zoomLevels.Length == totalLevels)
+            {
+                checkState = CheckState.Checked;
+            }
+
+            zoomChangeFromCode = true;
+            chkBxAll.CheckState = checkState;
+            zoomChangeFromCode = false;
         }
 
         private void chkBxAll_CheckedChanged(object sender, EventArgs e)
         {
+            if (zoomChangeFromCode)
+            {
+                return;
+            }
+
             var chkBxAll = (CheckBox)sender;
+            zoomChangeFromCode = true;
             foreach (CheckBox chkBx in flpZoomLevels.Controls)
             {
                 if (chkBx.Enabled)
@@ -132,6 +163,8 @@
                     chkBx.Checked = chkBxAll.Checked;
                 }
             }
+
+            zoomChangeFromCode = false;
         }
 
         private void lnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -166,19 +199,23 @@
 
         private void ResetZoomCheckBoxes(int minZoom, int maxZoom)
         {
+            CheckBox checkBox;
             for (int i = 0; i < minZoom; i++)
             {
-                flpZoomLevels.Controls[i].Enabled = false;
+                checkBox = (CheckBox)flpZoomLevels.Controls[i];
+                DisableCheckBox(checkBox);
             }
 
             for (int i = minZoom; i <= maxZoom; i++)
             {
-                flpZoomLevels.Controls[i].Enabled = true;
+                checkBox = (CheckBox)flpZoomLevels.Controls[i];
+                EnableCheckBox(checkBox);
             }
 
             for (int i = maxZoom + 1; i <= 20; i++)
             {
-                flpZoomLevels.Controls[i].Enabled = false;
+                checkBox = (CheckBox)flpZoomLevels.Controls[i];
+                DisableCheckBox(checkBox);
             }
         }
 
@@ -245,6 +282,28 @@
 
                 UpdateStatus(string.Format("Done Downloading {0} tiles", total));
             }
+        }
+
+        private static void DisableCheckBox(CheckBox checkBox)
+        {
+            checkBox.Tag = checkBox.CheckState;
+            if (checkBox.Checked)
+            {
+                checkBox.CheckState = CheckState.Indeterminate;
+            }
+
+            checkBox.Enabled = false;
+        }
+
+        private static void EnableCheckBox(CheckBox checkBox)
+        {
+            if (checkBox.Tag is CheckState)
+            {
+                checkBox.CheckState = (CheckState)checkBox.Tag;
+                checkBox.Tag = null;
+            }
+
+            checkBox.Enabled = true;
         }
     }
 }
