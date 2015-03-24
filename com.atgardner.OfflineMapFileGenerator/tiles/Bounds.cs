@@ -6,8 +6,8 @@
     public class Bounds
     {
         private readonly int zoom;
-        private Tile tl;
-        private Tile br;
+        private GlobalCoordinates? tl;
+        private GlobalCoordinates? br;
         private int minX;
         private int minY;
         private int maxX;
@@ -39,10 +39,10 @@
             {
                 if (tl == null)
                 {
-                    tl = new Tile(minX, minY, zoom);
+                    tl = ToCoordinates(minX, minY, zoom);
                 }
 
-                return tl.TL;
+                return tl.Value;
             }
         }
 
@@ -52,10 +52,10 @@
             {
                 if (br == null)
                 {
-                    br = new Tile(maxX, maxY, zoom);
+                    br = ToCoordinates(maxX, maxY, zoom);
                 }
 
-                return br.BR;
+                return br.Value;
             }
         }
 
@@ -82,6 +82,14 @@
             maxY = Math.Max(maxY, tile.Y);
             tl = null;
             br = null;
+        }
+
+        private static GlobalCoordinates ToCoordinates(int x, int y, int zoom)
+        {
+            double n = Math.PI - ((2.0 * Math.PI * y) / Math.Pow(2.0, zoom));
+            var longitude = (x / Math.Pow(2.0, zoom) * 360.0) - 180.0;
+            var latitude = 180.0 / Math.PI * Math.Atan(Math.Sinh(n));
+            return new GlobalCoordinates(latitude, longitude);
         }
     }
 }

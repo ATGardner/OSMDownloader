@@ -74,15 +74,16 @@
             var map = new Map();
             foreach (var c in coordinates)
             {
-                var tile = new Tile(c, zoom);
+                var lon = c.Longitude.Degrees;
+                var lat = c.Latitude.Degrees;
+                var tile = new Tile(lat, lon, zoom);
                 map.AddTile(tile);
 
                 if (zoom > 12)
                 {
-                    foreach (var c2 in GetCoordinatesAround(c, 1500))
+                    foreach (var t in GetTilesAround(c, zoom, 1500))
                     {
-                        tile = new Tile(c2, zoom);
-                        map.AddTile(tile);
+                        map.AddTile(t);
                     }
                 }
             }
@@ -106,14 +107,16 @@
             return tile;
         }
 
-        private static IEnumerable<GlobalCoordinates> GetCoordinatesAround(GlobalCoordinates origin, double distance)
+        private static IEnumerable<Tile> GetTilesAround(GlobalCoordinates origin, int zoom, double distance)
         {
             for (var i = 500; i <= distance; i += 500)
             {
-
                 foreach (var startBearing in degrees)
                 {
-                    yield return calc.CalculateEndingGlobalCoordinates(Ellipsoid.WGS84, origin, startBearing, i);
+                    var c = calc.CalculateEndingGlobalCoordinates(Ellipsoid.WGS84, origin, startBearing, i);
+                    var lon = c.Longitude.Degrees;
+                    var lat = c.Latitude.Degrees;
+                    yield return new Tile(lat, lon, zoom);
                 }
             }
         }

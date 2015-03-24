@@ -13,20 +13,20 @@
         [Fact]
         public void AddTile_SetsBounds()
         {
-            var bounds = new Bounds(5);
-            var tile = new Tile(111, 222, 5);
+            var bounds = new Bounds(2);
+            var tile = new Tile(60, -90, 2); // tile 2/1/1
             bounds.AddTile(tile);
-            Assert.Equal(111, bounds.MinX);
+            Assert.Equal(1, bounds.MinX);
             Assert.Equal(1, bounds.Width);
-            Assert.Equal(222, bounds.MinY);
+            Assert.Equal(1, bounds.MinY);
             Assert.Equal(1, bounds.Height);
         }
 
         [Fact]
         public void AddTileWithWrongZoom_ThrowsException()
         {
-            var bounds = new Bounds(5);
-            var tile = new Tile(111, 222, 6);
+            var bounds = new Bounds(1);
+            var tile = new Tile(60, -90, 2); // tile 2/1/1
             Assert.Throws(typeof(ArgumentException), () => bounds.AddTile(tile));
         }
     }
