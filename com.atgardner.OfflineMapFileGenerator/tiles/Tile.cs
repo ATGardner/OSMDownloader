@@ -15,8 +15,10 @@
         public byte[] Image { get; set; }
         public bool FromCache { get; set; }
 
-        public Tile(double lat, double lon, int zoom)
+        public Tile(GlobalCoordinates coordinates, int zoom)
         {
+            var lon = coordinates.Longitude.Degrees;
+            var lat = coordinates.Latitude.Degrees;
             X = (int)((lon + 180.0) / 360.0 * (1 << zoom));
             Y = (int)((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) + 1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << zoom));
             Zoom = zoom;
@@ -28,14 +30,6 @@
             X = other.X / denominator;
             Y = other.Y / denominator;
             Zoom = zoom;
-        }
-
-        private Tile(int x, int y, int zoom)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Zoom = zoom;
-            this.FromCache = false;
         }
 
         public override string ToString()

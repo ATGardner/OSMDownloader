@@ -52,7 +52,7 @@
             {
                 if (br == null)
                 {
-                    br = ToCoordinates(maxX, maxY, zoom);
+                    br = ToCoordinates(maxX + 1, maxY + 1, zoom);
                 }
 
                 return br.Value;

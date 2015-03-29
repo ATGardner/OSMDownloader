@@ -74,9 +74,7 @@
             var map = new Map();
             foreach (var c in coordinates)
             {
-                var lon = c.Longitude.Degrees;
-                var lat = c.Latitude.Degrees;
-                var tile = new Tile(lat, lon, zoom);
+                var tile = new Tile(c, zoom);
                 map.AddTile(tile);
 
                 if (zoom > 12)
@@ -114,9 +112,7 @@
                 foreach (var startBearing in degrees)
                 {
                     var c = calc.CalculateEndingGlobalCoordinates(Ellipsoid.WGS84, origin, startBearing, i);
-                    var lon = c.Longitude.Degrees;
-                    var lat = c.Latitude.Degrees;
-                    yield return new Tile(lat, lon, zoom);
+                    yield return new Tile(c, zoom);
                 }
             }
         }
