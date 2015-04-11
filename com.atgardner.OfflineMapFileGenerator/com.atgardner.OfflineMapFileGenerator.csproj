@@ -102,6 +102,8 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainController.cs" />
+    <Compile Include="packagers\CachePackager.cs" />
     <Compile Include="packagers\FormatType.cs" />
     <Compile Include="packagers\OruxPackager.cs" />
     <Compile Include="packagers\BCNavPackager.cs" />

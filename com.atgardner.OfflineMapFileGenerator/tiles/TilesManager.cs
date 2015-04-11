@@ -1,5 +1,6 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
+    using com.atgardner.OMFG.packagers;
     using com.atgardner.OMFG.sources;
     using Gavaghan.Geodesy;
     using System;
@@ -15,10 +16,17 @@
         private static readonly int[] degrees = new[] { 0, 90, 180, 270 };
 
         private readonly IDataCache dataCache;
+        private readonly MapSource source;
 
-        public TilesManager()
+        public TilesManager(MapSource source)
         {
-            dataCache = new FileDataCache();
+            this.source = source;
+            dataCache = new CachePackager(source.Name);
+        }
+
+        public async Task Init()
+        {
+            await dataCache.Init();
         }
 
         public Map GetTileDefinitions(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
@@ -26,7 +34,9 @@
             // reverse zoomLevels, to start with the most detailed tile
             zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
             var biggestZoom = zoomLevels[0];
-            var map = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom);
+            var map = new Map();
+            var tiles = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom);
+            map.AddAll(tiles);
             for (var i = 1; i < zoomLevels.Length; i++)
             {
                 var zoom = zoomLevels[i];
@@ -42,12 +52,17 @@
             return map;
         }
 
-        public int CheckTileCache(MapSource source, IEnumerable<Tile> tiles)
+        public async Task<int> CheckTileCache(IEnumerable<Tile> tiles)
         {
+            if (dataCache == null)
+            {
+                throw new ArgumentNullException("Must first set the MapSource");
+            }
+
             var result = 0;
             foreach (var tile in tiles)
             {
-                tile.FromCache = dataCache.HasData(source, tile);
+                tile.FromCache = await dataCache.HasData(tile);
                 if (!tile.FromCache)
                 {
                     result++;
@@ -57,49 +72,42 @@
             return result;
         }
 
-        public IEnumerable<Task<Tile>> GetTileData(MapSource source, IEnumerable<Tile> tiles)
+        public List<Task<Tile>> GetTileData(IEnumerable<Tile> tiles)
         {
             var tasks = new List<Task<Tile>>();
             foreach (var tile in tiles)
             {
-                var task = GetTileData(source, tile);
+                var task = GetTileData(tile);
                 tasks.Add(task);
             }
 
             return tasks;
         }
 
-        private static Map GetTilesDefinitionsFromCoordinates(IEnumerable<GlobalCoordinates> coordinates, int zoom)
+        private static IEnumerable<Tile> GetTilesDefinitionsFromCoordinates(IEnumerable<GlobalCoordinates> coordinates, int zoom)
         {
-            var map = new Map();
             foreach (var c in coordinates)
             {
                 var tile = new Tile(c, zoom);
-                map.AddTile(tile);
-
-                if (zoom > 12)
+                yield return tile;
+                foreach (var t in GetTilesAround(c, zoom, 1500))
                 {
-                    foreach (var t in GetTilesAround(c, zoom, 1500))
-                    {
-                        map.AddTile(t);
-                    }
+                    yield return t;
                 }
             }
-
-            return map;
         }
 
-        private async Task<Tile> GetTileData(MapSource source, Tile tile)
+        private async Task<Tile> GetTileData(Tile tile)
         {
             if (tile.FromCache)
             {
-                tile.Image = dataCache.GetData(source, tile);
+                await dataCache.GetData(tile);
             }
             else
             {
                 var address = source.CreateAddress(tile);
                 tile.Image = await PerformDownload(address);
-                dataCache.PutData(source, tile);
+                await dataCache.PutData(tile);
             }
 
             return tile;

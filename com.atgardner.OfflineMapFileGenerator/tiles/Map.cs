@@ -26,6 +26,14 @@
             layers = new Dictionary<int, Layer>();
         }
 
+        public void AddAll(IEnumerable<Tile> tiles)
+        {
+            foreach (var tile in tiles)
+            {
+                AddTile(tile);
+            }
+        }
+
         public void AddTile(Tile tile)
         {
             Layer layer;

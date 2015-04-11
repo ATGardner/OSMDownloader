@@ -45,9 +45,10 @@
             this.map = map;
         }
 
-        protected override string GetDbFileName(string path)
+        protected override string GetDbFileName(string fileName)
         {
-            var dbFileName = Path.Combine(path, "OruxMapsImages.db");
+            var fullPath = Path.GetFullPath(fileName);
+            var dbFileName = Path.Combine(fullPath, "OruxMapsImages.db");
             if (File.Exists(dbFileName))
             {
                 File.Delete(dbFileName);

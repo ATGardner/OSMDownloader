@@ -9,9 +9,22 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     static class FileUtils
     {
+        public static async Task<byte[]> GetFileData(string filePath)
+        {
+            var fi = new FileInfo(filePath);
+            var data = new byte[fi.Length];
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.ReadAsync(data, 0, data.Length);
+            }
+
+            return data;
+        }
+
         public static IEnumerable<GlobalCoordinates> ExtractCoordinates(string[] fileNames)
         {
             foreach (var fileName in fileNames)

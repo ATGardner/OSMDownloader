@@ -286,6 +286,7 @@
             // 
             this.prgBar.Name = "prgBar";
             this.prgBar.Size = new System.Drawing.Size(100, 16);
+            this.prgBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
             // lblStatus
             // 

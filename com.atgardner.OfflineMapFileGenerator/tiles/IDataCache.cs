@@ -1,13 +1,15 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
-    using com.atgardner.OMFG.sources;
+    using System.Threading.Tasks;
 
     interface IDataCache
     {
-        bool HasData(MapSource source, Tile tile);
+        Task Init();
 
-        byte[] GetData(MapSource source, Tile tile);
+        Task<bool> HasData(Tile tile);
 
-        void PutData(MapSource source, Tile tile);
+        Task GetData(Tile tile);
+
+        Task PutData(Tile tile);
     }
 }

@@ -27,10 +27,9 @@
 
         protected DbConnection Connection { get; private set; }
 
-        public SQLitePackager(string sourceFile)
+        public SQLitePackager(string fileName)
         {
-            var fullPath = Path.GetFullPath(sourceFile);
-            var dbFile = GetDbFileName(fullPath);
+            var dbFile = GetDbFileName(fileName);
             var directoryName = Path.GetDirectoryName(dbFile);
             Directory.CreateDirectory(directoryName);
             Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));

@@ -33,7 +33,8 @@
 
         protected override string GetDbFileName(string fileName)
         {
-            return Path.ChangeExtension(fileName, "sqlitedb");
+            var fullPath = Path.GetFullPath(fileName);
+            return Path.ChangeExtension(fullPath, "sqlitedb");
         }
 
         public override async Task AddTile(tiles.Tile tile)

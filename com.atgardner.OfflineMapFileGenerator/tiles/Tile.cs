@@ -32,6 +32,13 @@
             Zoom = zoom;
         }
 
+        public Tile(int x, int y, int zoom)
+        {
+            X = x;
+            Y = y;
+            Zoom = zoom;
+        }
+
         public override string ToString()
         {
             return string.Format("{0}/{1}/{2}", Zoom, X, Y);

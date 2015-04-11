@@ -1,6 +1,7 @@
 ﻿namespace com.atgardner.OMFG
 {
     using com.atgardner.OMFG.packagers;
+    using com.atgardner.OMFG.Properties;
     using com.atgardner.OMFG.sources;
     using com.atgardner.OMFG.tiles;
     using com.atgardner.OMFG.utils;
@@ -19,14 +20,14 @@
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly string SourceFile = @"sources\sources.json";
 
-        private readonly TilesManager manager;
-        private MapSource[] sources;
+        private readonly MainController controller;
         private bool zoomChangeFromCode;
 
         public MainForm()
         {
             InitializeComponent();
-            manager = new TilesManager();
+            controller = new MainController(this);
+            controller.ProgressChanged += controller_ProgressChanged;
         }
 
         protected override async void OnLoad(EventArgs e)
@@ -35,14 +36,25 @@
             CreateZoomCheckBoxes();
             try
             {
-                sources = await MapSource.LoadSources(SourceFile);
-                cmbMapSource.DataSource = sources;
+                await controller.Init(SourceFile);
+                cmbMapSource.DataSource = controller.Sources;
             }
             catch (Exception ex)
             {
                 logger.FatalException("Failed reading sources", ex);
                 MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
+            }
+
+            if (Settings.Default.UpgradeCache)
+            {
+                tlpContainer.Enabled = false;
+                prgBar.Style = ProgressBarStyle.Marquee;
+                await controller.UpgradeCache();
+                prgBar.Style = ProgressBarStyle.Continuous;
+                Settings.Default.UpgradeCache = false;
+                Settings.Default.Save();
+                tlpContainer.Enabled = true;
             }
         }
 
@@ -92,7 +104,7 @@
             var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => DownloadTiles(inputFiles, zoomLevels, source, outputFile.Replace("\"", string.Empty), formatType));
+            await Task.Factory.StartNew(() => controller.DownloadTiles(inputFiles, zoomLevels, source, outputFile.Replace("\"", string.Empty), formatType));
             tlpContainer.Enabled = true;
         }
 
@@ -219,69 +231,16 @@
             }
         }
 
-        private void UpdateStatus(string status)
+        private void controller_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            BeginInvoke((MethodInvoker)(() => lblStatus.Text = status));
-        }
-
-        private void UpdateProgBar(int value)
-        {
-            BeginInvoke((MethodInvoker)(() => prgBar.Value = value));
-        }
-
-        private bool PromptUser(int toDownload)
-        {
-            var text = string.Format("Are you sure you whish to download {0} tiles?", toDownload);
-            DialogResult result = DialogResult.No;
-            Invoke((MethodInvoker)(() =>
-            {
-                result = MessageBox.Show(this, text, "Offline Map File Generator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            }));
-            return result == DialogResult.Yes;
-        }
-
-        private async void DownloadTiles(string[] inputFiles, int[] zoomLevels, MapSource source, string outputFile, FormatType formatType)
-        {
-            tlpContainer.Enabled = false;
-            prgBar.Value = 0;
-            logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
-            UpdateStatus("Done Reading File");
-            var coordinates = FileUtils.ExtractCoordinates(inputFiles);
-            logger.Trace("Got coordinates stream from input files");
-            var map = manager.GetTileDefinitions(coordinates, zoomLevels);
-            logger.Trace("Got tile definition stream from coordinates");
-            var toDownload = manager.CheckTileCache(source, map);
-            var total = map.Count();
-            if (toDownload != 0 && !PromptUser(toDownload))
-            {
-                return;
-            }
-
-            var tasks = manager.GetTileData(source, map).ToList();
-            var prevPercentage = -1;
-            var current = 0;
-            var packager = SQLitePackager.GetPackager(formatType, outputFile, map);
-            using (packager)
-            {
-                await packager.Init();
-                while (tasks.Count > 0)
+            BeginInvoke((MethodInvoker)(() => {
+                if (e.ProgressPercentage >= 0)
                 {
-                    var task = await Task.WhenAny(tasks);
-                    tasks.Remove(task);
-                    var tile = await task;
-                    await packager.AddTile(tile);
-                    current++;
-                    var progressPercentage = 100 * current / total;
-                    if (progressPercentage > prevPercentage)
-                    {
-                        prevPercentage = progressPercentage;
-                        UpdateProgBar(progressPercentage);
-                        UpdateStatus(string.Format("{0}/{1} Tiles Downloaded", current, total));
-                    }
+                    prgBar.Value = e.ProgressPercentage;
                 }
 
-                UpdateStatus(string.Format("Done Downloading {0} tiles", total));
-            }
+                lblStatus.Text = e.UserState as string;
+            }));
         }
 
         private static void DisableCheckBox(CheckBox checkBox)

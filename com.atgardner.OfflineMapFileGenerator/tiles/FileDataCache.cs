@@ -1,48 +1,92 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
+    using com.atgardner.OMFG.packagers;
     using com.atgardner.OMFG.sources;
+    using com.atgardner.OMFG.utils;
+    using Gavaghan.Geodesy;
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
-    class FileDataCache : IDataCache
+    [Obsolete("Use the new CachePackager instead")]
+    class FileDataCache : IEnumerable<Tile>, IEnumerable
     {
-        public Boolean HasData(MapSource source, Tile tile)
+        private static readonly Regex pattern = new Regex(@"\\(?<zoom>\d+)\\(?<x>\d+)\\(?<y>\d+)(?<ext>\.(jpg|png))");
+        private readonly string fullPath;
+        private string ext;
+
+        public FileDataCache(string fullPath)
+            : this(fullPath, string.Empty)
         {
-            var filePath = CalculateFilePath(source, tile);
+        }
+
+        public FileDataCache(string fullPath, string ext)
+        {
+            this.fullPath = fullPath;
+            this.ext = ext;
+        }
+
+        public Task<bool> HasData(Tile tile)
+        {
+            var filePath = CalculateFilePath(fullPath, tile);
             var fi = new FileInfo(filePath);
-            return fi.Exists && fi.Length > 0;
+            return Task.FromResult(fi.Exists && fi.Length > 0);
         }
 
-        public byte[] GetData(MapSource source, Tile tile)
+        public async Task GetData(Tile tile)
         {
-            if (HasData(source, tile))
-            {
-                var filePath = CalculateFilePath(source, tile);
-                return File.ReadAllBytes(filePath);
-            }
-            else
-            {
-                return null;
-            }
+            var filePath = CalculateFilePath(fullPath, tile);
+            tile.Image = await FileUtils.GetFileData(filePath);
         }
 
-        public void PutData(MapSource source, Tile tile)
+        public async Task PutData(Tile tile)
         {
-            var filePath = CalculateFilePath(source, tile);
+            var filePath = CalculateFilePath(fullPath, tile);
             if (tile.Image != null)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                File.WriteAllBytes(filePath, tile.Image);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await stream.WriteAsync(tile.Image, 0, tile.Image.Length);
+                }
             }
         }
 
-        private static string CalculateFilePath(MapSource source, Tile tile)
+        private string CalculateFilePath(string fullPath, Tile tile)
         {
-            var ext = Path.GetExtension(source.Address);
-            var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var folder = Path.Combine(applicationData, "OMFG", source.Name, tile.Zoom.ToString(), tile.X.ToString(), tile.Y.ToString());
+            var folder = Path.Combine(fullPath, tile.Zoom.ToString(), tile.X.ToString(), tile.Y.ToString());
             return Path.ChangeExtension(folder, ext);
+        }
+
+        public IEnumerator<Tile> GetEnumerator()
+        {
+            var imageFiles = Directory.EnumerateFiles(fullPath, "*.*", SearchOption.AllDirectories);
+            foreach (var imageFile in imageFiles)
+            {
+                var match = pattern.Match(imageFile);
+                int x, y, zoom;
+                if (!int.TryParse(match.Groups["x"].Value, out x) || !int.TryParse(match.Groups["y"].Value, out y) || !int.TryParse(match.Groups["zoom"].Value, out zoom))
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(ext))
+                {
+                    ext = match.Groups["ext"].Value;
+                }
+
+                var tile = new Tile(x, y, zoom);
+                yield return tile;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }
