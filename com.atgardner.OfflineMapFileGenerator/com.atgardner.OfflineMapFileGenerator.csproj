@@ -109,16 +109,17 @@
     <Compile Include="packagers\BCNavPackager.cs" />
     <Compile Include="packagers\IPackager.cs" />
     <Compile Include="packagers\SQLitePackager.cs" />
+    <Compile Include="sources\ITileSource.cs" />
     <Compile Include="sources\MapSource.cs" />
+    <Compile Include="sources\TileServer.cs" />
     <Compile Include="tiles\FileDataCache.cs" />
-    <Compile Include="tiles\IDataCache.cs" />
+    <Compile Include="sources\IDataCache.cs" />
     <Compile Include="tiles\Layer.cs" />
     <Compile Include="tiles\Map.cs" />
     <Compile Include="tiles\Tile.cs" />
     <Compile Include="tiles\TilesManager.cs" />
     <Compile Include="tiles\Bounds.cs" />
-    <Compile Include="utils\FileUtils.cs" />
-    <Compile Include="utils\HtmlUtils.cs" />
+    <Compile Include="utils\Utils.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

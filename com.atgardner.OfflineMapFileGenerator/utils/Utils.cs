@@ -9,10 +9,17 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using System.Windows.Forms;
 
-    static class FileUtils
+    static class Utils
     {
+        private static readonly Regex hrefRegex = new Regex(@"<a href=""(?<href>[^""]*)"">(?<text>[^<]*)</a>");
+
         public static async Task<byte[]> GetFileData(string filePath)
         {
             var fi = new FileInfo(filePath);
@@ -29,9 +36,56 @@
         {
             foreach (var fileName in fileNames)
             {
-                foreach (var c in FileUtils.ExtractCoordinates(fileName))
+                foreach (var c in Utils.ExtractCoordinates(fileName))
                 {
                     yield return c;
+                }
+            }
+        }
+
+        public static string ComputeHash(string str)
+        {
+            var md5 = MD5.Create();
+            var bytes = Encoding.ASCII.GetBytes(str);
+            var hash = md5.ComputeHash(bytes);
+            var hashStr = BitConverter.ToString(hash);
+            return hashStr.Replace("-", string.Empty).ToLower();
+        }
+
+        public static void ConfigLinkLabel(LinkLabel lnkLabel, string sourceString)
+        {
+            lnkLabel.Links.Clear();
+            lnkLabel.Text = sourceString;
+            if (string.IsNullOrWhiteSpace(sourceString))
+            {
+                return;
+            }
+
+            var match = hrefRegex.Match(sourceString);
+            while (match.Success)
+            {
+                var href = match.Groups["href"];
+                var text = match.Groups["text"];
+                sourceString = sourceString.Replace(match.Value, text.Value);
+                lnkLabel.Text = sourceString;
+                lnkLabel.Links.Add(match.Index, text.Length, href.Value);
+                match = hrefRegex.Match(sourceString);
+            }
+        }
+
+        public static async Task<byte[]> PerformDownload(string address)
+        {
+            using (var webClient = new WebClient())
+            {
+                try
+                {
+                    webClient.Headers.Add("user-agent", "Offline Map File Generator");
+                    return await webClient.DownloadDataTaskAsync(address);
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine("Failed downloading tile, address: {0}, exception: {1}", address, e);
+                    return null;
                 }
             }
         }

@@ -9,9 +9,9 @@
 
     class CachePackager : SQLitePackager, IDataCache
     {
-        private bool isNew;
-        private readonly string CHECK_SQL = "SELECT count(*) FROM tiles WHERE x = @x AND y = @y AND z = @z";
         private readonly string SELECT_SQL = "SELECT image FROM tiles WHERE x = @x AND y = @y AND z = @z";
+        private bool isNew;
+        private bool initialized;
 
         protected override string TABLE_DDL
         {
@@ -31,6 +31,7 @@
         public CachePackager(string sourceName)
             : base(sourceName)
         {
+            initialized = false;
         }
 
         protected override string GetDbFileName(string fileName)
@@ -44,18 +45,7 @@
 
         public override async Task AddTile(Tile tile)
         {
-            if (tile == null)
-            {
-                return;
-            }
-
-            var command = Connection.CreateCommand();
-            command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
-            AddParameter(command, DbType.Int32, "z", tile.Zoom);
-            AddParameter(command, DbType.Binary, "image", tile.Image);
-            await command.ExecuteNonQueryAsync();
+            await PutData(tile);
         }
 
         protected override Task UpdateTileMetaInfo()
@@ -63,24 +53,14 @@
             return Task.FromResult(0);
         }
 
-        public async Task<bool> HasData(Tile tile)
-        {
-            if (isNew)
-            {
-                return false;
-            }
-
-            var command = Connection.CreateCommand();
-            command.CommandText = CHECK_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
-            AddParameter(command, DbType.Int32, "z", tile.Zoom);
-            var result = (long)await command.ExecuteScalarAsync();
-            return result == 1;
-        }
-
         public async Task GetData(Tile tile)
         {
+            if (!initialized)
+            {
+                await Init();
+                initialized = true;
+            }
+
             if (isNew)
             {
                 return;
@@ -94,9 +74,20 @@
             tile.Image = (byte[])await command.ExecuteScalarAsync();
         }
 
-        public Task PutData(Tile tile)
+        public async Task PutData(Tile tile)
         {
-            return AddTile(tile);
+            if (tile == null)
+            {
+                return;
+            }
+
+            var command = Connection.CreateCommand();
+            command.CommandText = INSERT_SQL;
+            AddParameter(command, DbType.Int32, "x", tile.X);
+            AddParameter(command, DbType.Int32, "y", tile.Y);
+            AddParameter(command, DbType.Int32, "z", tile.Zoom);
+            AddParameter(command, DbType.Binary, "image", tile.Image);
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

@@ -26,7 +26,7 @@
         public MainForm()
         {
             InitializeComponent();
-            controller = new MainController(this);
+            controller = new MainController();
             controller.ProgressChanged += controller_ProgressChanged;
         }
 
@@ -115,7 +115,7 @@
             {
                 logger.Debug("Changed source to {0}", mapSource);
                 ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
-                HtmlUtils.ConfigLinkLabel(lnk, mapSource.Attribution);
+                Utils.ConfigLinkLabel(lnk, mapSource.Attribution);
             }
         }
 

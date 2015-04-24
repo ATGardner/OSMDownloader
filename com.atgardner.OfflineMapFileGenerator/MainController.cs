@@ -15,7 +15,6 @@
     class MainController
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly ISynchronizeInvoke invoker;
         public MapSource[] Sources { get; private set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
@@ -29,11 +28,6 @@
             }
         }
 
-        public MainController(ISynchronizeInvoke invoker)
-        {
-            this.invoker = invoker;
-        }
-
         public async Task Init(string sourceFile)
         {
             Sources = await MapSource.LoadSources(sourceFile);
@@ -43,19 +37,12 @@
         {
             logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
             var manager = new TilesManager(source);
-            await manager.Init();
-            var coordinates = FileUtils.ExtractCoordinates(inputFiles);
+            var coordinates = Utils.ExtractCoordinates(inputFiles);
             UpdateStatus(0, "Done Reading Files");
             logger.Trace("Got coordinates stream from input files");
             var map = manager.GetTileDefinitions(coordinates, zoomLevels);
             logger.Trace("Got tile definition stream from coordinates");
-            var toDownload = await manager.CheckTileCache(map);
             var total = map.Count();
-            if (toDownload != 0 && !PromptUser(toDownload))
-            {
-                return;
-            }
-
             var tasks = manager.GetTileData(map);
             var prevPercentage = -1;
             var current = 0;
@@ -138,17 +125,6 @@
             {
                 handler(this, new ProgressChangedEventArgs(progressPercentage, status));
             }
-        }
-
-        private bool PromptUser(int toDownload)
-        {
-            var text = string.Format("Are you sure you whish to download {0} tiles?", toDownload);
-            DialogResult result = DialogResult.No;
-            invoker.Invoke((MethodInvoker)(() =>
-            {
-                result = MessageBox.Show(text, "Offline Map File Generator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            }), null);
-            return result == DialogResult.Yes;
         }
     }
 }

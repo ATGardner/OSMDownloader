@@ -40,7 +40,7 @@
         public async Task GetData(Tile tile)
         {
             var filePath = CalculateFilePath(fullPath, tile);
-            tile.Image = await FileUtils.GetFileData(filePath);
+            tile.Image = await Utils.GetFileData(filePath);
         }
 
         public async Task PutData(Tile tile)

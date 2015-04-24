@@ -13,7 +13,13 @@
         public int Y { get; private set; }
         public int Zoom { get; private set; }
         public byte[] Image { get; set; }
-        public bool FromCache { get; set; }
+        public bool HasData
+        {
+            get
+            {
+                return Image != null;
+            }
+        }
 
         public Tile(GlobalCoordinates coordinates, int zoom)
         {
