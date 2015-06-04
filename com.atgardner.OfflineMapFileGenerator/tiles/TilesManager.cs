@@ -18,9 +18,9 @@
 
         private readonly ITileSource source;
 
-        public TilesManager(MapSource source)
+        public TilesManager(SourceDescriptor descriptor)
         {
-            this.source = new TileServer(source);
+            this.source = descriptor.GetSource();
         }
 
         public Map GetTileDefinitions(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)

@@ -111,6 +111,7 @@
     <Compile Include="packagers\SQLitePackager.cs" />
     <Compile Include="sources\ITileSource.cs" />
     <Compile Include="sources\MapSource.cs" />
+    <Compile Include="sources\MBTilesSource.cs" />
     <Compile Include="sources\TileServer.cs" />
     <Compile Include="tiles\FileDataCache.cs" />
     <Compile Include="sources\IDataCache.cs" />

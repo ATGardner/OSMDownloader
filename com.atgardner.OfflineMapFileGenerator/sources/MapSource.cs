@@ -13,21 +13,44 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
-    public class MapSource : IEquatable<MapSource>
+    public class SourceDescriptor : IEquatable<SourceDescriptor>
     {
+        public enum SourceType
+        {
+            TileServer,
+            ZipFile,
+            LocalFolder,
+            MBTiles
+        }
+
         public string Name { get; private set; }
         public string Address { get; private set; }
         public int MinZoom { get; private set; }
         public int MaxZoom { get; private set; }
         public string Attribution { get; private set; }
+        private SourceType type;
 
-        public MapSource(string name, string address, int minZoom, int maxZoom, string attribution)
+        public SourceDescriptor(string name, string address, int minZoom, int maxZoom, string attribution, SourceType type)
         {
             this.Name = name;
             this.Address = address;
             this.MinZoom = minZoom;
             this.MaxZoom = maxZoom;
             this.Attribution = attribution;
+            this.type = type;
+        }
+
+        public ITileSource GetSource()
+        {
+            switch (type)
+            {
+                case SourceType.TileServer:
+                    return new TileServer(this);
+                case SourceType.MBTiles:
+                    return new MBTilesSource(this);
+                default:
+                    return null;
+            }
         }
 
         public override bool Equals(object other)
@@ -47,7 +70,7 @@
                 return false;
             }
 
-            return this.Equals(other as MapSource);
+            return this.Equals(other as SourceDescriptor);
         }
 
         public override string ToString()
@@ -55,7 +78,7 @@
             return Name;
         }
 
-        public bool Equals(MapSource other)
+        public bool Equals(SourceDescriptor other)
         {
             if (other == null)
             {
@@ -70,10 +93,10 @@
             return this.Name.GetHashCode() ^ this.Address.GetHashCode();
         }
 
-        public static async Task<MapSource[]> LoadSources(string path)
+        public static async Task<SourceDescriptor[]> LoadSources(string path)
         {
             var json = File.ReadAllText(path);
-            return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<MapSource[]>(json));
+            return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<SourceDescriptor[]>(json));
         }
     }
 }

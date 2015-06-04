@@ -14,10 +14,10 @@
         private static readonly Regex md5RegEx = new Regex(@"\*(.*)\*");
         private static int subDomainNum = 0;
 
-        private readonly MapSource source;
+        private readonly SourceDescriptor source;
         private readonly IDataCache dataCache;
 
-        public TileServer(MapSource source)
+        public TileServer(SourceDescriptor source)
         {
             this.source = source;
             dataCache = new CachePackager(source.Name);

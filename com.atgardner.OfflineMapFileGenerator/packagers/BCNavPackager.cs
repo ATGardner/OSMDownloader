@@ -1,5 +1,6 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
+    using com.atgardner.OMFG.tiles;
     using System.Data;
     using System.IO;
     using System.Threading.Tasks;
@@ -37,7 +38,7 @@
             return Path.ChangeExtension(fullPath, "sqlitedb");
         }
 
-        public override async Task AddTile(tiles.Tile tile)
+        public override async Task AddTile(Tile tile)
         {
             if (tile == null)
             {

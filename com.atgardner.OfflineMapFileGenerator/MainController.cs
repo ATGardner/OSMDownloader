@@ -15,7 +15,7 @@
     class MainController
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public MapSource[] Sources { get; private set; }
+        public SourceDescriptor[] Sources { get; private set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
 
@@ -30,13 +30,13 @@
 
         public async Task Init(string sourceFile)
         {
-            Sources = await MapSource.LoadSources(sourceFile);
+            Sources = await SourceDescriptor.LoadSources(sourceFile);
         }
 
-        public async void DownloadTiles(string[] inputFiles, int[] zoomLevels, MapSource source, string outputFile, FormatType formatType)
+        public async void DownloadTiles(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)
         {
-            logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, source);
-            var manager = new TilesManager(source);
+            logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, descriptor);
+            var manager = new TilesManager(descriptor);
             var coordinates = Utils.ExtractCoordinates(inputFiles);
             UpdateStatus(0, "Done Reading Files");
             logger.Trace("Got coordinates stream from input files");

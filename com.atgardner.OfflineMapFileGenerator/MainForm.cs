@@ -92,7 +92,7 @@
                 return;
             }
 
-            var source = cmbMapSource.SelectedItem as MapSource;
+            var descriptor = cmbMapSource.SelectedItem as SourceDescriptor;
             string outputFile = txtBxOutput.Text;
             if (string.IsNullOrWhiteSpace(outputFile))
             {
@@ -104,13 +104,13 @@
             var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => controller.DownloadTiles(inputFiles, zoomLevels, source, outputFile.Replace("\"", string.Empty), formatType));
+            await Task.Factory.StartNew(() => controller.DownloadTiles(inputFiles, zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType));
             tlpContainer.Enabled = true;
         }
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var mapSource = cmbMapSource.SelectedItem as MapSource;
+            var mapSource = cmbMapSource.SelectedItem as SourceDescriptor;
             if (mapSource != null)
             {
                 logger.Debug("Changed source to {0}", mapSource);
@@ -141,7 +141,7 @@
             }
 
             var zoomLevels = GetZoomLevels();
-            var mapSource = cmbMapSource.SelectedItem as MapSource;
+            var mapSource = cmbMapSource.SelectedItem as SourceDescriptor;
             var totalLevels = mapSource.MaxZoom - mapSource.MinZoom + 1;
             var checkState = CheckState.Unchecked;
             if (zoomLevels.Length > 0)
