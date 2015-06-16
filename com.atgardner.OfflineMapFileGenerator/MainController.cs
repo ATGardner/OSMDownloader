@@ -46,6 +46,7 @@
             var tasks = manager.GetTileData(map);
             var prevPercentage = -1;
             var current = 0;
+            var missing = 0;
             var packager = SQLitePackager.GetPackager(formatType, outputFile, map);
             using (packager)
             {
@@ -55,18 +56,27 @@
                     var task = await Task.WhenAny(tasks);
                     tasks.Remove(task);
                     var tile = await task;
-                    await packager.AddTile(tile);
-                    tile.Image = null;
+                    if (tile.HasData)
+                    {
+                        await packager.AddTile(tile);
+                        tile.Image = null;
+                    }
+                    else
+                    {
+                        missing++;
+                        logger.Warn("Source {0} does not contain tile {1}", descriptor, tile);
+                    }
+
                     current++;
                     var progressPercentage = 100 * current / total;
                     if (progressPercentage > prevPercentage)
                     {
                         prevPercentage = progressPercentage;
-                        UpdateStatus(progressPercentage, string.Format("{0}/{1} Tiles Downloaded", current, total));
+                        UpdateStatus(progressPercentage, string.Format("{0}/{1} Tiles processed", current, total));
                     }
                 }
 
-                UpdateStatus(100, string.Format("Done Downloading {0} tiles", total));
+                UpdateStatus(100, string.Format("Done processing {0} tiles, {1} tiles are missing ({2:P})", total, missing, (float)missing / total));
             }
         }
 

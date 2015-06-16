@@ -1,6 +1,7 @@
 ﻿namespace com.atgardner.OMFG.sources
 {
     using com.atgardner.OMFG.tiles;
+    using NLog;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -12,13 +13,14 @@
 
     class MBTilesSource : ITileSource
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly string SELECT_SQL = "select tile_data from tiles where tile_column = @tile_column and tile_row = @tile_row and zoom_level = @zoom_level;";
         private bool initialized;
         protected DbConnection Connection { get; private set; }
 
-        public MBTilesSource(SourceDescriptor source)
+        public MBTilesSource(SourceDescriptor descriptor)
         {
-            Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", source.Address));
+            Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", descriptor.Address));
         }
 
         public void Init()
@@ -49,6 +51,11 @@
             AddParameter(command, DbType.Int32, "tile_row", y);
             AddParameter(command, DbType.Int32, "zoom_level", tile.Zoom);
             tile.Image = (byte[])await command.ExecuteScalarAsync();
+            if (!tile.HasData)
+            {
+                
+            }
+
             return tile;
         }
 

@@ -30,7 +30,10 @@
             {
                 var address = CreateAddress(tile);
                 tile.Image = await Utils.PerformDownload(address);
-                await dataCache.PutData(tile);
+                if (tile.HasData)
+                {
+                    await dataCache.PutData(tile);
+                }
             }
 
             return tile;

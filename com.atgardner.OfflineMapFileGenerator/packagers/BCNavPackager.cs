@@ -40,11 +40,6 @@
 
         public override async Task AddTile(Tile tile)
         {
-            if (tile == null)
-            {
-                return;
-            }
-
             var command = Connection.CreateCommand();
             command.CommandText = INSERT_SQL;
             AddParameter(command, DbType.Int32, "x", tile.X);

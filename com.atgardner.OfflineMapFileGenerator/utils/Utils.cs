@@ -2,6 +2,7 @@
 {
     using Gavaghan.Geodesy;
     using MKCoolsoft.GPXLib;
+    using NLog;
     using SharpKml.Base;
     using SharpKml.Dom;
     using SharpKml.Engine;
@@ -18,6 +19,7 @@
 
     static class Utils
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly Regex hrefRegex = new Regex(@"<a href=""(?<href>[^""]*)"">(?<text>[^<]*)</a>");
 
         public static async Task<byte[]> GetFileData(string filePath)
@@ -82,10 +84,18 @@
                     webClient.Headers.Add("user-agent", "Offline Map File Generator");
                     return await webClient.DownloadDataTaskAsync(address);
                 }
-                catch (Exception e)
+                catch (WebException e)
                 {
-                    Console.Error.WriteLine("Failed downloading tile, address: {0}, exception: {1}", address, e);
-                    return null;
+                    logger.Error("Failed downloading tile, address: {0}, exception: {1}", address, e);
+                    var response = (HttpWebResponse)e.Response;
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
         }
