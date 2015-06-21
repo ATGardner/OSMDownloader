@@ -31,7 +31,7 @@
             this.tlpContainer = new System.Windows.Forms.TableLayoutPanel();
             this.lblInput = new System.Windows.Forms.Label();
             this.txtBxInput = new System.Windows.Forms.TextBox();
-            this.btnBrowse = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.lblOutput = new System.Windows.Forms.Label();
             this.txtBxOutput = new System.Windows.Forms.TextBox();
             this.lblMapSource = new System.Windows.Forms.Label();
@@ -52,6 +52,7 @@
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnClear = new System.Windows.Forms.Button();
             this.tlpContainer.SuspendLayout();
             this.flpZoomLevels.SuspendLayout();
             this.flpTarget.SuspendLayout();
@@ -65,13 +66,15 @@
             // 
             // tlpContainer
             // 
-            this.tlpContainer.ColumnCount = 3;
+            this.tlpContainer.ColumnCount = 4;
             this.tlpContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpContainer.Controls.Add(this.lblInput, 0, 0);
             this.tlpContainer.Controls.Add(this.txtBxInput, 1, 0);
-            this.tlpContainer.Controls.Add(this.btnBrowse, 2, 0);
+            this.tlpContainer.Controls.Add(this.btnAdd, 2, 0);
+            this.tlpContainer.Controls.Add(this.btnClear, 3, 0);
             this.tlpContainer.Controls.Add(this.lblOutput, 0, 1);
             this.tlpContainer.Controls.Add(this.txtBxOutput, 1, 1);
             this.tlpContainer.Controls.Add(this.lblMapSource, 0, 2);
@@ -113,20 +116,20 @@
             this.txtBxInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBxInput.Location = new System.Drawing.Point(95, 14);
             this.txtBxInput.Name = "txtBxInput";
-            this.txtBxInput.Size = new System.Drawing.Size(405, 20);
+            this.txtBxInput.Size = new System.Drawing.Size(387, 20);
             this.txtBxInput.TabIndex = 2;
             // 
-            // btnBrowse
+            // btnAdd
             // 
-            this.btnBrowse.AutoSize = true;
-            this.btnBrowse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnBrowse.Location = new System.Drawing.Point(506, 13);
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(26, 23);
-            this.btnBrowse.TabIndex = 3;
-            this.btnBrowse.Text = "...";
-            this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            this.btnAdd.AutoSize = true;
+            this.btnAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAdd.Location = new System.Drawing.Point(488, 13);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(36, 23);
+            this.btnAdd.TabIndex = 3;
+            this.btnAdd.Text = "Add";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // lblOutput
             // 
@@ -143,7 +146,7 @@
             this.txtBxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBxOutput.Location = new System.Drawing.Point(95, 42);
             this.txtBxOutput.Name = "txtBxOutput";
-            this.txtBxOutput.Size = new System.Drawing.Size(405, 20);
+            this.txtBxOutput.Size = new System.Drawing.Size(387, 20);
             this.txtBxOutput.TabIndex = 13;
             // 
             // lblMapSource
@@ -183,7 +186,7 @@
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpZoomLevels.Location = new System.Drawing.Point(95, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
-            this.flpZoomLevels.Size = new System.Drawing.Size(405, 30);
+            this.flpZoomLevels.Size = new System.Drawing.Size(387, 30);
             this.flpZoomLevels.TabIndex = 8;
             // 
             // chkBxAll
@@ -214,7 +217,7 @@
             this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpTarget.Location = new System.Drawing.Point(95, 131);
             this.flpTarget.Name = "flpTarget";
-            this.flpTarget.Size = new System.Drawing.Size(405, 23);
+            this.flpTarget.Size = new System.Drawing.Size(387, 23);
             this.flpTarget.TabIndex = 15;
             // 
             // rdBtnBCNav
@@ -248,13 +251,15 @@
             this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lnk.Location = new System.Drawing.Point(13, 157);
             this.lnk.Name = "lnk";
-            this.lnk.Size = new System.Drawing.Size(487, 13);
+            this.lnk.Size = new System.Drawing.Size(469, 13);
             this.lnk.TabIndex = 11;
             this.lnk.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk_LinkClicked);
             // 
             // btnRun
             // 
+            this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRun.AutoSize = true;
+            this.tlpContainer.SetColumnSpan(this.btnRun, 2);
             this.btnRun.Location = new System.Drawing.Point(506, 279);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(65, 23);
@@ -333,6 +338,18 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // btnClear
+            // 
+            this.btnClear.AutoSize = true;
+            this.btnClear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnClear.Location = new System.Drawing.Point(530, 13);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(41, 23);
+            this.btnClear.TabIndex = 16;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,7 +384,7 @@
         private System.Windows.Forms.TableLayoutPanel tlpContainer;
         private System.Windows.Forms.Label lblInput;
         private System.Windows.Forms.TextBox txtBxInput;
-        private System.Windows.Forms.Button btnBrowse;
+        private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.OpenFileDialog dlgOpenFile;
         private System.Windows.Forms.StatusStrip status;
@@ -388,6 +405,7 @@
         private System.Windows.Forms.RadioButton rdBtnBCNav;
         private System.Windows.Forms.RadioButton rdBtnOruxMaps;
         private System.Windows.Forms.CheckBox chkBxAll;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 

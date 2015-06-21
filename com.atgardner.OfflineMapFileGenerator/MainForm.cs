@@ -20,12 +20,14 @@
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly string SourceFile = @"sources\sources.json";
 
+        private readonly List<string> inputFiles;
         private readonly MainController controller;
         private bool zoomChangeFromCode;
 
         public MainForm()
         {
             InitializeComponent();
+            inputFiles = new List<string>();
             controller = new MainController();
             controller.ProgressChanged += controller_ProgressChanged;
         }
@@ -63,7 +65,8 @@
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {
                 var fileNames = from f in dlgOpenFile.FileNames select Path.GetFileName(f);
-                txtBxInput.Text = string.Join("; ", fileNames);
+                inputFiles.AddRange(fileNames);
+                txtBxInput.Text = string.Join("; ", inputFiles);
                 logger.Debug("Input files: {0}", txtBxInput.Text);
                 if (string.IsNullOrWhiteSpace(txtBxOutput.Text))
                 {
@@ -74,10 +77,16 @@
             }
         }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            inputFiles.Clear();
+            txtBxInput.Text = string.Empty;
+            txtBxOutput.Text = string.Empty;
+        }
+
         private async void btnRun_Click(object sender, EventArgs e)
         {
-            var inputFiles = dlgOpenFile.FileNames;
-            if (inputFiles.Length == 0)
+            if (inputFiles.Count == 0)
             {
                 logger.Warn("No input files selected");
                 MessageBox.Show("Please specify an input file or files", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -104,7 +113,7 @@
             var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => controller.DownloadTiles(inputFiles, zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType));
+            await Task.Factory.StartNew(() => controller.DownloadTiles(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType));
             tlpContainer.Enabled = true;
         }
 
@@ -233,7 +242,8 @@
 
         private void controller_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            BeginInvoke((MethodInvoker)(() => {
+            BeginInvoke((MethodInvoker)(() =>
+            {
                 if (e.ProgressPercentage >= 0)
                 {
                     prgBar.Value = e.ProgressPercentage;
