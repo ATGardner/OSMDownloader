@@ -65,8 +65,8 @@
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {
                 var fileNames = from f in dlgOpenFile.FileNames select Path.GetFileName(f);
-                inputFiles.AddRange(fileNames);
-                txtBxInput.Text = string.Join("; ", inputFiles);
+                inputFiles.AddRange(dlgOpenFile.FileNames);
+                txtBxInput.Text = string.Join("; ", fileNames);
                 logger.Debug("Input files: {0}", txtBxInput.Text);
                 if (string.IsNullOrWhiteSpace(txtBxOutput.Text))
                 {

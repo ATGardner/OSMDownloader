@@ -84,6 +84,11 @@
             br = null;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}, {1}", TL, BR);
+        }
+
         private static GlobalCoordinates ToCoordinates(int x, int y, int zoom)
         {
             double n = Math.PI - ((2.0 * Math.PI * y) / Math.Pow(2.0, zoom));

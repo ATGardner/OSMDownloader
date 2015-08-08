@@ -1,6 +1,7 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
     using com.atgardner.OMFG.tiles;
+    using System.Collections.Generic;
     using System.Data;
     using System.IO;
     using System.Threading.Tasks;
@@ -40,28 +41,14 @@
 
         public override async Task AddTile(Tile tile)
         {
-            var command = Connection.CreateCommand();
-            command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
-            AddParameter(command, DbType.Int32, "z", 17 - tile.Zoom);
-            AddParameter(command, DbType.Binary, "image", tile.Image);
-            await command.ExecuteNonQueryAsync();
+            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> { { "x", tile.X }, { "y", tile.Y },{ "z", 17 - tile.Zoom }, { "image", tile.Image } });
         }
 
         protected override async Task UpdateTileMetaInfo()
         {
-            using (var scope = Connection.BeginTransaction())
-            {
-                var command = Connection.CreateCommand();
-                command.CommandText = RMAPS_TABLE_INFO_DDL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = RMAPS_CLEAR_INFO_SQL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = RMAPS_UPDATE_INFO_MINMAX_SQL;
-                await command.ExecuteNonQueryAsync();
-                scope.Commit();
-            }
+            await database.ExecuteNonQueryAsync(RMAPS_TABLE_INFO_DDL);
+            await database.ExecuteNonQueryAsync(RMAPS_CLEAR_INFO_SQL);
+            await database.ExecuteNonQueryAsync(RMAPS_UPDATE_INFO_MINMAX_SQL);
         }
     }
 }

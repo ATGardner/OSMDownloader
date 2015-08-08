@@ -8,6 +8,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Data;
+    using System.Collections.Generic;
 
     class OruxPackager : SQLitePackager
     {
@@ -61,13 +62,9 @@
         {
             var layer = map[tile.Zoom];
             var bounds = layer.Bounds;
-            var command = Connection.CreateCommand();
-            command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X - bounds.MinX);
-            AddParameter(command, DbType.Int32, "y", tile.Y - bounds.MinY);
-            AddParameter(command, DbType.Int32, "z", tile.Zoom);
-            AddParameter(command, DbType.Binary, "image", tile.Image);
-            await command.ExecuteNonQueryAsync();
+            var x = tile.X - bounds.MinX;
+            var y = tile.Y - bounds.MinY;
+            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> { { "x", x }, { "y", y }, { "z", tile.Zoom }, { "image", tile.Image } });
         }
 
         protected override async Task UpdateTileMetaInfo()

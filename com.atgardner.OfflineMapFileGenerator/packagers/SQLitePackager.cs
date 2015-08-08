@@ -1,16 +1,11 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
     using com.atgardner.OMFG.tiles;
-    using NLog;
+    using utils;
     using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-    using System.Data.SQLite;
     using System.Globalization;
-    using System.IO;
-    using System.Text;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
 
     public abstract class SQLitePackager : IPackager
     {
@@ -21,23 +16,20 @@
         protected abstract Task UpdateTileMetaInfo();
         public abstract Task AddTile(Tile tile);
 
-        private string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
-        private string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
-        private string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
-
-        protected DbConnection Connection { get; private set; }
+        private readonly string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
+        private readonly string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
+        private readonly string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
+        protected readonly Database database;
 
         public SQLitePackager(string fileName)
         {
             var dbFile = GetDbFileName(fileName);
-            var directoryName = Path.GetDirectoryName(dbFile);
-            Directory.CreateDirectory(directoryName);
-            Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbFile));
+            database = new Database(dbFile);
         }
 
         public async Task Init()
         {
-            Connection.Open();
+            database.Open();
             await CreateTables();
         }
 
@@ -67,49 +59,28 @@
                 return;
             }
 
-            if (Connection != null)
+            if (database != null)
             {
                 await UpdateTileMetaInfo();
-                Connection.Dispose();
+                database.Dispose();
             }
         }
 
         private async Task CreateTables()
         {
-            using (var scope = Connection.BeginTransaction())
-            {
-                var command = Connection.CreateCommand();
-                command.CommandText = TABLE_DDL;
-                await command.ExecuteNonQueryAsync();
-                command.CommandText = INDEX_DDL;
-                await command.ExecuteNonQueryAsync();
-                await UpdateLocale(command);
-                scope.Commit();
-            }
+            await database.ExecuteNonQueryAsync(TABLE_DDL);
+            await database.ExecuteNonQueryAsync(INDEX_DDL);
+            await UpdateLocale();
         }
 
-        private async Task UpdateLocale(DbCommand command)
+        private async Task UpdateLocale()
         {
-            command.CommandText = METADATA_DDL;
-            await command.ExecuteNonQueryAsync();
-            command.CommandText = METADATA_SELECT;
-            var count = await command.ExecuteScalarAsync();
+            await database.ExecuteNonQueryAsync(METADATA_DDL);
+            var count = await database.ExecuteScalarAsync(METADATA_SELECT);
             if ((long)count == 0)
             {
-                command.CommandText = METADATA_INSERT;
-                AddParameter(command, DbType.String, "locale", CultureInfo.CurrentCulture.Name);
-                await command.ExecuteNonQueryAsync();
-                command.Parameters.Clear();
+                await database.ExecuteNonQueryAsync(METADATA_INSERT, new Dictionary<string, object> { { "locale", CultureInfo.CurrentCulture.Name } });
             }
-        }
-
-        protected static void AddParameter(DbCommand command, DbType type, string name, object value)
-        {
-            var param = command.CreateParameter();
-            param.DbType = type;
-            param.ParameterName = name;
-            param.Value = value;
-            command.Parameters.Add(param);
         }
     }
 }

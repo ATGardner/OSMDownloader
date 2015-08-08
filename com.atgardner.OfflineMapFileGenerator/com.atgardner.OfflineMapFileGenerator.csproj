@@ -120,6 +120,7 @@
     <Compile Include="tiles\Tile.cs" />
     <Compile Include="tiles\TilesManager.cs" />
     <Compile Include="tiles\Bounds.cs" />
+    <Compile Include="utils\Database.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

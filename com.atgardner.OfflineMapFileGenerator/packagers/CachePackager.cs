@@ -3,7 +3,7 @@
     using com.atgardner.OMFG.sources;
     using com.atgardner.OMFG.tiles;
     using System;
-    using System.Data;
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
 
@@ -66,12 +66,7 @@
                 return;
             }
 
-            var command = Connection.CreateCommand();
-            command.CommandText = SELECT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
-            AddParameter(command, DbType.Int32, "z", tile.Zoom);
-            tile.Image = (byte[])await command.ExecuteScalarAsync();
+            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> { { "x", tile.X }, { "y", tile.Y }, { "z", tile.Zoom } });
         }
 
         public async Task PutData(Tile tile)
@@ -81,13 +76,7 @@
                 return;
             }
 
-            var command = Connection.CreateCommand();
-            command.CommandText = INSERT_SQL;
-            AddParameter(command, DbType.Int32, "x", tile.X);
-            AddParameter(command, DbType.Int32, "y", tile.Y);
-            AddParameter(command, DbType.Int32, "z", tile.Zoom);
-            AddParameter(command, DbType.Binary, "image", tile.Image);
-            await command.ExecuteNonQueryAsync();
+            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> { { "x", tile.X }, { "y", tile.Y }, { "z", tile.Zoom }, { "image", tile.Image } });
         }
     }
 }

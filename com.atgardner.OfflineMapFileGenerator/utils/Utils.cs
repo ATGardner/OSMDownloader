@@ -88,7 +88,7 @@
                 {
                     logger.Error("Failed downloading tile, address: {0}, exception: {1}", address, e);
                     var response = (HttpWebResponse)e.Response;
-                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Forbidden)
                     {
                         return null;
                     }

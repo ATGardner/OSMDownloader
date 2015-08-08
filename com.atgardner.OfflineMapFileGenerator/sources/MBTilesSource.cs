@@ -1,37 +1,27 @@
 ﻿namespace com.atgardner.OMFG.sources
 {
     using com.atgardner.OMFG.tiles;
+    using utils;
     using NLog;
     using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-    using System.Data.SQLite;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
 
-    class MBTilesSource : ITileSource
+    class MBTilesSource : ITileSource, IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly string SELECT_SQL = "select tile_data from tiles where tile_column = @tile_column and tile_row = @tile_row and zoom_level = @zoom_level;";
         private bool initialized;
-        protected DbConnection Connection { get; private set; }
+        private readonly Database database;
 
         public MBTilesSource(SourceDescriptor descriptor)
         {
-            Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", descriptor.Address));
+            database = new Database(descriptor.Address);
         }
 
         public void Init()
         {
-            Connection.Open();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            database.Open();
         }
 
         public async Task<Tile> GetTileData(Tile tile)
@@ -42,15 +32,9 @@
                 initialized = true;
             }
 
-            var command = Connection.CreateCommand();
-
             //switching the tile_row direction
             var y = (1 << tile.Zoom) - tile.Y - 1;
-            command.CommandText = SELECT_SQL;
-            AddParameter(command, DbType.Int32, "tile_column", tile.X);
-            AddParameter(command, DbType.Int32, "tile_row", y);
-            AddParameter(command, DbType.Int32, "zoom_level", tile.Zoom);
-            tile.Image = (byte[])await command.ExecuteScalarAsync();
+            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> { { "tile_column", tile.X }, { "tile_row", y }, { "zoom_level", tile.Zoom } });
             if (!tile.HasData)
             {
                 
@@ -59,26 +43,27 @@
             return tile;
         }
 
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposing)
+            if (!disposedValue)
             {
-                return;
-            }
+                if (disposing)
+                {
+                    database.Dispose();
+                }
 
-            if (Connection != null)
-            {
-                Connection.Dispose();
+                disposedValue = true;
             }
         }
 
-        private static void AddParameter(DbCommand command, DbType type, string name, object value)
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
         {
-            var param = command.CreateParameter();
-            param.DbType = type;
-            param.ParameterName = name;
-            param.Value = value;
-            command.Parameters.Add(param);
+            Dispose(true);
         }
+        #endregion
     }
 }
