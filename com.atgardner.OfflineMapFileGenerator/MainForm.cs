@@ -1,9 +1,7 @@
 ﻿namespace com.atgardner.OMFG
 {
     using com.atgardner.OMFG.packagers;
-    using com.atgardner.OMFG.Properties;
     using com.atgardner.OMFG.sources;
-    using com.atgardner.OMFG.tiles;
     using com.atgardner.OMFG.utils;
     using NLog;
     using System;
@@ -46,17 +44,6 @@
                 logger.FatalException("Failed reading sources", ex);
                 MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
-            }
-
-            if (Settings.Default.UpgradeCache)
-            {
-                tlpContainer.Enabled = false;
-                prgBar.Style = ProgressBarStyle.Marquee;
-                await controller.UpgradeCache();
-                prgBar.Style = ProgressBarStyle.Continuous;
-                Settings.Default.UpgradeCache = false;
-                Settings.Default.Save();
-                tlpContainer.Enabled = true;
             }
         }
 

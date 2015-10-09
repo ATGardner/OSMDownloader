@@ -1,16 +1,8 @@
 ﻿namespace com.atgardner.OMFG.sources
 {
-    using com.atgardner.OMFG.tiles;
-    using com.atgardner.OMFG.utils;
     using Newtonsoft.Json;
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Runtime.Serialization;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     public class SourceDescriptor : IEquatable<SourceDescriptor>
@@ -45,9 +37,9 @@
             switch (type)
             {
                 case SourceType.TileServer:
-                    return new TileServer(this);
+                    return new TileServer(this.Name, this.Address);
                 case SourceType.MBTiles:
-                    return new MBTilesSource(this);
+                    return new MBTilesSource(this.Address);
                 default:
                     return null;
             }

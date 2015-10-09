@@ -59,29 +59,13 @@
             }
         }
 
-        public Bounds(int zoom)
+        public Bounds(int minX, int minY, int maxX, int maxY, int zoom)
         {
+            this.minX = minX;
+            this.minY = minY;
+            this.maxX = maxX;
+            this.maxY = maxY;
             this.zoom = zoom;
-            minX = int.MaxValue;
-            minY = int.MaxValue;
-            maxX = int.MinValue;
-            maxY = int.MinValue;
-        }
-
-        public void AddTile(Tile tile)
-        {
-            if (zoom != tile.Zoom)
-            {
-                var message = string.Format("Tile {0} must be of zoom {1}", tile, zoom);
-                throw new ArgumentException(message, "tile");
-            }
-
-            minX = Math.Min(minX, tile.X);
-            minY = Math.Min(minY, tile.Y);
-            maxX = Math.Max(maxX, tile.X);
-            maxY = Math.Max(maxY, tile.Y);
-            tl = null;
-            br = null;
         }
 
         public override string ToString()

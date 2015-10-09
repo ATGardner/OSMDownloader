@@ -2,10 +2,6 @@
 {
     using Gavaghan.Geodesy;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     public class Tile : IEquatable<Tile>
     {
@@ -30,19 +26,29 @@
             Zoom = zoom;
         }
 
-        public Tile(Tile other, int zoom)
-        {
-            var denominator = (int)Math.Pow(2, other.Zoom - zoom);
-            X = other.X / denominator;
-            Y = other.Y / denominator;
-            Zoom = zoom;
-        }
-
         public Tile(int x, int y, int zoom)
         {
             X = x;
             Y = y;
             Zoom = zoom;
+        }
+
+        public static Tile FromOtherTile(Tile other, int zoom)
+        {
+            if (other.Zoom < zoom)
+            {
+                throw new ArgumentException(string.Format("Can't create a tile of zoom {0}, from a tile of zoom {1}", zoom, other.Zoom));
+            }
+
+            if (other.Zoom == zoom)
+            {
+                return other;
+            }
+
+            var denominator = (int)Math.Pow(2, other.Zoom - zoom);
+            var x = other.X / denominator;
+            var y = other.Y / denominator;
+            return new Tile(x, y, zoom);
         }
 
         public override string ToString()

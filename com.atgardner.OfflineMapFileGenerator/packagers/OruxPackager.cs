@@ -2,12 +2,10 @@
 {
     using com.atgardner.OMFG.Properties;
     using com.atgardner.OMFG.tiles;
-    using com.atgardner.OMFG.utils;
     using System.IO;
     using System.Security;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Data;
     using System.Collections.Generic;
 
     class OruxPackager : SQLitePackager

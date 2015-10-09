@@ -1,24 +1,31 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
-    using com.atgardner.OMFG.utils;
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class Layer : IEnumerable<Tile>
     {
-        public Bounds Bounds { get; private set; }
-        private readonly ICollection<Tile> tiles;
+        private Bounds bounds;
+        public Bounds Bounds
+        {
+            get
+            {
+                return bounds ?? (bounds = CreateBounds());
+            }
+        }
+
+        private readonly ISet<Tile> tiles;
         private readonly int zoom;
 
         public Layer(int zoom)
         {
             this.zoom = zoom;
-            Bounds = new Bounds(zoom);
             tiles = new HashSet<Tile>();
         }
 
-        public void AddTile(Tile tile)
+        public bool AddTile(Tile tile)
         {
             if (zoom != tile.Zoom)
             {
@@ -26,8 +33,8 @@
                 throw new ArgumentException(message, "tile");
             }
 
-            Bounds.AddTile(tile);
-            tiles.Add(tile);
+            bounds = null;
+            return tiles.Add(tile);
         }
 
         public IEnumerator<Tile> GetEnumerator()
@@ -38,6 +45,15 @@
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        private Bounds CreateBounds()
+        {
+            var minX = tiles.Min(t => t.X);
+            var minY = tiles.Min(t => t.Y);
+            var maxX = tiles.Max(t => t.X);
+            var maxY = tiles.Max(t => t.Y);
+            return new Bounds(minX, minY, maxX, maxY, zoom);
         }
     }
 }

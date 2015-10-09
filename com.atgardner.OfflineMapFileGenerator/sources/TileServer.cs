@@ -3,8 +3,6 @@
     using com.atgardner.OMFG.packagers;
     using com.atgardner.OMFG.tiles;
     using com.atgardner.OMFG.utils;
-    using Newtonsoft.Json;
-    using System.IO;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
@@ -14,13 +12,13 @@
         private static readonly Regex md5RegEx = new Regex(@"\*(.*)\*");
         private static int subDomainNum = 0;
 
-        private readonly SourceDescriptor source;
+        private readonly string address;
         private readonly IDataCache dataCache;
 
-        public TileServer(SourceDescriptor source)
+        public TileServer(string name, string address)
         {
-            this.source = source;
-            dataCache = new CachePackager(source.Name);
+            this.address = address;
+            dataCache = new CachePackager(name);
         }
 
         public async Task<Tile> GetTileData(Tile tile)
@@ -42,17 +40,17 @@
         private string CreateAddress(Tile tile)
         {
             string address;
-            var match = subDomainRegExp.Match(source.Address);
+            var match = subDomainRegExp.Match(this.address);
             if (match.Success)
             {
                 var subDomain = match.Groups[1].Value;
                 var currentSubDomain = subDomain.Substring(subDomainNum, 1);
                 subDomainNum = (subDomainNum + 1) % subDomain.Length;
-                address = subDomainRegExp.Replace(source.Address, currentSubDomain);
+                address = subDomainRegExp.Replace(this.address, currentSubDomain);
             }
             else
             {
-                address = source.Address;
+                address = this.address;
             }
 
             address = address.Replace("{z}", "{zoom}")

@@ -1,14 +1,9 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
-    using com.atgardner.OMFG.packagers;
     using com.atgardner.OMFG.sources;
-    using com.atgardner.OMFG.utils;
     using Gavaghan.Geodesy;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
-    using System.Text;
     using System.Threading.Tasks;
 
     class TilesManager
@@ -18,29 +13,20 @@
 
         private readonly ITileSource source;
 
-        public TilesManager(SourceDescriptor descriptor)
+        public TilesManager(ITileSource source)
         {
-            this.source = descriptor.GetSource();
+            this.source = source;
         }
 
         public Map GetTileDefinitions(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
         {
             // reverse zoomLevels, to start with the most detailed tile
-            zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
-            var biggestZoom = zoomLevels[0];
-            var map = new Map();
-            var tiles = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom);
-            map.AddAll(tiles);
-            for (var i = 1; i < zoomLevels.Length; i++)
+            var biggestZoom = zoomLevels.Max();
+            var map = new Map(zoomLevels);
+            var tiles = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom).Distinct();
+            foreach (var tile in tiles)
             {
-                var zoom = zoomLevels[i];
-                var prevZoom = zoomLevels[i - 1];
-                var prevLayer = map[prevZoom];
-                foreach (var prevTile in prevLayer)
-                {
-                    var tile = new Tile(prevTile, zoom);
-                    map.AddTile(tile);
-                }
+                map.AddTile(tile);
             }
 
             return map;

@@ -109,11 +109,11 @@
     <Compile Include="packagers\BCNavPackager.cs" />
     <Compile Include="packagers\IPackager.cs" />
     <Compile Include="packagers\SQLitePackager.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="sources\ITileSource.cs" />
-    <Compile Include="sources\MapSource.cs" />
+    <Compile Include="sources\SourceDescriptor.cs" />
     <Compile Include="sources\MBTilesSource.cs" />
     <Compile Include="sources\TileServer.cs" />
-    <Compile Include="tiles\FileDataCache.cs" />
     <Compile Include="sources\IDataCache.cs" />
     <Compile Include="tiles\Layer.cs" />
     <Compile Include="tiles\Map.cs" />

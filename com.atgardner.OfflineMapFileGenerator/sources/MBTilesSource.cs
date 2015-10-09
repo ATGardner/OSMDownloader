@@ -14,9 +14,9 @@
         private bool initialized;
         private readonly Database database;
 
-        public MBTilesSource(SourceDescriptor descriptor)
+        public MBTilesSource(string address)
         {
-            database = new Database(descriptor.Address);
+            database = new Database(address);
         }
 
         public void Init()

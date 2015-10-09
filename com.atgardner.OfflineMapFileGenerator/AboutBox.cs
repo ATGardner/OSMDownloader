@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace com.atgardner.OMFG
+﻿namespace com.atgardner.OMFG
 {
+    using System;
+    using System.Diagnostics;
+    using System.Reflection;
+    using System.Windows.Forms;
+
     partial class AboutBox : Form
     {
         public AboutBox()

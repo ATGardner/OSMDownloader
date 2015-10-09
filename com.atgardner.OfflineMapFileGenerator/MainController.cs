@@ -10,7 +10,6 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Windows.Forms;
 
     class MainController
     {
@@ -36,7 +35,7 @@
         public async void DownloadTiles(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)
         {
             logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, descriptor);
-            var manager = new TilesManager(descriptor);
+            var manager = new TilesManager(descriptor.GetSource());
             var coordinates = Utils.ExtractCoordinates(inputFiles);
             UpdateStatus(0, "Done Reading Files");
             logger.Trace("Got coordinates stream from input files");
@@ -78,54 +77,6 @@
 
                 UpdateStatus(100, string.Format("Done processing {0} tiles, {1} tiles are missing ({2:P})", total, missing, (float)missing / total));
             }
-        }
-
-        public async Task UpgradeCache()
-        {
-            if (!Directory.Exists(BaseFolder))
-            {
-                return;
-            }
-
-            var sourceFolders = Directory.EnumerateDirectories(BaseFolder);
-            foreach (var sourceFolder in sourceFolders)
-            {
-                try
-                {
-                    var cacheName = Path.GetFileName(sourceFolder);
-                    if (cacheName == "cache")
-                    {
-                        // in case we have started upgrading before, and already have the "cache" subfolder there
-                        continue;
-                    }
-
-                    var message = string.Format("upgrading {0} cache", cacheName);
-                    UpdateStatus(-1, message);
-
-#pragma warning disable 0618
-                    // only used to upgrade to newer cache
-                    var sourceCache = new FileDataCache(sourceFolder);
-#pragma warning restore 0618
-
-                    using (var targetCache = new CachePackager(cacheName))
-                    {
-                        await targetCache.Init();
-                        foreach (var tile in sourceCache)
-                        {
-                            await sourceCache.GetData(tile);
-                            await targetCache.AddTile(tile);
-                        }
-                    }
-
-                    Directory.Delete(sourceFolder, true);
-                }
-                catch (Exception e)
-                {
-                    logger.Error("Failed upgrading cache", e);
-                }
-            }
-
-            UpdateStatus(-1, "Done upgrading cached tiles");
         }
 
         private void UpdateStatus(int progressPercentage, string status)

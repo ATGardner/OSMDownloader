@@ -6,7 +6,8 @@
 
     public class Map : IEnumerable<Tile>
     {
-        IDictionary<int, Layer> layers;
+        private readonly int[] zoomLevels;
+        private readonly IDictionary<int, Layer> layers;
 
         public Layer this[int zoom]
         {
@@ -21,29 +22,27 @@
             get { return layers.Keys.OrderBy(c => c).ToArray(); }
         }
 
-        public Map()
+        public Map(int[] zoomLevels)
         {
             layers = new Dictionary<int, Layer>();
-        }
-
-        public void AddAll(IEnumerable<Tile> tiles)
-        {
-            foreach (var tile in tiles)
+            this.zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
+            foreach (var zoom in this.zoomLevels)
             {
-                AddTile(tile);
+                layers[zoom] = new Layer(zoom);
             }
         }
 
         public void AddTile(Tile tile)
         {
-            Layer layer;
-            if (!layers.TryGetValue(tile.Zoom, out layer))
+            foreach (var pair in layers)
             {
-                layer = new Layer(tile.Zoom);
-                layers[tile.Zoom] = layer;
+                var other = Tile.FromOtherTile(tile, pair.Key);
+                var layer = pair.Value;
+                if (!pair.Value.AddTile(other))
+                {
+                    break;
+                }
             }
-
-            layer.AddTile(tile);
         }
 
         public IEnumerator<Tile> GetEnumerator()
