@@ -6,7 +6,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
-    class TileServer : ITileSource
+    class TileServerSource : ITileSource
     {
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
         private static readonly Regex md5RegEx = new Regex(@"\*(.*)\*");
@@ -15,7 +15,7 @@
         private readonly string address;
         private readonly IDataCache dataCache;
 
-        public TileServer(string name, string address)
+        public TileServerSource(string name, string address)
         {
             this.address = address;
             dataCache = new CachePackager(name);

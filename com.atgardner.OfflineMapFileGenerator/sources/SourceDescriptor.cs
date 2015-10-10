@@ -12,7 +12,8 @@
             TileServer,
             ZipFile,
             LocalFolder,
-            MBTiles
+            MBTiles,
+            Maperitive
         }
 
         public string Name { get; private set; }
@@ -37,7 +38,7 @@
             switch (type)
             {
                 case SourceType.TileServer:
-                    return new TileServer(this.Name, this.Address);
+                    return new TileServerSource(this.Name, this.Address);
                 case SourceType.MBTiles:
                     return new MBTilesSource(this.Address);
                 default:

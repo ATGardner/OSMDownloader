@@ -113,7 +113,7 @@
     <Compile Include="sources\ITileSource.cs" />
     <Compile Include="sources\SourceDescriptor.cs" />
     <Compile Include="sources\MBTilesSource.cs" />
-    <Compile Include="sources\TileServer.cs" />
+    <Compile Include="sources\TileServerSource.cs" />
     <Compile Include="sources\IDataCache.cs" />
     <Compile Include="tiles\Layer.cs" />
     <Compile Include="tiles\Map.cs" />
