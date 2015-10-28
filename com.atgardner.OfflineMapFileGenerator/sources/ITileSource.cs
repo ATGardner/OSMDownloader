@@ -1,6 +1,6 @@
 ﻿namespace com.atgardner.OMFG.sources
 {
-    using com.atgardner.OMFG.tiles;
+    using tiles;
     using System.Threading.Tasks;
 
     public interface ITileSource

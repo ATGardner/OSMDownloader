@@ -32,7 +32,7 @@
             Sources = await SourceDescriptor.LoadSources(sourceFile);
         }
 
-        public async void DownloadTiles(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)
+        public async Task DownloadTiles(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)
         {
             logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, descriptor);
             var manager = new TilesManager(descriptor.GetSource());

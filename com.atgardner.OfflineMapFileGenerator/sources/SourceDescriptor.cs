@@ -41,6 +41,8 @@
                     return new TileServerSource(this.Name, this.Address);
                 case SourceType.MBTiles:
                     return new MBTilesSource(this.Address);
+                case SourceType.Maperitive:
+                    return new MaperitiveSource();
                 default:
                     return null;
             }

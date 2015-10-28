@@ -111,6 +111,7 @@
     <Compile Include="packagers\SQLitePackager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="sources\ITileSource.cs" />
+    <Compile Include="sources\MaperitiveSource.cs" />
     <Compile Include="sources\SourceDescriptor.cs" />
     <Compile Include="sources\MBTilesSource.cs" />
     <Compile Include="sources\TileServerSource.cs" />
@@ -148,7 +149,10 @@
     </Compile>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="LICENSE.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

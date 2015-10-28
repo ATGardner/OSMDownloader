@@ -1,8 +1,8 @@
 ﻿namespace com.atgardner.OMFG.sources
 {
-    using com.atgardner.OMFG.packagers;
-    using com.atgardner.OMFG.tiles;
-    using com.atgardner.OMFG.utils;
+    using packagers;
+    using tiles;
+    using utils;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
@@ -24,14 +24,16 @@
         public async Task<Tile> GetTileData(Tile tile)
         {
             await dataCache.GetData(tile);
-            if (!tile.HasData)
+            if (tile.HasData)
             {
-                var address = CreateAddress(tile);
-                tile.Image = await Utils.PerformDownload(address);
-                if (tile.HasData)
-                {
-                    await dataCache.PutData(tile);
-                }
+                return tile;
+            }
+
+            var address = CreateAddress(tile);
+            tile.Image = await Utils.PerformDownload(address);
+            if (tile.HasData)
+            {
+                await dataCache.PutData(tile);
             }
 
             return tile;

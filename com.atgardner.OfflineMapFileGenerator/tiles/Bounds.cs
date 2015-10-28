@@ -1,7 +1,7 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
+    using utils;
     using Gavaghan.Geodesy;
-    using System;
 
     public class Bounds
     {
@@ -39,7 +39,7 @@
             {
                 if (tl == null)
                 {
-                    tl = ToCoordinates(minX, minY, zoom);
+                    tl = Utils.ToCoordinates(minX, minY, zoom);
                 }
 
                 return tl.Value;
@@ -52,7 +52,7 @@
             {
                 if (br == null)
                 {
-                    br = ToCoordinates(maxX + 1, maxY + 1, zoom);
+                    br = Utils.ToCoordinates(maxX + 1, maxY + 1, zoom);
                 }
 
                 return br.Value;
@@ -71,14 +71,6 @@
         public override string ToString()
         {
             return string.Format("{0}, {1}", TL, BR);
-        }
-
-        private static GlobalCoordinates ToCoordinates(int x, int y, int zoom)
-        {
-            double n = Math.PI - ((2.0 * Math.PI * y) / Math.Pow(2.0, zoom));
-            var longitude = (x / Math.Pow(2.0, zoom) * 360.0) - 180.0;
-            var latitude = 180.0 / Math.PI * Math.Atan(Math.Sinh(n));
-            return new GlobalCoordinates(latitude, longitude);
         }
     }
 }

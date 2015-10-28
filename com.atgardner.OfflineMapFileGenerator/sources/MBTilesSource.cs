@@ -1,6 +1,6 @@
 ﻿namespace com.atgardner.OMFG.sources
 {
-    using com.atgardner.OMFG.tiles;
+    using tiles;
     using utils;
     using NLog;
     using System;

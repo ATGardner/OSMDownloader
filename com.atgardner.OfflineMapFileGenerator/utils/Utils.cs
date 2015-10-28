@@ -8,6 +8,7 @@
     using SharpKml.Engine;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -77,27 +78,79 @@
 
         public static async Task<byte[]> PerformDownload(string address)
         {
+            byte[] result = null;
             using (var webClient = new WebClient())
             {
-                try
+                for (var retry = 0; retry < 3; retry++)
                 {
-                    webClient.Headers.Add("user-agent", "Offline Map File Generator");
-                    return await webClient.DownloadDataTaskAsync(address);
-                }
-                catch (WebException e)
-                {
-                    logger.Error("Failed downloading tile, address: {0}, exception: {1}", address, e);
-                    var response = (HttpWebResponse)e.Response;
-                    if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Forbidden)
+                    try
                     {
-                        return null;
+                        webClient.Headers.Add("user-agent", "Offline Map File Generator");
+                        //logger.Trace("Trying to download {0} - {1}", retry, address);
+                        result = await webClient.DownloadDataTaskAsync(address);
+                        return result;
                     }
-                    else
+                    catch (WebException e)
                     {
-                        throw;
+                        logger.Warn("Failed downloading tile, retry #{1}, address: {0}, exception: {2}", address, retry, e);
+                        var response = (HttpWebResponse)e.Response;
+                        if (response != null && (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Forbidden))
+                        {
+                            return null;
+                        }
                     }
                 }
+
+                return null;
             }
+        }
+
+        public static GlobalCoordinates ToCoordinates(int x, int y, int zoom)
+        {
+            double n = Math.PI - ((2.0 * Math.PI * y) / Math.Pow(2.0, zoom));
+            var longitude = (x / Math.Pow(2.0, zoom) * 360.0) - 180.0;
+            var latitude = 180.0 / Math.PI * Math.Atan(Math.Sinh(n));
+            return new GlobalCoordinates(latitude, longitude);
+        }
+
+        public static async Task<int> RunProcessAsync(string fileName, string args)
+        {
+            var workingDirectory = Path.GetDirectoryName(fileName);
+            using (var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = fileName, Arguments = args,
+                    UseShellExecute = false, CreateNoWindow = true,
+                    RedirectStandardOutput = true, RedirectStandardError = true, WorkingDirectory = workingDirectory
+                },
+                EnableRaisingEvents = true
+            })
+            {
+                return await RunProcessAsync(process).ConfigureAwait(false);
+            }
+        }
+
+        private static Task<int> RunProcessAsync(Process process)
+        {
+            var tcs = new TaskCompletionSource<int>();
+
+            process.Exited += (s, ea) => tcs.SetResult(process.ExitCode);
+            process.OutputDataReceived += (s, ea) => Console.WriteLine(ea.Data);
+            process.ErrorDataReceived += (s, ea) => Console.WriteLine("ERR: " + ea.Data);
+
+            bool started = process.Start();
+            if (!started)
+            {
+                //you may allow for the process to be re-used (started = false) 
+                //but I'm not sure about the guarantees of the Exited event in such a case
+                throw new InvalidOperationException("Could not start process: " + process);
+            }
+
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            return tcs.Task;
         }
 
         private static IEnumerable<GlobalCoordinates> ExtractCoordinates(string fileName)

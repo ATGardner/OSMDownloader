@@ -90,5 +90,29 @@
         "maxZoom": 15,
         "attribution": "whatever",
         "type": "MBTiles"
+    },
+    {
+        "Name": "Maperitive",
+        "Address": "D:\\Users\\Noam\\Downloads\\OMFG\\aosta.sqlitedb",
+        "minZoom": 10,
+        "maxZoom": 15,
+        "attribution": "whatever",
+        "type": "Maperitive"
+    },
+    {
+        "Name": "NZ - Topo50 Maps",
+        "Address": "http://tiles-[abcd].data-cdn.linz.govt.nz/services;key=65bc0122063d4dbebe7a16f80eb5f97e/tiles/v4/layer=2343/EPSG:3857/{z}/{x}/{y}.png",
+        "minZoom": 0,
+        "maxZoom": 20,
+        "attribution": "CC-By Land Information New Zealand. This product uses data sourced from Landcare Research under CC-BY, http://creativecommons.org/licenses/by/3.0/nz/",
+        "type": "TileServer"
+    },
+    {
+        "Name": "NZ - Topo250 Maps",
+        "Address": "http://tiles-[abcd].data-cdn.linz.govt.nz/services;key=65bc0122063d4dbebe7a16f80eb5f97e/tiles/v4/layer=2324/EPSG:3857/{z}/{x}/{y}.png",
+        "minZoom": 0,
+        "maxZoom": 20,
+        "attribution": "CC-By Land Information New Zealand. This product uses data sourced from Landcare Research under CC-BY, http://creativecommons.org/licenses/by/3.0/nz/",
+        "type": "TileServer"
     }
 ]

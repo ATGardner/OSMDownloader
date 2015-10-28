@@ -100,7 +100,10 @@
             var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
-            await Task.Factory.StartNew(() => controller.DownloadTiles(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType));
+            await Task.Run(async () =>
+            {
+                await controller.DownloadTiles(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType);
+            });
             tlpContainer.Enabled = true;
         }
 
