@@ -1,8 +1,7 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
-    using com.atgardner.OMFG.tiles;
+    using tiles;
     using System.Collections.Generic;
-    using System.Data;
     using System.IO;
     using System.Threading.Tasks;
 
@@ -27,11 +26,7 @@
         private string RMAPS_CLEAR_INFO_SQL = "DELETE FROM info;";
         private string RMAPS_UPDATE_INFO_MINMAX_SQL = "insert into info(minzoom, maxzoom) values((select min(z) from tiles), (select max(z) from tiles));";
 
-        public BCNavPackager(string sourceFile)
-            : base(sourceFile)
-        {
-
-        }
+        public BCNavPackager(string sourceFile) : base(sourceFile) { }
 
         protected override string GetDbFileName(string fileName)
         {
@@ -41,7 +36,13 @@
 
         public override async Task AddTile(Tile tile)
         {
-            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> { { "x", tile.X }, { "y", tile.Y },{ "z", 17 - tile.Zoom }, { "image", tile.Image } });
+            var parameters = new Dictionary<string, object> {
+                { "x", tile.X },
+                { "y", tile.Y },
+                { "z", 17 - tile.Zoom },
+                { "image", tile.Image }
+            };
+            await database.ExecuteNonQueryAsync(INSERT_SQL, parameters);
         }
 
         protected override async Task UpdateTileMetaInfo()

@@ -1,7 +1,7 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
-    using com.atgardner.OMFG.Properties;
-    using com.atgardner.OMFG.tiles;
+    using Properties;
+    using tiles;
     using System.IO;
     using System.Security;
     using System.Text;
@@ -62,7 +62,12 @@
             var bounds = layer.Bounds;
             var x = tile.X - bounds.MinX;
             var y = tile.Y - bounds.MinY;
-            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> { { "x", x }, { "y", y }, { "z", tile.Zoom }, { "image", tile.Image } });
+            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> {
+                { "x", x },
+                { "y", y },
+                { "z", tile.Zoom },
+                { "image", tile.Image }
+            });
         }
 
         protected override async Task UpdateTileMetaInfo()

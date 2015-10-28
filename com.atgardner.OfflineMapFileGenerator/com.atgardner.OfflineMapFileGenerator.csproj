@@ -105,6 +105,7 @@
     <Compile Include="MainController.cs" />
     <Compile Include="packagers\CachePackager.cs" />
     <Compile Include="packagers\FormatType.cs" />
+    <Compile Include="packagers\MBTilesPackager.cs" />
     <Compile Include="packagers\OruxPackager.cs" />
     <Compile Include="packagers\BCNavPackager.cs" />
     <Compile Include="packagers\IPackager.cs" />
@@ -151,8 +152,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="LICENSE.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

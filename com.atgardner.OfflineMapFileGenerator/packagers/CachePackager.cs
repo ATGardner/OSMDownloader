@@ -1,7 +1,7 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
-    using com.atgardner.OMFG.sources;
-    using com.atgardner.OMFG.tiles;
+    using sources;
+    using tiles;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -66,7 +66,11 @@
                 return;
             }
 
-            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> { { "x", tile.X }, { "y", tile.Y }, { "z", tile.Zoom } });
+            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> {
+                { "x", tile.X },
+                { "y", tile.Y },
+                { "z", tile.Zoom }
+            });
         }
 
         public async Task PutData(Tile tile)
@@ -76,7 +80,12 @@
                 return;
             }
 
-            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> { { "x", tile.X }, { "y", tile.Y }, { "z", tile.Zoom }, { "image", tile.Image } });
+            await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> {
+                { "x", tile.X },
+                { "y", tile.Y },
+                { "z", tile.Zoom },
+                { "image", tile.Image }
+            });
         }
     }
 }

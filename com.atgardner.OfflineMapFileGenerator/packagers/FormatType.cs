@@ -3,6 +3,7 @@
     public enum FormatType
     {
         BCNav,
-        OruxMaps
+        OruxMaps,
+        MBTiles
     }
 }

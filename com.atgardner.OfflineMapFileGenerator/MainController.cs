@@ -1,9 +1,9 @@
 ﻿namespace com.atgardner.OMFG
 {
-    using com.atgardner.OMFG.packagers;
-    using com.atgardner.OMFG.sources;
-    using com.atgardner.OMFG.tiles;
-    using com.atgardner.OMFG.utils;
+    using packagers;
+    using sources;
+    using tiles;
+    using utils;
     using NLog;
     using System;
     using System.ComponentModel;

@@ -97,7 +97,7 @@
                 return;
             }
 
-            var formatType = rdBtnBCNav.Checked ? FormatType.BCNav : FormatType.OruxMaps;
+            var formatType = getFormatType();
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             await Task.Run(async () =>
@@ -105,6 +105,21 @@
                 await controller.DownloadTiles(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType);
             });
             tlpContainer.Enabled = true;
+        }
+
+        private FormatType getFormatType()
+        {
+            if (rdBtnBCNav.Checked)
+            {
+                return FormatType.BCNav;
+            }
+
+            if (rdBtnMB.Checked)
+            {
+                return FormatType.MBTiles;
+            }
+
+            return FormatType.OruxMaps;
         }
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)

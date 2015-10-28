@@ -32,6 +32,7 @@
             this.lblInput = new System.Windows.Forms.Label();
             this.txtBxInput = new System.Windows.Forms.TextBox();
             this.btnAdd = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.lblOutput = new System.Windows.Forms.Label();
             this.txtBxOutput = new System.Windows.Forms.TextBox();
             this.lblMapSource = new System.Windows.Forms.Label();
@@ -52,7 +53,7 @@
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnClear = new System.Windows.Forms.Button();
+            this.rdBtnMB = new System.Windows.Forms.RadioButton();
             this.tlpContainer.SuspendLayout();
             this.flpZoomLevels.SuspendLayout();
             this.flpTarget.SuspendLayout();
@@ -130,6 +131,18 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnBrowse_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.AutoSize = true;
+            this.btnClear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnClear.Location = new System.Drawing.Point(530, 13);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(41, 23);
+            this.btnClear.TabIndex = 16;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // lblOutput
             // 
@@ -214,6 +227,7 @@
             this.flpTarget.AutoSize = true;
             this.flpTarget.Controls.Add(this.rdBtnBCNav);
             this.flpTarget.Controls.Add(this.rdBtnOruxMaps);
+            this.flpTarget.Controls.Add(this.rdBtnMB);
             this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpTarget.Location = new System.Drawing.Point(95, 131);
             this.flpTarget.Name = "flpTarget";
@@ -338,17 +352,16 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // btnClear
+            // rdBtnMB
             // 
-            this.btnClear.AutoSize = true;
-            this.btnClear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnClear.Location = new System.Drawing.Point(530, 13);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(41, 23);
-            this.btnClear.TabIndex = 16;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.rdBtnMB.AutoSize = true;
+            this.rdBtnMB.Location = new System.Drawing.Point(226, 3);
+            this.rdBtnMB.Name = "rdBtnMB";
+            this.rdBtnMB.Size = new System.Drawing.Size(63, 17);
+            this.rdBtnMB.TabIndex = 2;
+            this.rdBtnMB.TabStop = true;
+            this.rdBtnMB.Text = "MBTiles";
+            this.rdBtnMB.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -406,6 +419,7 @@
         private System.Windows.Forms.RadioButton rdBtnOruxMaps;
         private System.Windows.Forms.CheckBox chkBxAll;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.RadioButton rdBtnMB;
     }
 }
 

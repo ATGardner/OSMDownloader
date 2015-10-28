@@ -1,6 +1,6 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
-    using com.atgardner.OMFG.tiles;
+    using tiles;
     using utils;
     using System;
     using System.Globalization;
@@ -45,6 +45,8 @@
             {
                 case FormatType.BCNav:
                     return new BCNavPackager(fileName);
+                case FormatType.MBTiles:
+                    return new MBTilesPackager(fileName);
                 case FormatType.OruxMaps:
                     return new OruxPackager(fileName, map);
                 default:
@@ -79,7 +81,9 @@
             var count = await database.ExecuteScalarAsync(METADATA_SELECT);
             if ((long)count == 0)
             {
-                await database.ExecuteNonQueryAsync(METADATA_INSERT, new Dictionary<string, object> { { "locale", CultureInfo.CurrentCulture.Name } });
+                await database.ExecuteNonQueryAsync(METADATA_INSERT, new Dictionary<string, object> {
+                    { "locale", CultureInfo.CurrentCulture.Name }
+                });
             }
         }
     }

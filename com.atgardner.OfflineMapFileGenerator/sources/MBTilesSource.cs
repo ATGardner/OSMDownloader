@@ -34,12 +34,11 @@
 
             //switching the tile_row direction
             var y = (1 << tile.Zoom) - tile.Y - 1;
-            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> { { "tile_column", tile.X }, { "tile_row", y }, { "zoom_level", tile.Zoom } });
-            if (!tile.HasData)
-            {
-                
-            }
-
+            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> {
+                { "tile_column", tile.X },
+                { "tile_row", y },
+                { "zoom_level", tile.Zoom }
+            });
             return tile;
         }
 
