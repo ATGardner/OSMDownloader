@@ -29,7 +29,7 @@
         }
 
         public CachePackager(string sourceName)
-            : base(sourceName)
+            : base(sourceName, string.Empty)
         {
             initialized = false;
         }

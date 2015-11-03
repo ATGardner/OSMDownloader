@@ -20,11 +20,13 @@
         private readonly string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
         private readonly string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
         protected readonly Database database;
+        protected readonly string attribution;
 
-        public SQLitePackager(string fileName)
+        public SQLitePackager(string fileName, string attribution)
         {
             var dbFile = GetDbFileName(fileName);
             database = new Database(dbFile);
+            this.attribution = attribution;
         }
 
         public async Task Init()
@@ -39,16 +41,16 @@
             GC.SuppressFinalize(this);
         }
 
-        public static IPackager GetPackager(FormatType type, string fileName, Map map)
+        public static IPackager GetPackager(FormatType type, string fileName, string attribution)
         {
             switch (type)
             {
                 case FormatType.BCNav:
-                    return new BCNavPackager(fileName);
+                    return new BCNavPackager(fileName, attribution);
                 case FormatType.MBTiles:
-                    return new MBTilesPackager(fileName);
-                case FormatType.OruxMaps:
-                    return new OruxPackager(fileName, map);
+                    return new MBTilesPackager(fileName, attribution);
+                //case FormatType.OruxMaps:
+                //    return new OruxPackager(fileName, map);
                 default:
                     throw new ArgumentException("Type must be either BCNav or OruxMaps", "type");
             }

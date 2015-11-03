@@ -1,6 +1,6 @@
 ﻿namespace com.atgardner.OMFG.tiles
 {
-    using com.atgardner.OMFG.sources;
+    using sources;
     using Gavaghan.Geodesy;
     using System.Collections.Generic;
     using System.Linq;

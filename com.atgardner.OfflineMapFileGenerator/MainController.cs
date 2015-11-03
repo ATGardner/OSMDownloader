@@ -46,7 +46,7 @@
             var prevPercentage = -1;
             var current = 0;
             var missing = 0;
-            var packager = SQLitePackager.GetPackager(formatType, outputFile, map);
+            var packager = SQLitePackager.GetPackager(formatType, outputFile, descriptor.Attribution);
             using (packager)
             {
                 await packager.Init();
@@ -57,7 +57,15 @@
                     var tile = await task;
                     if (tile.HasData)
                     {
-                        await packager.AddTile(tile);
+                        try
+                        {
+                            await packager.AddTile(tile);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.Warn("Failed adding tile {0}, error: {1}", tile, e);
+                        }
+
                         tile.Image = null;
                     }
                     else

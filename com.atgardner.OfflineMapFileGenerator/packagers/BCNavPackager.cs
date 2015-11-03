@@ -26,7 +26,7 @@
         private string RMAPS_CLEAR_INFO_SQL = "DELETE FROM info;";
         private string RMAPS_UPDATE_INFO_MINMAX_SQL = "insert into info(minzoom, maxzoom) values((select min(z) from tiles), (select max(z) from tiles));";
 
-        public BCNavPackager(string sourceFile) : base(sourceFile) { }
+        public BCNavPackager(string sourceFile, string attribution) : base(sourceFile, attribution) { }
 
         protected override string GetDbFileName(string fileName)
         {

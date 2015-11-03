@@ -5,6 +5,7 @@ namespace com.atgardner.OMFG.packagers
     using System.Threading.Tasks;
     using System.Collections.Generic;
     using System.IO;
+    using System;
 
     class MBTilesPackager : SQLitePackager
     {
@@ -24,12 +25,12 @@ namespace com.atgardner.OMFG.packagers
         }
 
         private string METADATA_TABLE_DDL = "CREATE TABLE IF NOT EXISTS metadata (name text, value text, PRIMARY KEY (name));";
-        private string METADATA_INSERT_SQL = "insert into metadata(name, value) values(@name, @value);";
+        private string METADATA_INSERT_SQL = "INSERT or REPLACE INTO metadata(name, value) VALUES(@name, @value);";
         private readonly string name;
 
-        public MBTilesPackager(string name) : base(name)
+        public MBTilesPackager(string name, string attribution) : base(name, attribution)
         {
-            this.name = name;
+            this.name = Path.GetFileNameWithoutExtension(name);
         }
 
         public override async Task AddTile(Tile tile)
@@ -48,19 +49,19 @@ namespace com.atgardner.OMFG.packagers
         protected override string GetDbFileName(string fileName)
         {
             var fullPath = Path.GetFullPath(fileName);
-            return Path.ChangeExtension(fullPath, "sqlitedb");
+            return Path.ChangeExtension(fullPath, "mbtiles");
         }
 
         protected override async Task UpdateTileMetaInfo()
         {
             await database.ExecuteNonQueryAsync(METADATA_TABLE_DDL);
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "name" }, { "value", name } });
-            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "type" }, { "value", "baselayer" } }); /**/
-            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "version" }, { "value", "1" } }); /**/
-            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "description" }, { "value", "description" } }); /**/
+            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "type" }, { "value", "baselayer" } });
+            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "version" }, { "value", "1.2" } });
+            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "description" }, { "value", string.Format("{0} created on {1} by OMFG", name, DateTime.Now) } });
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "format" }, { "value", "png" } }); /**/
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "bounds" }, { "value", "-180.0,-85,180,85" } }); /**/
-            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "attribution" }, { "value", "attribution" } }); /**/
+            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "attribution" }, { "value", attribution } });
         }
     }
 }

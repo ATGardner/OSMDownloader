@@ -25,11 +25,11 @@
 
         public SourceDescriptor(string name, string address, int minZoom, int maxZoom, string attribution, SourceType type)
         {
-            this.Name = name;
-            this.Address = address;
-            this.MinZoom = minZoom;
-            this.MaxZoom = maxZoom;
-            this.Attribution = attribution;
+            Name = name;
+            Address = address;
+            MinZoom = minZoom;
+            MaxZoom = maxZoom;
+            Attribution = attribution;
             this.type = type;
         }
 
@@ -38,9 +38,9 @@
             switch (type)
             {
                 case SourceType.TileServer:
-                    return new TileServerSource(this.Name, this.Address);
+                    return new TileServerSource(Name, Address);
                 case SourceType.MBTiles:
-                    return new MBTilesSource(this.Address);
+                    return new MBTilesSource(Address);
                 case SourceType.Maperitive:
                     return new MaperitiveSource();
                 default:
@@ -50,22 +50,22 @@
 
         public override bool Equals(object other)
         {
-            if (object.ReferenceEquals(other, null))
+            if (ReferenceEquals(other, null))
             {
                 return false;
             }
 
-            if (object.ReferenceEquals(this, other))
+            if (ReferenceEquals(this, other))
             {
                 return true;
             }
 
-            if (this.GetType() != other.GetType())
+            if (GetType() != other.GetType())
             {
                 return false;
             }
 
-            return this.Equals(other as SourceDescriptor);
+            return Equals(other as SourceDescriptor);
         }
 
         public override string ToString()
@@ -80,12 +80,12 @@
                 return false;
             }
 
-            return this.Name == other.Name && this.Address == other.Address;
+            return Name == other.Name && Address == other.Address;
         }
 
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode() ^ this.Address.GetHashCode();
+            return Name.GetHashCode() ^ Address.GetHashCode();
         }
 
         public static async Task<SourceDescriptor[]> LoadSources(string path)

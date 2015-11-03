@@ -38,7 +38,7 @@
         }
 
         public OruxPackager(string targetPath, Map map)
-            : base(targetPath)
+            : base(targetPath, "")
         {
             this.targetPath = targetPath;
             this.map = map;
