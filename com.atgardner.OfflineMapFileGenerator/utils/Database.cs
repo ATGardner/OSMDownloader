@@ -1,5 +1,6 @@
 ﻿namespace com.atgardner.OMFG.utils
 {
+    using NLog;
     using System;
     using System.Collections.Generic;
     using System.Data.Common;
@@ -9,13 +10,18 @@
 
     public class Database : IDisposable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly DbConnection connection;
 
         public Database(string filename)
         {
             var directoryName = Path.GetDirectoryName(filename);
-            Directory.CreateDirectory(directoryName);
-            connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", filename));
+            if (!string.IsNullOrEmpty(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
+
+            connection = new SQLiteConnection(string.Format("Data Source={0};", filename));
         }
 
         public void Open()
@@ -23,44 +29,24 @@
             connection.Open();
         }
 
-        public async Task ExecuteNonQueryAsync(string text)
+        public async Task ExecuteNonQueryAsync(string text, IDictionary<string, object> parameters = null)
         {
-            await ExecuteNonQueryAsync(text, new Dictionary<string, object>());
-        }
-
-        public async Task ExecuteNonQueryAsync(string text, IDictionary<string, object> parameters)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = text;
-            foreach (var pair in parameters)
-            {
-                var param = command.CreateParameter();
-                param.ParameterName = pair.Key;
-                param.Value = pair.Value;
-                command.Parameters.Add(param);
-            }
-
+            var command = CreateCommand(text, parameters);
+            logger.Debug("Executing non query async, text: {0}", text);
             await command.ExecuteNonQueryAsync();
+            logger.Debug("Done executing non query async, text: {0}", text);
         }
 
-        public async Task<object> ExecuteScalarAsync(string text)
+        public async Task<object> ExecuteScalarAsync(string text, IDictionary<string, object> parameters = null)
         {
-            return await ExecuteScalarAsync(text, new Dictionary<string, object>());
-        }
-
-        public async Task<object> ExecuteScalarAsync(string text, IDictionary<string, object> parameters)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = text;
-            foreach (var pair in parameters)
-            {
-                var param = command.CreateParameter();
-                param.ParameterName = pair.Key;
-                param.Value = pair.Value;
-                command.Parameters.Add(param);
-            }
-
-            return await command.ExecuteScalarAsync();
+            var command = CreateCommand(text, parameters);
+            logger.Debug("Executing scalar async, text: {0}", text);
+            var result = await command.ExecuteScalarAsync();
+            logger.Debug("Done executing scalar async, text: {0}, result: {1}", text, result);
+            //await Task.Run(() => {
+            //    Console.WriteLine("Inside the running task");
+            //});
+            return result;
         }
 
         #region IDisposable Support
@@ -85,5 +71,25 @@
             Dispose(true);
         }
         #endregion
+
+        private DbCommand CreateCommand(string text, IDictionary<string, object> parameters)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = text;
+            if (parameters == null)
+            {
+                return command;
+            }
+
+            foreach (var pair in parameters)
+            {
+                var param = command.CreateParameter();
+                param.ParameterName = pair.Key;
+                param.Value = pair.Value;
+                command.Parameters.Add(param);
+            }
+
+            return command;
+        }
     }
 }

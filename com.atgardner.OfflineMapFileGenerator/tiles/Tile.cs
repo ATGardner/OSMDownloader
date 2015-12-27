@@ -8,14 +8,6 @@
         public int X { get; private set; }
         public int Y { get; private set; }
         public int Zoom { get; private set; }
-        public byte[] Image { get; set; }
-        public bool HasData
-        {
-            get
-            {
-                return Image != null;
-            }
-        }
 
         public Tile(GlobalCoordinates coordinates, int zoom)
         {
@@ -26,7 +18,7 @@
             Zoom = zoom;
         }
 
-        public Tile(int x, int y, int zoom)
+        private Tile(int x, int y, int zoom)
         {
             X = x;
             Y = y;
@@ -58,22 +50,22 @@
 
         public override bool Equals(object other)
         {
-            if (object.ReferenceEquals(other, null))
+            if (ReferenceEquals(other, null))
             {
                 return false;
             }
 
-            if (object.ReferenceEquals(this, other))
+            if (ReferenceEquals(this, other))
             {
                 return true;
             }
 
-            if (this.GetType() != other.GetType())
+            if (GetType() != other.GetType())
             {
                 return false;
             }
 
-            return this.Equals(other as Tile);
+            return Equals(other as Tile);
         }
 
         public bool Equals(Tile other)
@@ -83,12 +75,12 @@
                 return false;
             }
 
-            return this.X == other.X && this.Y == other.Y && this.Zoom == other.Zoom;
+            return X == other.X && Y == other.Y && Zoom == other.Zoom;
         }
 
         public override int GetHashCode()
         {
-            return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Zoom.GetHashCode();
+            return X.GetHashCode() ^ Y.GetHashCode() ^ Zoom.GetHashCode();
         }
     }
 }

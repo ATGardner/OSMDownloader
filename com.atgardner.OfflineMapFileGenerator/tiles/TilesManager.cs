@@ -5,9 +5,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
+    using NLog;
     class TilesManager
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly GeodeticCalculator calc = new GeodeticCalculator();
         private static readonly int[] degrees = new[] { 0, 90, 180, 270 };
 
@@ -18,39 +19,61 @@
             this.source = source;
         }
 
-        public Map GetTileDefinitions(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
+        public IEnumerable<Tile> GetTileDefinitions(IEnumerable<GlobalCoordinates> coordinates, int[] zoomLevels)
         {
-            // reverse zoomLevels, to start with the most detailed tile
-            var biggestZoom = zoomLevels.Max();
-            var map = new Map(zoomLevels);
-            var tiles = GetTilesDefinitionsFromCoordinates(coordinates, biggestZoom).Distinct();
-            foreach (var tile in tiles)
+            zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
+            var maxZoom = zoomLevels[0];
+            var tiles = new HashSet<Tile>();
+            foreach (var c in coordinates)
             {
-                map.AddTile(tile);
+                foreach (var t in GetTilesDefinitionsFromCoordinate(c, maxZoom))
+                {
+                    if (tiles.Add(t))
+                    {
+                        var str = coordinates.ToString();
+                        logger.Debug("Got tile {0} from coordinates {1}", t, c);
+                        yield return t;
+                        for (int i = 1; i < zoomLevels.Length; i++)
+                        {
+                            var higherLevelTile = Tile.FromOtherTile(t, zoomLevels[i]);
+                            if (tiles.Add(higherLevelTile))
+                            {
+                                logger.Debug("Got tile {0} from coordinates {1}", higherLevelTile, c);
+                                yield return higherLevelTile;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
             }
-
-            return map;
         }
 
-        public List<Task<Tile>> GetTileData(IEnumerable<Tile> tiles)
+        public Task<byte[]> GetTileData(Tile tile)
         {
-            var tasks = new List<Task<Tile>>();
-            foreach (var tile in tiles)
-            {
-                var task = source.GetTileData(tile);
-                tasks.Add(task);
-            }
+            logger.Debug("Tile {0} - Getting tile data", tile);
+            var task = source.GetTileDataAsync(tile);
+            logger.Debug("Tile {0} - Done getting tile data", tile);
+            return task;
+        }
 
-            return tasks;
+        private static IEnumerable<Tile> GetTilesDefinitionsFromCoordinate(GlobalCoordinates coordiate, int zoom)
+        {
+            var tile = new Tile(coordiate, zoom);
+            yield return tile;
+            foreach (var t in GetTilesAround(coordiate, zoom, 1500))
+            {
+                yield return t;
+            }
         }
 
         private static IEnumerable<Tile> GetTilesDefinitionsFromCoordinates(IEnumerable<GlobalCoordinates> coordinates, int zoom)
         {
             foreach (var c in coordinates)
             {
-                var tile = new Tile(c, zoom);
-                yield return tile;
-                foreach (var t in GetTilesAround(c, zoom, 1500))
+                foreach (var t in GetTilesDefinitionsFromCoordinate(c, zoom))
                 {
                     yield return t;
                 }

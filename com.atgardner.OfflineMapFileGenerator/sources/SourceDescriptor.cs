@@ -88,7 +88,7 @@
             return Name.GetHashCode() ^ Address.GetHashCode();
         }
 
-        public static async Task<SourceDescriptor[]> LoadSources(string path)
+        public static async Task<SourceDescriptor[]> LoadSourcesAsync(string path)
         {
             var json = File.ReadAllText(path);
             return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<SourceDescriptor[]>(json));

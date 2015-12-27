@@ -6,9 +6,11 @@ namespace com.atgardner.OMFG.packagers
     using System.Collections.Generic;
     using System.IO;
     using System;
-
+    using NLog;
     class MBTilesPackager : SQLitePackager
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         protected override string INDEX_DDL
         {
             get { return "CREATE INDEX IF NOT EXISTS IND on tiles (tile_column, tile_row, zoom_level)"; }
@@ -33,17 +35,19 @@ namespace com.atgardner.OMFG.packagers
             this.name = Path.GetFileNameWithoutExtension(name);
         }
 
-        public override async Task AddTile(Tile tile)
+        public override async Task AddTileAsync(Tile tile, byte[] data)
         {
+            logger.Debug("Tile {0} - Adding tile async", tile);
             //switching the tile_row direction
             var tile_row = (1 << tile.Zoom) - tile.Y - 1;
             var parameters = new Dictionary<string, object> {
                 { "tile_column", tile.X },
                 { "tile_row", tile_row },
                 { "zoom_level", tile.Zoom },
-                { "tile_data", tile.Image }
+                { "tile_data", data }
             };
             await database.ExecuteNonQueryAsync(INSERT_SQL, parameters);
+            logger.Debug("Tile {0} - Done adding tile async", tile);
         }
 
         protected override string GetDbFileName(string fileName)
@@ -52,7 +56,7 @@ namespace com.atgardner.OMFG.packagers
             return Path.ChangeExtension(fullPath, "mbtiles");
         }
 
-        protected override async Task UpdateTileMetaInfo()
+        protected override async Task UpdateTileMetaInfoAsync()
         {
             await database.ExecuteNonQueryAsync(METADATA_TABLE_DDL);
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "name" }, { "value", name } });

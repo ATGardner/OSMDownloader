@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.OfflineMapFileGenerator", "com.atgardner.OfflineMapFileGenerator\com.atgardner.OfflineMapFileGenerator.csproj", "{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}"
 EndProject
@@ -13,11 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.OfflineMapFileGeneratorTests", "com.atgardner.OfflineMapFileGeneratorTests\com.atgardner.OfflineMapFileGeneratorTests.csproj", "{1B62059D-3002-4D11-B58C-D131E80BA657}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AA30BD7E-1928-4F5C-9D23-A9B40DB4FBE0}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,9 +4,12 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
+    using NLog;
 
     class BCNavPackager : SQLitePackager
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         protected override string TABLE_DDL
         {
             get { return "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s))"; }
@@ -34,18 +37,20 @@
             return Path.ChangeExtension(fullPath, "sqlitedb");
         }
 
-        public override async Task AddTile(Tile tile)
+        public override async Task AddTileAsync(Tile tile, byte[] data)
         {
+            logger.Debug("Tile {0} - Adding tile async", tile);
             var parameters = new Dictionary<string, object> {
                 { "x", tile.X },
                 { "y", tile.Y },
                 { "z", 17 - tile.Zoom },
-                { "image", tile.Image }
+                { "image", data }
             };
             await database.ExecuteNonQueryAsync(INSERT_SQL, parameters);
+            logger.Debug("Tile {0} - Done adding tile async", tile);
         }
 
-        protected override async Task UpdateTileMetaInfo()
+        protected override async Task UpdateTileMetaInfoAsync()
         {
             await database.ExecuteNonQueryAsync(RMAPS_TABLE_INFO_DDL);
             await database.ExecuteNonQueryAsync(RMAPS_CLEAR_INFO_SQL);

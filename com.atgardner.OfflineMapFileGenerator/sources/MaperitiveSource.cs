@@ -21,10 +21,10 @@
             dataCache = new CachePackager(name);
         }
 
-        public async Task<Tile> GetTileData(Tile tile)
+        public async Task<byte[]> GetTileDataAsync(Tile tile)
         {
-            await dataCache.GetData(tile);
-            if (!tile.HasData)
+            var data = await dataCache.GetDataAsync(tile);
+            if (data == null)
             {
                 var tileAt10 = Tile.FromOtherTile(tile, 10);
                 if (runningTasks.ContainsKey(tileAt10))
@@ -33,27 +33,28 @@
                 }
                 else
                 {
-                    var task = GenerateTiles(tileAt10);
+                    var task = GenerateTilesAsync(tileAt10);
                     runningTasks[tileAt10] = task;
                     await task;
                     runningTasks.Remove(tileAt10);
+                    data = await dataCache.GetDataAsync(tile);
                 }
             }
 
-            return tile;
+            return data;
         }
 
-        private static async Task GenerateTiles(Tile tile)
+        private static async Task GenerateTilesAsync(Tile tile)
         {
             var scriptFile = Path.GetTempFileName();
             var scriptText = CreateScriptText(tile);
             await WriteTextAsync(scriptFile, scriptText);
-            await CallMaperitive(scriptFile);
-            await PackageTiles();
+            await CallMaperitiveAsync(scriptFile);
+            await PackageTilesAsync();
             File.Delete(scriptFile);
         }
 
-        private static async Task PackageTiles()
+        private static async Task PackageTilesAsync()
         {
 
         }
@@ -74,7 +75,7 @@
             };
         }
 
-        private static async Task CallMaperitive(string scriptFile)
+        private static async Task CallMaperitiveAsync(string scriptFile)
         {
             var args = string.Format("-exitafter {0}", scriptFile);
             await Utils.RunProcessAsync(maperitiveCommandLine, args);

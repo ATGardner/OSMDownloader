@@ -6,9 +6,11 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
+    using NLog;
 
     class CachePackager : SQLitePackager, IDataCache
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly string SELECT_SQL = "SELECT image FROM tiles WHERE x = @x AND y = @y AND z = @z";
         private bool isNew;
         private bool initialized;
@@ -43,49 +45,49 @@
             return dbFile;
         }
 
-        public override async Task AddTile(Tile tile)
+        public override async Task AddTileAsync(Tile tile, byte[] data)
         {
-            await PutData(tile);
+            await PutDataAsync(tile, data);
         }
 
-        protected override Task UpdateTileMetaInfo()
+        protected override Task UpdateTileMetaInfoAsync()
         {
             return Task.FromResult(0);
         }
 
-        public async Task GetData(Tile tile)
+        public async Task<byte[]> GetDataAsync(Tile tile)
         {
             if (!initialized)
             {
-                await Init();
+                await InitAsync();
                 initialized = true;
             }
 
             if (isNew)
             {
-                return;
+                return null;
             }
 
-            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> {
+            logger.Debug("Tile {0} - getting data from cache", tile);
+            var data = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> {
                 { "x", tile.X },
                 { "y", tile.Y },
                 { "z", tile.Zoom }
             });
+            logger.Debug("Tile {0} - got data from cache, found: {1}", tile, data != null);
+            return null;
         }
 
-        public async Task PutData(Tile tile)
+        public async Task PutDataAsync(Tile tile, byte[] data)
         {
-            if (tile == null)
-            {
-                return;
-            }
-
+            logger.Debug("Tile {0} - putting data into cache", tile);
             await database.ExecuteNonQueryAsync(INSERT_SQL, new Dictionary<string, object> {
                 { "x", tile.X },
                 { "y", tile.Y },
                 { "z", tile.Zoom },
-                { "image", tile.Image }
+                { "image", data }
             });
+            logger.Debug("Tile {0} - done putting data into cache", tile);
         }
     }
 }

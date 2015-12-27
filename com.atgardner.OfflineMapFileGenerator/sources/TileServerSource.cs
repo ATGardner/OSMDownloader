@@ -5,9 +5,11 @@
     using utils;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using NLog;
 
     class TileServerSource : ITileSource
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly Regex subDomainRegExp = new Regex(@"\[(.*)\]");
         private static readonly Regex md5RegEx = new Regex(@"\*(.*)\*");
         private static int subDomainNum = 0;
@@ -21,22 +23,24 @@
             dataCache = new CachePackager(name);
         }
 
-        public async Task<Tile> GetTileData(Tile tile)
+        public async Task<byte[]> GetTileDataAsync(Tile tile)
         {
-            await dataCache.GetData(tile);
-            if (tile.HasData)
+            logger.Debug("Tile {0} - Getting tile data async", tile);
+            var data = await dataCache.GetDataAsync(tile);
+            if (data != null)
             {
-                return tile;
+                return data;
             }
 
             var address = CreateAddress(tile);
-            tile.Image = await Utils.PerformDownload(address);
-            if (tile.HasData)
+            data = await Utils.PerformDownloadAsync(address);
+            if (data != null)
             {
-                await dataCache.PutData(tile);
+                await dataCache.PutDataAsync(tile, data);
             }
 
-            return tile;
+            logger.Debug("Tile {0} - Done getting tile data async", tile);
+            return data;
         }
 
         private string CreateAddress(Tile tile)

@@ -24,7 +24,7 @@
             database.Open();
         }
 
-        public async Task<Tile> GetTileData(Tile tile)
+        public async Task<byte[]> GetTileDataAsync(Tile tile)
         {
             if (!initialized)
             {
@@ -34,12 +34,14 @@
 
             //switching the tile_row direction
             var y = (1 << tile.Zoom) - tile.Y - 1;
-            tile.Image = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> {
+            logger.Debug("Tile {0} - getting form MB Database", tile);
+            var data = (byte[])await database.ExecuteScalarAsync(SELECT_SQL, new Dictionary<string, object> {
                 { "tile_column", tile.X },
                 { "tile_row", y },
                 { "zoom_level", tile.Zoom }
             });
-            return tile;
+            logger.Debug("Tile {0} - done getting form MB Database, found: {1}", tile, data !=  null);
+            return data;
         }
 
         #region IDisposable Support

@@ -13,8 +13,8 @@
         protected abstract string INDEX_DDL { get; }
         protected abstract string INSERT_SQL { get; }
         protected abstract string GetDbFileName(string fileName);
-        protected abstract Task UpdateTileMetaInfo();
-        public abstract Task AddTile(Tile tile);
+        protected abstract Task UpdateTileMetaInfoAsync();
+        public abstract Task AddTileAsync(Tile tile, byte[] data);
 
         private readonly string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
         private readonly string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
@@ -29,10 +29,16 @@
             this.attribution = attribution;
         }
 
-        public async Task Init()
+        public Task InitAsync()
         {
             database.Open();
-            await CreateTables();
+            return CreateTablesAsync();
+        }
+
+        public async Task InitAsync2()
+        {
+            database.Open();
+            await CreateTablesAsync();
         }
 
         public void Dispose()
@@ -49,10 +55,17 @@
                     return new BCNavPackager(fileName, attribution);
                 case FormatType.MBTiles:
                     return new MBTilesPackager(fileName, attribution);
-                //case FormatType.OruxMaps:
-                //    return new OruxPackager(fileName, map);
                 default:
                     throw new ArgumentException("Type must be either BCNav or OruxMaps", "type");
+            }
+        }
+
+        public async Task AddTileAsync(Tile tile, Task<byte[]> futureData)
+        {
+            var data = await futureData;
+            if (data != null)
+            {
+                await AddTileAsync(tile, data);
             }
         }
 
@@ -65,19 +78,19 @@
 
             if (database != null)
             {
-                await UpdateTileMetaInfo();
+                await UpdateTileMetaInfoAsync();
                 database.Dispose();
             }
         }
 
-        private async Task CreateTables()
+        private async Task CreateTablesAsync()
         {
             await database.ExecuteNonQueryAsync(TABLE_DDL);
             await database.ExecuteNonQueryAsync(INDEX_DDL);
-            await UpdateLocale();
+            await UpdateLocaleAsync();
         }
 
-        private async Task UpdateLocale()
+        private async Task UpdateLocaleAsync()
         {
             await database.ExecuteNonQueryAsync(METADATA_DDL);
             var count = await database.ExecuteScalarAsync(METADATA_SELECT);

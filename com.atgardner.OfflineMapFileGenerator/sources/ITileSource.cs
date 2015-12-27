@@ -5,6 +5,6 @@
 
     public interface ITileSource
     {
-        Task<Tile> GetTileData(Tile tile);
+        Task<byte[]> GetTileDataAsync(Tile tile);
     }
 }

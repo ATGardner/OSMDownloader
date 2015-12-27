@@ -5,8 +5,8 @@
 
     interface IDataCache
     {
-        Task GetData(Tile tile);
+        Task<byte[]> GetDataAsync(Tile tile);
 
-        Task PutData(Tile tile);
+        Task PutDataAsync(Tile tile, byte[] data);
     }
 }

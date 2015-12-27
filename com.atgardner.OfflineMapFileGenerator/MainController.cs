@@ -8,8 +8,8 @@
     using System;
     using System.ComponentModel;
     using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
 
     class MainController
     {
@@ -27,64 +27,45 @@
             }
         }
 
-        public async Task Init(string sourceFile)
+        public async Task InitAsync(string sourceFile)
         {
-            Sources = await SourceDescriptor.LoadSources(sourceFile);
+            Sources = await SourceDescriptor.LoadSourcesAsync(sourceFile);
         }
 
-        public async Task DownloadTiles(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)
+        public async Task DownloadTilesAsync(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)
         {
-            logger.Debug("Getting tiles, inputFiles: {0}, outputFile: {1}, zoomLevels: {2}, source: {3}", inputFiles, outputFile, zoomLevels, descriptor);
+            logger.Debug("Starting to download tiles from {0} files, into '{1}'", inputFiles.Length, outputFile);
             var manager = new TilesManager(descriptor.GetSource());
             var coordinates = Utils.ExtractCoordinates(inputFiles);
-            UpdateStatus(0, "Done Reading Files");
-            logger.Trace("Got coordinates stream from input files");
-            var map = manager.GetTileDefinitions(coordinates, zoomLevels);
-            logger.Trace("Got tile definition stream from coordinates");
-            var total = map.Count();
-            var tasks = manager.GetTileData(map);
-            var prevPercentage = -1;
-            var current = 0;
-            var missing = 0;
+            var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
             var packager = SQLitePackager.GetPackager(formatType, outputFile, descriptor.Attribution);
-            using (packager)
+            var tasks = new List<Task>();
+            await packager.InitAsync();
+            foreach (var t in tiles)
             {
-                await packager.Init();
-                while (tasks.Count > 0)
-                {
-                    var task = await Task.WhenAny(tasks);
-                    tasks.Remove(task);
-                    var tile = await task;
-                    if (tile.HasData)
-                    {
-                        try
-                        {
-                            await packager.AddTile(tile);
-                        }
-                        catch (Exception e)
-                        {
-                            logger.Warn("Failed adding tile {0}, error: {1}", tile, e);
-                        }
-
-                        tile.Image = null;
-                    }
-                    else
-                    {
-                        missing++;
-                        logger.Warn("Source {0} does not contain tile {1}", descriptor, tile);
-                    }
-
-                    current++;
-                    var progressPercentage = 100 * current / total;
-                    if (progressPercentage > prevPercentage)
-                    {
-                        prevPercentage = progressPercentage;
-                        UpdateStatus(progressPercentage, string.Format("{0}/{1} Tiles processed", current, total));
-                    }
-                }
-
-                UpdateStatus(100, string.Format("Done processing {0} tiles, {1} tiles are missing ({2:P})", total, missing, (float)missing / total));
+                var futureData = manager.GetTileData(t);
+                var task = packager.AddTileAsync(t, futureData);
+                tasks.Add(task);
             }
+
+            var prevPercentage = -1;
+            var total = tasks.Count;
+            var current = 0;
+            while (tasks.Count > 0)
+            {
+                var task = await Task.WhenAny(tasks);
+                tasks.Remove(task);
+                current++;
+                var progressPercentage = 100 * current / total;
+                if (progressPercentage > prevPercentage)
+                {
+                    prevPercentage = progressPercentage;
+                    UpdateStatus(progressPercentage, string.Format("{0}/{1} Tiles processed", current, total));
+                }
+            }
+
+            logger.Debug("Done processing {0} tiles", total);
+            UpdateStatus(100, string.Format("Done processing {0} tiles", total));
         }
 
         private void UpdateStatus(int progressPercentage, string status)

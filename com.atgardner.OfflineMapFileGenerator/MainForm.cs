@@ -36,7 +36,7 @@
             CreateZoomCheckBoxes();
             try
             {
-                await controller.Init(SourceFile);
+                await controller.InitAsync(SourceFile);
                 cmbMapSource.DataSource = controller.Sources;
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@
             prgBar.Value = 0;
             await Task.Run(async () =>
             {
-                await controller.DownloadTiles(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType);
+                await controller.DownloadTilesAsync(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType);
             });
             tlpContainer.Enabled = true;
         }
@@ -114,12 +114,7 @@
                 return FormatType.BCNav;
             }
 
-            if (rdBtnMB.Checked)
-            {
-                return FormatType.MBTiles;
-            }
-
-            return FormatType.OruxMaps;
+            return FormatType.MBTiles;
         }
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)

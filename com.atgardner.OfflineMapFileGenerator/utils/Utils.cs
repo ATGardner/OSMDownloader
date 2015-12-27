@@ -23,7 +23,7 @@
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly Regex hrefRegex = new Regex(@"<a href=""(?<href>[^""]*)"">(?<text>[^<]*)</a>");
 
-        public static async Task<byte[]> GetFileData(string filePath)
+        public static async Task<byte[]> GetFileDataAsync(string filePath)
         {
             var fi = new FileInfo(filePath);
             var data = new byte[fi.Length];
@@ -39,10 +39,13 @@
         {
             foreach (var fileName in fileNames)
             {
-                foreach (var c in Utils.ExtractCoordinates(fileName))
+                logger.Debug("Extracting coordinates from '{0}'", fileName);
+                foreach (var c in ExtractCoordinates(fileName))
                 {
                     yield return c;
                 }
+
+                logger.Debug("Done extracting coordinates from '{0}'", fileName);
             }
         }
 
@@ -76,7 +79,7 @@
             }
         }
 
-        public static async Task<byte[]> PerformDownload(string address)
+        public static async Task<byte[]> PerformDownloadAsync(string address)
         {
             byte[] result = null;
             using (var webClient = new WebClient())
@@ -86,8 +89,9 @@
                     try
                     {
                         webClient.Headers.Add("user-agent", "Offline Map File Generator");
-                        //logger.Trace("Trying to download {0} - {1}", retry, address);
+                        logger.Debug("Downloading data, address: {0}, retry: {1}", address, retry);
                         result = await webClient.DownloadDataTaskAsync(address);
+                        logger.Debug("Done downloading data, address: {0}", address);
                         return result;
                     }
                     catch (WebException e)
@@ -127,7 +131,10 @@
                 EnableRaisingEvents = true
             })
             {
-                return await RunProcessAsync(process).ConfigureAwait(false);
+                logger.Debug("Running process async, fileName: {0}", fileName);
+                var result = await RunProcessAsync(process).ConfigureAwait(false);
+                logger.Debug("Done running process async, fileName: {0}, result: {1}", fileName, result);
+                return result;
             }
         }
 

@@ -6,8 +6,8 @@
 
     public interface IPackager : IDisposable
     {
-        Task Init();
+        Task InitAsync();
 
-        Task AddTile(Tile tile);
+        Task AddTileAsync(Tile tile, Task<byte[]> futureData);
     }
 }

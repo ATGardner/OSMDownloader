@@ -43,7 +43,7 @@
             this.lblTarget = new System.Windows.Forms.Label();
             this.flpTarget = new System.Windows.Forms.FlowLayoutPanel();
             this.rdBtnBCNav = new System.Windows.Forms.RadioButton();
-            this.rdBtnOruxMaps = new System.Windows.Forms.RadioButton();
+            this.rdBtnMB = new System.Windows.Forms.RadioButton();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
@@ -53,7 +53,6 @@
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rdBtnMB = new System.Windows.Forms.RadioButton();
             this.tlpContainer.SuspendLayout();
             this.flpZoomLevels.SuspendLayout();
             this.flpTarget.SuspendLayout();
@@ -226,7 +225,6 @@
             // 
             this.flpTarget.AutoSize = true;
             this.flpTarget.Controls.Add(this.rdBtnBCNav);
-            this.flpTarget.Controls.Add(this.rdBtnOruxMaps);
             this.flpTarget.Controls.Add(this.rdBtnMB);
             this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpTarget.Location = new System.Drawing.Point(95, 131);
@@ -246,16 +244,16 @@
             this.rdBtnBCNav.Text = "BackCountry Navigator";
             this.rdBtnBCNav.UseVisualStyleBackColor = true;
             // 
-            // rdBtnOruxMaps
+            // rdBtnMB
             // 
-            this.rdBtnOruxMaps.AutoSize = true;
-            this.rdBtnOruxMaps.Location = new System.Drawing.Point(144, 3);
-            this.rdBtnOruxMaps.Name = "rdBtnOruxMaps";
-            this.rdBtnOruxMaps.Size = new System.Drawing.Size(76, 17);
-            this.rdBtnOruxMaps.TabIndex = 1;
-            this.rdBtnOruxMaps.TabStop = true;
-            this.rdBtnOruxMaps.Text = "Orux Maps";
-            this.rdBtnOruxMaps.UseVisualStyleBackColor = true;
+            this.rdBtnMB.AutoSize = true;
+            this.rdBtnMB.Location = new System.Drawing.Point(144, 3);
+            this.rdBtnMB.Name = "rdBtnMB";
+            this.rdBtnMB.Size = new System.Drawing.Size(63, 17);
+            this.rdBtnMB.TabIndex = 2;
+            this.rdBtnMB.TabStop = true;
+            this.rdBtnMB.Text = "MBTiles";
+            this.rdBtnMB.UseVisualStyleBackColor = true;
             // 
             // lnk
             // 
@@ -352,17 +350,6 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // rdBtnMB
-            // 
-            this.rdBtnMB.AutoSize = true;
-            this.rdBtnMB.Location = new System.Drawing.Point(226, 3);
-            this.rdBtnMB.Name = "rdBtnMB";
-            this.rdBtnMB.Size = new System.Drawing.Size(63, 17);
-            this.rdBtnMB.TabIndex = 2;
-            this.rdBtnMB.TabStop = true;
-            this.rdBtnMB.Text = "MBTiles";
-            this.rdBtnMB.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -416,7 +403,6 @@
         private System.Windows.Forms.Label lblTarget;
         private System.Windows.Forms.FlowLayoutPanel flpTarget;
         private System.Windows.Forms.RadioButton rdBtnBCNav;
-        private System.Windows.Forms.RadioButton rdBtnOruxMaps;
         private System.Windows.Forms.CheckBox chkBxAll;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.RadioButton rdBtnMB;
