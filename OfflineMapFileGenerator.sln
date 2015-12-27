@@ -3,16 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.OfflineMapFileGenerator", "com.atgardner.OfflineMapFileGenerator\com.atgardner.OfflineMapFileGenerator.csproj", "{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8BEB9032-40CE-4396-803E-C45E48C76FE8}"
-	ProjectSection(SolutionItems) = preProject
-		CodeMap.dgml = CodeMap.dgml
-		LICENSE.md = LICENSE.md
-		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.atgardner.OfflineMapFileGeneratorTests", "com.atgardner.OfflineMapFileGeneratorTests\com.atgardner.OfflineMapFileGeneratorTests.csproj", "{1B62059D-3002-4D11-B58C-D131E80BA657}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseTest", "DatabaseTest\DatabaseTest.csproj", "{283DFCB4-96E8-448C-B5BD-C0EBED83AF79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,14 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D4B6AFD-A308-4E04-838F-A9BD9B9DE614}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B62059D-3002-4D11-B58C-D131E80BA657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B62059D-3002-4D11-B58C-D131E80BA657}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B62059D-3002-4D11-B58C-D131E80BA657}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B62059D-3002-4D11-B58C-D131E80BA657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{283DFCB4-96E8-448C-B5BD-C0EBED83AF79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{283DFCB4-96E8-448C-B5BD-C0EBED83AF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{283DFCB4-96E8-448C-B5BD-C0EBED83AF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{283DFCB4-96E8-448C-B5BD-C0EBED83AF79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

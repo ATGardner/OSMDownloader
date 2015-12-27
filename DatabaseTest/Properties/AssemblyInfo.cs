@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Offline Map File Generator")]
-[assembly: AssemblyDescription("Generate offline map files for use on your Smart Device.\r\n\r\nWebsite: http://atgardner.github.io/OfflineMapFileGenerator\r\n\r\nUsed Libraries:\r\nSharpKml (http://sharpkml.codeplex.com)\r\nDotNetZip (http://dotnetzip.codeplex.com)\r\nGPXLib (http://gpxlib.codeplex.com)\r\nJson.NET (http://www.newtonsoft.com/json)\r\nSQLite (http://www.sqlite.org)\r\nGavaghan Geodesy (http://www.gavaghan.org/blog/free-source-code/geodesy-library-vincentys-formula)")]
+[assembly: AssemblyTitle("DatabaseTest")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Noam \"Amtrak\" Gal")]
-[assembly: AssemblyProduct("Offline Map File Generator")]
-[assembly: AssemblyCopyright("Copyright © 2015 Noam Gal")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("DatabaseTest")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f77de64e-e595-4b63-8bfd-673c292d7edc")]
+[assembly: Guid("283dfcb4-96e8-448c-b5bd-c0ebed83af79")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.9.0.0")]
-[assembly: AssemblyFileVersion("0.9.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
