@@ -94,7 +94,7 @@
   {
     "Name": "Maperitive",
     "Address": "D:\\Users\\Noam\\Downloads\\OMFG\\aosta.sqlitedb",
-    "minZoom": 10,
+    "minZoom": 11,
     "maxZoom": 15,
     "attribution": "whatever",
     "type": "Maperitive"

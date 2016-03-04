@@ -41,7 +41,7 @@
             }
             catch (Exception ex)
             {
-                logger.FatalException("Failed reading sources", ex);
+                logger.Fatal(ex, "Failed reading sources");
                 MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }

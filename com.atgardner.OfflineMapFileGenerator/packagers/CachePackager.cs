@@ -75,7 +75,7 @@
                 { "z", tile.Zoom }
             });
             logger.Debug("Tile {0} - got data from cache, found: {1}", tile, data != null);
-            return null;
+            return data;
         }
 
         public async Task PutDataAsync(Tile tile, byte[] data)

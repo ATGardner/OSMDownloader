@@ -7,36 +7,44 @@
     using System.IO;
     using System.Text;
     using Properties;
+    using NLog;
     using System.Collections.Generic;
+    using System;
 
     class MaperitiveSource : ITileSource
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly string name = "maperitive";
         private static readonly string maperitiveCommandLine = @"D:\Users\Noam\Downloads\OMFG\Maperitive\Maperitive.exe";
-        private static readonly IDictionary<Tile, Task> runningTasks = new Dictionary<Tile, Task>();
         private readonly IDataCache dataCache;
+        private readonly IDictionary<Tile, Task> tasks;
+        private Task currentTask = Task.FromResult(0);
 
         public MaperitiveSource()
         {
             dataCache = new CachePackager(name);
+            tasks = new Dictionary<Tile, Task>();
         }
 
         public async Task<byte[]> GetTileDataAsync(Tile tile)
         {
+            logger.Debug("Tile {0} - Getting tile data async", tile);
             var data = await dataCache.GetDataAsync(tile);
             if (data == null)
             {
-                var tileAt10 = Tile.FromOtherTile(tile, 10);
-                if (runningTasks.ContainsKey(tileAt10))
+                logger.Debug("Tile {0} - Data not found in cache", tile);
+                var tileAt10 = Tile.FromOtherTile(tile, 11);
+                if (tasks.ContainsKey(tile))
                 {
-                    await runningTasks[tileAt10];
+                    logger.Debug("Tile {0} - Already generating data for {1}, waiting", tile, tileAt10);
+                    await tasks[tile];
+                    logger.Debug("Tile {0} - Done awaiting old task");
+                    data = await dataCache.GetDataAsync(tile);
                 }
                 else
                 {
-                    var task = GenerateTilesAsync(tileAt10);
-                    runningTasks[tileAt10] = task;
-                    await task;
-                    runningTasks.Remove(tileAt10);
+                    await GenerateTilesAsync(tileAt10);
+                    logger.Debug("Tile {0} - Done generating tiles", tile);
                     data = await dataCache.GetDataAsync(tile);
                 }
             }
@@ -44,19 +52,41 @@
             return data;
         }
 
-        private static async Task GenerateTilesAsync(Tile tile)
+        private Task GenerateTilesAsync(Tile tile)
         {
-            var scriptFile = Path.GetTempFileName();
-            var scriptText = CreateScriptText(tile);
-            await WriteTextAsync(scriptFile, scriptText);
-            await CallMaperitiveAsync(scriptFile);
-            await PackageTilesAsync();
-            File.Delete(scriptFile);
+            logger.Debug("Tile {0} - Adding tile task", tile);
+            tasks[tile] = currentTask.ContinueWith(CreateTileTask(tile)).Unwrap();
+            currentTask = tasks[tile];
+            logger.Debug("Tile {0} - Returning currentTask {1}", tile, currentTask.Status);
+            return currentTask;
         }
 
-        private static async Task PackageTilesAsync()
+        private static Func<object, Task> CreateTileTask(Tile tile)
         {
-
+            Func<object, Task> func  = async o =>
+            {
+                try
+                {
+                    logger.Debug("Tile {0} - Generating Maperitive data", tile);
+                    var scriptFile = Path.GetTempFileName();
+                    logger.Debug("Tile {0} - Creating script text", tile);
+                    var scriptText = CreateScriptText(tile);
+                    logger.Debug("Tile {0} - Writing script text to file", tile);
+                    await WriteTextAsync(scriptFile, scriptText);
+                    logger.Debug("Tile {0} - Calling maperitive", tile);
+                    await CallMaperitiveAsync(scriptFile);
+                    logger.Debug("Tile {0} - Deleting script file", tile);
+                    File.Delete(scriptFile);
+                    logger.Debug("Tile {0} - Packaging tiles", tile);
+                    await PackageTilesAsync();
+                    logger.Debug("Tile {0} - Done generating Maperitive data", tile);
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "Tile {0} - Failed generating maperitive data");
+                }
+            };
+            return func;
         }
 
         private static string CreateScriptText(Tile tile)
@@ -79,6 +109,11 @@
         {
             var args = string.Format("-exitafter {0}", scriptFile);
             await Utils.RunProcessAsync(maperitiveCommandLine, args);
+        }
+
+        private static async Task PackageTilesAsync()
+        {
+            var a = 123;
         }
     }
 }

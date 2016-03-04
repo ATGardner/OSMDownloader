@@ -173,26 +173,34 @@
             }
         }
 
-        private static string GetKmlString(string path)
+        private static string GetKmlString(string fileName)
         {
-            var ext = Path.GetExtension(path);
+            var ext = Path.GetExtension(fileName);
             if (string.Equals(ext, ".kml", StringComparison.InvariantCultureIgnoreCase))
             {
-                return File.ReadAllText(path);
+                return File.ReadAllText(fileName);
             }
 
-            using (var kmz = KmzFile.Open(path))
+            using (var kmz = KmzFile.Open(fileName))
             {
                 return kmz.ReadKml();
             }
         }
 
-        private static Element GetKmlRoot(string path)
+        private static Element GetKmlRoot(string fileName)
         {
-            var kmlString = GetKmlString(path);
-            var parser = new Parser();
-            parser.ParseString(kmlString, false);
-            return parser.Root;
+            try
+            {
+                var kmlString = GetKmlString(fileName);
+                var parser = new Parser();
+                parser.ParseString(kmlString, false);
+                return parser.Root;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Failed loading data from  {0}", fileName);
+                return new Kml();
+            }
         }
 
         private static IEnumerable<GlobalCoordinates> ExtractCoordinatesFromKml(string fileName)
@@ -240,7 +248,15 @@
         private static IEnumerable<GlobalCoordinates> ExtractCoordinatesFromGpx(string fileName)
         {
             GPXLib gpx = new GPXLib();
-            gpx.LoadFromFile(fileName);
+            try
+            {
+                gpx.LoadFromFile(fileName);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Failed loading data from  {0}", fileName);
+            }
+
             foreach (var waypoint in FlattenGpx(gpx))
             {
                 yield return CreateCoordinate((double)waypoint.Lat, (double)waypoint.Lon);
