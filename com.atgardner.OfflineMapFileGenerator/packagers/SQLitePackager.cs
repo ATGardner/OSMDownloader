@@ -4,6 +4,7 @@
     using utils;
     using System;
     using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Collections.Generic;
 
@@ -56,7 +57,9 @@
                 case FormatType.MBTiles:
                     return new MBTilesPackager(fileName, attribution);
                 default:
-                    throw new ArgumentException("Type must be either BCNav or OruxMaps", "type");
+                    var allTypes = Enum.GetValues(type.GetType()).Cast<FormatType>();
+                    var packagers = from t in allTypes where (type & t) != FormatType.None select GetPackager(t, fileName, attribution);
+                    return new CompositePackager(packagers.ToArray());
             }
         }
 

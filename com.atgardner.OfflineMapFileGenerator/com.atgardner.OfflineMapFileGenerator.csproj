@@ -108,6 +108,7 @@
     </Compile>
     <Compile Include="MainController.cs" />
     <Compile Include="packagers\CachePackager.cs" />
+    <Compile Include="packagers\CompositePackager.cs" />
     <Compile Include="packagers\FormatType.cs" />
     <Compile Include="packagers\MBTilesPackager.cs" />
     <Compile Include="packagers\BCNavPackager.cs" />

@@ -42,8 +42,8 @@
             this.chkBxAll = new System.Windows.Forms.CheckBox();
             this.lblTarget = new System.Windows.Forms.Label();
             this.flpTarget = new System.Windows.Forms.FlowLayoutPanel();
-            this.rdBtnBCNav = new System.Windows.Forms.RadioButton();
-            this.rdBtnMB = new System.Windows.Forms.RadioButton();
+            this.rdBtnBCNav = new System.Windows.Forms.CheckBox();
+            this.rdBtnMB = new System.Windows.Forms.CheckBox();
             this.lnk = new System.Windows.Forms.LinkLabel();
             this.btnRun = new System.Windows.Forms.Button();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
@@ -402,10 +402,10 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label lblTarget;
         private System.Windows.Forms.FlowLayoutPanel flpTarget;
-        private System.Windows.Forms.RadioButton rdBtnBCNav;
+        private System.Windows.Forms.CheckBox rdBtnBCNav;
         private System.Windows.Forms.CheckBox chkBxAll;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.RadioButton rdBtnMB;
+        private System.Windows.Forms.CheckBox rdBtnMB;
     }
 }
 

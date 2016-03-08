@@ -38,34 +38,36 @@
             var manager = new TilesManager(descriptor.GetSource());
             var coordinates = Utils.ExtractCoordinates(inputFiles);
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
-            var packager = SQLitePackager.GetPackager(formatType, outputFile, descriptor.Attribution);
-            var tasks = new List<Task>();
-            await packager.InitAsync();
-            foreach (var t in tiles)
+            using (var packager = SQLitePackager.GetPackager(formatType, outputFile, descriptor.Attribution))
             {
-                var futureData = manager.GetTileData(t);
-                var task = packager.AddTileAsync(t, futureData);
-                tasks.Add(task);
-            }
-
-            var prevPercentage = -1;
-            var total = tasks.Count;
-            var current = 0;
-            while (tasks.Count > 0)
-            {
-                var task = await Task.WhenAny(tasks);
-                tasks.Remove(task);
-                current++;
-                var progressPercentage = 100 * current / total;
-                if (progressPercentage > prevPercentage)
+                var tasks = new List<Task>();
+                await packager.InitAsync();
+                foreach (var t in tiles)
                 {
-                    prevPercentage = progressPercentage;
-                    UpdateStatus(progressPercentage, string.Format("{0}/{1} Tiles processed", current, total));
+                    var futureData = manager.GetTileData(t);
+                    var task = packager.AddTileAsync(t, futureData);
+                    tasks.Add(task);
                 }
-            }
 
-            logger.Debug("Done processing {0} tiles", total);
-            UpdateStatus(100, string.Format("Done processing {0} tiles", total));
+                var prevPercentage = -1;
+                var total = tasks.Count;
+                var current = 0;
+                while (tasks.Count > 0)
+                {
+                    var task = await Task.WhenAny(tasks);
+                    tasks.Remove(task);
+                    current++;
+                    var progressPercentage = 100 * current / total;
+                    if (progressPercentage > prevPercentage)
+                    {
+                        prevPercentage = progressPercentage;
+                        UpdateStatus(progressPercentage, string.Format("{0}/{1} Tiles processed", current, total));
+                    }
+                }
+
+                logger.Debug("Done processing {0} tiles", total);
+                UpdateStatus(100, string.Format("Done processing {0} tiles", total));
+            }
         }
 
         private void UpdateStatus(int progressPercentage, string status)

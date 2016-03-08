@@ -98,6 +98,13 @@
             }
 
             var formatType = getFormatType();
+            if (formatType == FormatType.None)
+            {
+                logger.Warn("No output format selected");
+                MessageBox.Show("Please specify at least one output format", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             tlpContainer.Enabled = false;
             prgBar.Value = 0;
             await Task.Run(async () =>
@@ -109,12 +116,18 @@
 
         private FormatType getFormatType()
         {
+            var result = FormatType.None;
             if (rdBtnBCNav.Checked)
             {
-                return FormatType.BCNav;
+                result |= FormatType.BCNav;
             }
 
-            return FormatType.MBTiles;
+            if (rdBtnMB.Checked)
+            {
+                result |= FormatType.MBTiles;
+            }
+
+            return result;
         }
 
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
