@@ -38,20 +38,32 @@
             var manager = new TilesManager(descriptor.GetSource());
             var coordinates = Utils.ExtractCoordinates(inputFiles);
             var tiles = manager.GetTileDefinitions(coordinates, zoomLevels);
+            var total = 0;
+            var current = 0;
             using (var packager = SQLitePackager.GetPackager(formatType, outputFile, descriptor.Attribution))
             {
                 var tasks = new List<Task>();
                 await packager.InitAsync();
                 foreach (var t in tiles)
                 {
+                    total++;
                     var futureData = manager.GetTileData(t);
                     var task = packager.AddTileAsync(t, futureData);
-                    tasks.Add(task);
+                    if (task.IsCompleted)
+                    {
+                        current++;
+                        if (current % 10 == 0)
+                        {
+                            UpdateStatus(-1, string.Format("{0} Tiles processed", current));
+                        }
+                    }
+                    else
+                    {
+                        tasks.Add(task);
+                    }
                 }
 
                 var prevPercentage = -1;
-                var total = tasks.Count;
-                var current = 0;
                 while (tasks.Count > 0)
                 {
                     var task = await Task.WhenAny(tasks);

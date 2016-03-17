@@ -24,10 +24,17 @@
             zoomLevels = zoomLevels.OrderByDescending(c => c).ToArray();
             var maxZoom = zoomLevels[0];
             var tiles = new HashSet<Tile>();
+            Tile lastTile = null;
             foreach (var c in coordinates)
             {
                 foreach (var t in GetTilesDefinitionsFromCoordinate(c, maxZoom))
                 {
+                    if (t.Equals(lastTile))
+                    {
+                        continue;
+                    }
+
+                    lastTile = t;
                     if (tiles.Add(t))
                     {
                         var str = coordinates.ToString();
@@ -63,7 +70,7 @@
         {
             var tile = new Tile(coordiate, zoom);
             yield return tile;
-            foreach (var t in GetTilesAround(coordiate, zoom, 1500))
+            foreach (var t in GetTilesAround(coordiate, zoom, 3000))
             {
                 yield return t;
             }
