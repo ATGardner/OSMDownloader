@@ -34,7 +34,7 @@
             : base(Path.Combine("cache", sourceName), string.Empty)
         {
             initialized = false;
-            isNew = !File.Exists(dbFile);
+            isNew = !File.Exists(OutputFile);
         }
 
         public override async Task AddTileAsync(Tile tile, byte[] data)

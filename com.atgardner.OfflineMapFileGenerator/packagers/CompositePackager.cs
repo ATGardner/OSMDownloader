@@ -1,5 +1,6 @@
 ﻿namespace com.atgardner.OMFG.packagers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using com.atgardner.OMFG.tiles;
@@ -7,6 +8,11 @@
     class CompositePackager : IPackager
     {
         private readonly IPackager[] packagers;
+
+        public string OutputFile
+        {
+            get { return packagers[0].OutputFile; }
+        }
 
         public CompositePackager(params IPackager[] packagers)
         {

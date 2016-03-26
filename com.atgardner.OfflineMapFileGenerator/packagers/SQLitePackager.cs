@@ -22,7 +22,6 @@
         private readonly string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
         private bool disposed = false;
 
-        protected readonly string dbFile;
         protected readonly Database database;
         protected readonly string attribution;
 
@@ -31,10 +30,12 @@
             get { return "sqlitedb"; }
         }
 
+        public string OutputFile { get; private set; }
+
         public SQLitePackager(string fileName, string attribution)
         {
-            dbFile = Path.ChangeExtension(fileName, FileExtension);
-            database = new Database(dbFile);
+            OutputFile = Path.ChangeExtension(fileName, FileExtension);
+            database = new Database(OutputFile);
             this.attribution = attribution;
         }
 
@@ -42,6 +43,20 @@
         {
             database.Open();
             return CreateTablesAsync();
+        }
+
+        public async Task AddTileAsync(Tile tile, Task<byte[]> futureData)
+        {
+            var data = await futureData;
+            if (data != null)
+            {
+                await AddTileAsync(tile, data);
+            }
+        }
+
+        public async Task DoneAsync()
+        {
+            await UpdateTileMetaInfoAsync();
         }
 
         public void Dispose()
@@ -63,20 +78,6 @@
                     var packagers = from t in allTypes where (type & t) != FormatType.None select GetPackager(t, fileName, attribution);
                     return new CompositePackager(packagers.ToArray());
             }
-        }
-
-        public async Task AddTileAsync(Tile tile, Task<byte[]> futureData)
-        {
-            var data = await futureData;
-            if (data != null)
-            {
-                await AddTileAsync(tile, data);
-            }
-        }
-
-        public async Task DoneAsync()
-        {
-            await UpdateTileMetaInfoAsync();
         }
 
         protected virtual void Dispose(bool isDisposing)

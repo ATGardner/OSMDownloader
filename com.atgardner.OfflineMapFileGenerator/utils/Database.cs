@@ -29,29 +29,22 @@
             connection.Open();
         }
 
-        public void Close()
-        {
-            connection.Close();
-        }
-
         public async Task ExecuteNonQueryAsync(string text, IDictionary<string, object> parameters = null)
         {
-            var command = CreateCommand(text, parameters);
             logger.Debug("Executing non query async, text: {0}", text);
-            await command.ExecuteNonQueryAsync();
-            logger.Debug("Done executing non query async, text: {0}", text);
+            using (var command = CreateCommand(text, parameters))
+            {
+                await command.ExecuteNonQueryAsync();
+            }
         }
 
         public async Task<object> ExecuteScalarAsync(string text, IDictionary<string, object> parameters = null)
         {
-            var command = CreateCommand(text, parameters);
             logger.Debug("Executing scalar async, text: {0}", text);
-            var result = await command.ExecuteScalarAsync();
-            logger.Debug("Done executing scalar async, text: {0}, result: {1}", text, result);
-            //await Task.Run(() => {
-            //    Console.WriteLine("Inside the running task");
-            //});
-            return result;
+            using (var command = CreateCommand(text, parameters))
+            {
+                return await command.ExecuteScalarAsync();
+            }
         }
 
         private bool disposed = false; // To detect redundant calls

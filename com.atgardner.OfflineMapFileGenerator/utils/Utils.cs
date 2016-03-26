@@ -1,8 +1,10 @@
 ﻿namespace com.atgardner.OMFG.utils
 {
     using Gavaghan.Geodesy;
+    using Ionic.Zip;
     using MKCoolsoft.GPXLib;
     using NLog;
+    using Properties;
     using SharpKml.Base;
     using SharpKml.Dom;
     using SharpKml.Engine;
@@ -22,18 +24,6 @@
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly Regex hrefRegex = new Regex(@"<a href=""(?<href>[^""]*)"">(?<text>[^<]*)</a>");
-
-        public static async Task<byte[]> GetFileDataAsync(string filePath)
-        {
-            var fi = new FileInfo(filePath);
-            var data = new byte[fi.Length];
-            using (var stream = new FileStream(filePath, FileMode.Open))
-            {
-                await stream.ReadAsync(data, 0, data.Length);
-            }
-
-            return data;
-        }
 
         public static IEnumerable<GlobalCoordinates> ExtractCoordinates(string[] fileNames)
         {
@@ -136,6 +126,23 @@
                 logger.Debug("Done running process async, fileName: {0}, result: {1}", fileName, result);
                 return result;
             }
+        }
+
+        public static Task ZipResult(string fileToZip, string attribution)
+        {
+            return Task.Run(() =>
+            {
+                var zipFile = Path.ChangeExtension(fileToZip, "zip");
+                File.Delete(zipFile);
+                using (var zip = new ZipFile(zipFile))
+                {
+                    zip.AddFile(fileToZip, string.Empty);
+                    zip.AddEntry("copyright.txt", string.Format(Resources.CopyrightTemplate, attribution));
+                    zip.Save();
+                }
+
+                File.Delete(fileToZip);
+            });
         }
 
         private static Task<int> RunProcessAsync(Process process)

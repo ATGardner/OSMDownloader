@@ -80,7 +80,10 @@
                 logger.Debug("Done processing {0} tiles", total);
                 UpdateStatus(100, string.Format("Done processing {0} tiles", total));
                 await packager.DoneAsync();
+                outputFile = packager.OutputFile;
             }
+
+            await Utils.ZipResult(outputFile, descriptor.Attribution);
         }
 
         private void UpdateStatus(int progressPercentage, string status)
