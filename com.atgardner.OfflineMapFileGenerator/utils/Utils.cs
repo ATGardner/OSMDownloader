@@ -132,7 +132,11 @@
         {
             return Task.Run(() =>
             {
-                var zipFile = Path.ChangeExtension(fileToZip, "zip");
+                var directory = Path.GetDirectoryName(fileToZip);
+                var outputDirectory = Path.GetDirectoryName(directory);
+                var parentDirectory = Path.GetFileName(directory);
+                var fileName = Path.GetFileNameWithoutExtension(fileToZip);
+                var zipFile = Path.Combine(outputDirectory, string.Format("{0} {1}.zip", parentDirectory, fileName));
                 File.Delete(zipFile);
                 using (var zip = new ZipFile(zipFile))
                 {
@@ -140,8 +144,6 @@
                     zip.AddEntry("copyright.txt", string.Format(Resources.CopyrightTemplate, attribution));
                     zip.Save();
                 }
-
-                File.Delete(fileToZip);
             });
         }
 

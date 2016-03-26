@@ -23,7 +23,6 @@
         private bool disposed = false;
 
         protected readonly Database database;
-        protected readonly string attribution;
 
         protected virtual string FileExtension
         {
@@ -31,12 +30,13 @@
         }
 
         public string OutputFile { get; private set; }
+        public string Attribution { get; private set; }
 
         public SQLitePackager(string fileName, string attribution)
         {
             OutputFile = Path.ChangeExtension(fileName, FileExtension);
             database = new Database(OutputFile);
-            this.attribution = attribution;
+            Attribution = attribution;
         }
 
         public Task InitAsync()
@@ -57,6 +57,7 @@
         public async Task DoneAsync()
         {
             await UpdateTileMetaInfoAsync();
+            database.Close();
         }
 
         public void Dispose()
@@ -75,7 +76,9 @@
                     return new MBTilesPackager(fileName, attribution);
                 default:
                     var allTypes = Enum.GetValues(type.GetType()).Cast<FormatType>();
-                    var packagers = from t in allTypes where (type & t) != FormatType.None select GetPackager(t, fileName, attribution);
+                    var packagers = from t in allTypes
+                                    where (type & t) != FormatType.None
+                                    select GetPackager(t, Path.Combine(Path.GetDirectoryName(fileName), t.ToString(), Path.GetFileName(fileName)), attribution);
                     return new CompositePackager(packagers.ToArray());
             }
         }

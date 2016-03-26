@@ -29,6 +29,11 @@
             connection.Open();
         }
 
+        public void Close()
+        {
+            connection.Close();
+        }
+
         public async Task ExecuteNonQueryAsync(string text, IDictionary<string, object> parameters = null)
         {
             logger.Debug("Executing non query async, text: {0}", text);

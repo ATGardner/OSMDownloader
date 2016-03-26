@@ -64,7 +64,7 @@
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "description" }, { "value", string.Format("{0} created on {1} by OMFG", name, DateTime.Now) } });
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "format" }, { "value", "png" } }); /**/
             await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "bounds" }, { "value", "-180.0,-85,180,85" } }); /**/
-            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "attribution" }, { "value", attribution } });
+            await database.ExecuteNonQueryAsync(METADATA_INSERT_SQL, new Dictionary<string, object> { { "name", "attribution" }, { "value", Attribution } });
         }
     }
 }

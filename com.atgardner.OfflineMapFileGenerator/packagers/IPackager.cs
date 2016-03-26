@@ -7,6 +7,7 @@
     public interface IPackager : IDisposable
     {
         string OutputFile { get; }
+        string Attribution { get; }
 
         Task InitAsync();
 
