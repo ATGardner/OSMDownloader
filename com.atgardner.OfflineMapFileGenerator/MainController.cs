@@ -79,6 +79,7 @@
 
                 logger.Debug("Done processing {0} tiles", total);
                 UpdateStatus(100, string.Format("Done processing {0} tiles", total));
+                await packager.DoneAsync();
             }
         }
 

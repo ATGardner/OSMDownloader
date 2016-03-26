@@ -2,7 +2,6 @@
 {
     using tiles;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
     using NLog;
 
@@ -30,12 +29,6 @@
         private string RMAPS_UPDATE_INFO_MINMAX_SQL = "insert into info(minzoom, maxzoom) values((select min(z) from tiles), (select max(z) from tiles));";
 
         public BCNavPackager(string sourceFile, string attribution) : base(sourceFile, attribution) { }
-
-        protected override string GetDbFileName(string fileName)
-        {
-            var fullPath = Path.GetFullPath(fileName);
-            return Path.ChangeExtension(fullPath, "sqlitedb");
-        }
 
         public override async Task AddTileAsync(Tile tile, byte[] data)
         {

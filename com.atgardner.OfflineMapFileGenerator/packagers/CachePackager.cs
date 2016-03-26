@@ -31,18 +31,10 @@
         }
 
         public CachePackager(string sourceName)
-            : base(sourceName, string.Empty)
+            : base(Path.Combine("cache", sourceName), string.Empty)
         {
             initialized = false;
-        }
-
-        protected override string GetDbFileName(string fileName)
-        {
-            var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            fileName = Path.ChangeExtension(fileName, "sqlitedb");
-            var dbFile = Path.Combine(applicationData, "OMFG", "cache", fileName);
             isNew = !File.Exists(dbFile);
-            return dbFile;
         }
 
         public override async Task AddTileAsync(Tile tile, byte[] data)

@@ -61,6 +61,16 @@ namespace com.atgardner.OMFG.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created by Noam &quot;Amtrak&quot; Gal (http://pct14.blogspot.com/p/offline-maps.html) using OMFG (atgardner.github.com/OfflineMapFileGenerator)
+        ///Source: {0}.
+        /// </summary>
+        internal static string CopyrightTemplate {
+            get {
+                return ResourceManager.GetString("CopyrightTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap logo {
@@ -82,43 +92,11 @@ namespace com.atgardner.OMFG.Properties {
         ///load-source Cache\Forests.osm
         ///// SRTM3/SRTM1/SRTMV3R3/SRTMV3R1/VF.Alps
         ///set-dem-source name=SRTM1
-        ///generate-relief-igor intensity=6 color=#808080
-        ///ge [rest of string was truncated]&quot;;.
+        ///generate-relief-igor intensity=6 color [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string MaperitiveScriptTemplate {
             get {
                 return ResourceManager.GetString("MaperitiveScriptTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;OruxTracker xmlns=&quot;http://oruxtracker.com/app/res/calibration&quot; versionCode=&quot;2.1&quot;&gt;
-        ///			&lt;MapCalibration layers=&quot;false&quot; layerLevel=&quot;{1}&quot;&gt;
-        ///				&lt;MapName&gt;&lt;![CDATA[{0} {1}]]&gt;&lt;/MapName&gt;
-        ///				&lt;MapChunks xMax=&quot;{2}&quot; yMax=&quot;{3}&quot; datum=&quot;WGS84&quot; projection=&quot;Mercator&quot; img_height=&quot;256&quot; img_width=&quot;256&quot; file_name=&quot;{0} {1}&quot; /&gt;
-        ///				&lt;MapDimensions height=&quot;{4}&quot; width=&quot;{5}&quot; /&gt;
-        ///				&lt;MapBounds minLat=&quot;{6}&quot; maxLat=&quot;{7}&quot; minLon=&quot;{8}&quot; maxLon=&quot;{9}&quot; /&gt;
-        ///				&lt;CalibrationPoints&gt;
-        ///					&lt;CalibrationPoint corner=&quot;TL&quot; lon=&quot;{8:0.000000}&quot; lat [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string OruxLayerTemplate {
-            get {
-                return ResourceManager.GetString("OruxLayerTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        ///&lt;OruxTracker xmlns=&quot;http://oruxtracker.com/app/res/calibration&quot; versionCode=&quot;3.0&quot;&gt;
-        ///	&lt;MapCalibration layers=&quot;true&quot; layerLevel=&quot;0&quot;&gt;
-        ///		&lt;MapName&gt;&lt;![CDATA[{0}]]&gt;&lt;/MapName&gt;
-        ///		{1}
-        ///	&lt;/MapCalibration&gt;
-        ///&lt;/OruxTracker&gt;.
-        /// </summary>
-        internal static string OruxMapTemplate {
-            get {
-                return ResourceManager.GetString("OruxMapTemplate", resourceCulture);
             }
         }
     }

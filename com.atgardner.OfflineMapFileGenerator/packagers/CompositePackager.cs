@@ -32,5 +32,11 @@
             var tasks = from p in packagers select p.InitAsync();
             return Task.WhenAll(tasks);
         }
+
+        public Task DoneAsync()
+        {
+            var tasks = from p in packagers select p.DoneAsync();
+            return Task.WhenAll(tasks);
+        }
     }
 }

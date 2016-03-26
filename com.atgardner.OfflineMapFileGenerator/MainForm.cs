@@ -96,6 +96,10 @@
                 MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            else if (!Path.IsPathRooted(outputFile))
+            {
+                outputFile = Path.Combine("output", outputFile);
+            }
 
             var formatType = getFormatType();
             if (formatType == FormatType.None)

@@ -9,5 +9,7 @@
         Task InitAsync();
 
         Task AddTileAsync(Tile tile, Task<byte[]> futureData);
+
+        Task DoneAsync();
     }
 }

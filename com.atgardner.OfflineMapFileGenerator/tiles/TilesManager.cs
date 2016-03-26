@@ -61,9 +61,7 @@
         public Task<byte[]> GetTileData(Tile tile)
         {
             logger.Debug("Tile {0} - Getting tile data", tile);
-            var task = source.GetTileDataAsync(tile);
-            logger.Debug("Tile {0} - Done getting tile data", tile);
-            return task;
+            return source.GetTileDataAsync(tile);
         }
 
         private static IEnumerable<Tile> GetTilesDefinitionsFromCoordinate(GlobalCoordinates coordiate, int zoom)

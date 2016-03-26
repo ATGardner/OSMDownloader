@@ -7,25 +7,33 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Collections.Generic;
+    using System.IO;
 
     public abstract class SQLitePackager : IPackager
     {
         protected abstract string TABLE_DDL { get; }
         protected abstract string INDEX_DDL { get; }
         protected abstract string INSERT_SQL { get; }
-        protected abstract string GetDbFileName(string fileName);
         protected abstract Task UpdateTileMetaInfoAsync();
         public abstract Task AddTileAsync(Tile tile, byte[] data);
 
         private readonly string METADATA_DDL = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)";
         private readonly string METADATA_SELECT = "SELECT count(*) FROM android_metadata";
         private readonly string METADATA_INSERT = "INSERT INTO android_metadata VALUES (@locale)";
+        private bool disposed = false;
+
+        protected readonly string dbFile;
         protected readonly Database database;
         protected readonly string attribution;
 
+        protected virtual string FileExtension
+        {
+            get { return "sqlitedb"; }
+        }
+
         public SQLitePackager(string fileName, string attribution)
         {
-            var dbFile = GetDbFileName(fileName);
+            dbFile = Path.ChangeExtension(fileName, FileExtension);
             database = new Database(dbFile);
             this.attribution = attribution;
         }
@@ -34,12 +42,6 @@
         {
             database.Open();
             return CreateTablesAsync();
-        }
-
-        public async Task InitAsync2()
-        {
-            database.Open();
-            await CreateTablesAsync();
         }
 
         public void Dispose()
@@ -72,18 +74,27 @@
             }
         }
 
-        protected virtual async void Dispose(bool disposing)
+        public async Task DoneAsync()
         {
-            if (!disposing)
+            await UpdateTileMetaInfoAsync();
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if (disposed)
             {
                 return;
             }
 
-            if (database != null)
+            if (isDisposing)
             {
-                await UpdateTileMetaInfoAsync();
-                database.Dispose();
+                if (database != null)
+                {
+                    database.Dispose();
+                }
             }
+
+            disposed = true;
         }
 
         private async Task CreateTablesAsync()

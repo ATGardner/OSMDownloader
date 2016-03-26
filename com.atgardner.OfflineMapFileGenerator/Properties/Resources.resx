@@ -121,31 +121,6 @@
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="OruxLayerTemplate" xml:space="preserve">
-    <value>&lt;OruxTracker xmlns="http://oruxtracker.com/app/res/calibration" versionCode="2.1"&gt;
-			&lt;MapCalibration layers="false" layerLevel="{1}"&gt;
-				&lt;MapName&gt;&lt;![CDATA[{0} {1}]]&gt;&lt;/MapName&gt;
-				&lt;MapChunks xMax="{2}" yMax="{3}" datum="WGS84" projection="Mercator" img_height="256" img_width="256" file_name="{0} {1}" /&gt;
-				&lt;MapDimensions height="{4}" width="{5}" /&gt;
-				&lt;MapBounds minLat="{6}" maxLat="{7}" minLon="{8}" maxLon="{9}" /&gt;
-				&lt;CalibrationPoints&gt;
-					&lt;CalibrationPoint corner="TL" lon="{8:0.000000}" lat="{7:0.000000}" /&gt;
-					&lt;CalibrationPoint corner="BR" lon="{9:0.000000}" lat="{6:0.000000}" /&gt;
-					&lt;CalibrationPoint corner="TR" lon="{9:0.000000}" lat="{7:0.000000}" /&gt;
-					&lt;CalibrationPoint corner="BL" lon="{8:0.000000}" lat="{6:0.000000}" /&gt;
-				&lt;/CalibrationPoints&gt;
-			&lt;/MapCalibration&gt;
-		&lt;/OruxTracker&gt;</value>
-  </data>
-  <data name="OruxMapTemplate" xml:space="preserve">
-    <value>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;OruxTracker xmlns="http://oruxtracker.com/app/res/calibration" versionCode="3.0"&gt;
-	&lt;MapCalibration layers="true" layerLevel="0"&gt;
-		&lt;MapName&gt;&lt;![CDATA[{0}]]&gt;&lt;/MapName&gt;
-		{1}
-	&lt;/MapCalibration&gt;
-&lt;/OruxTracker&gt;</value>
-  </data>
   <data name="MaperitiveScriptTemplate" xml:space="preserve">
     <value>clear-map
 //set-geo-bounds -118.4765625, 36.5978891330702, -118.125, 36.8796206050268
@@ -165,5 +140,9 @@ apply-ruleset
 //set-source index=1 visible=true
 //generate-mbtiles file=output.sqlite map-desc=tiles map-name=tiles maxzoom=15 minzoom=10 subpixel=3 exclude-partial=true
 generate-tiles maxzoom=15 minzoom=10 subpixel=3 tilesdir=output exclude-partial=true</value>
+  </data>
+  <data name="CopyrightTemplate" xml:space="preserve">
+    <value>Created by Noam "Amtrak" Gal (http://pct14.blogspot.com/p/offline-maps.html) using OMFG (atgardner.github.com/OfflineMapFileGenerator)
+Source: {0}</value>
   </data>
 </root>

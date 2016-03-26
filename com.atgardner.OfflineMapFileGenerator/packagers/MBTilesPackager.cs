@@ -1,5 +1,4 @@
-﻿
-namespace com.atgardner.OMFG.packagers
+﻿namespace com.atgardner.OMFG.packagers
 {
     using tiles;
     using System.Threading.Tasks;
@@ -7,9 +6,15 @@ namespace com.atgardner.OMFG.packagers
     using System.IO;
     using System;
     using NLog;
+
     class MBTilesPackager : SQLitePackager
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        protected override string FileExtension
+        {
+            get { return "mbtiles"; }
+        }
 
         protected override string INDEX_DDL
         {
@@ -48,12 +53,6 @@ namespace com.atgardner.OMFG.packagers
             };
             await database.ExecuteNonQueryAsync(INSERT_SQL, parameters);
             logger.Debug("Tile {0} - Done adding tile async", tile);
-        }
-
-        protected override string GetDbFileName(string fileName)
-        {
-            var fullPath = Path.GetFullPath(fileName);
-            return Path.ChangeExtension(fullPath, "mbtiles");
         }
 
         protected override async Task UpdateTileMetaInfoAsync()

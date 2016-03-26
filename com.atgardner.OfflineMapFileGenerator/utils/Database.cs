@@ -29,6 +29,11 @@
             connection.Open();
         }
 
+        public void Close()
+        {
+            connection.Close();
+        }
+
         public async Task ExecuteNonQueryAsync(string text, IDictionary<string, object> parameters = null)
         {
             var command = CreateCommand(text, parameters);
@@ -49,19 +54,18 @@
             return result;
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposed = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!disposed)
             {
                 if (disposing)
                 {
                     connection.Dispose();
                 }
 
-                disposedValue = true;
+                disposed = true;
             }
         }
 
@@ -70,7 +74,6 @@
         {
             Dispose(true);
         }
-        #endregion
 
         private DbCommand CreateCommand(string text, IDictionary<string, object> parameters)
         {
