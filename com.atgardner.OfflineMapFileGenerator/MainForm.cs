@@ -51,16 +51,11 @@
         {
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {
-                var fileNames = from f in dlgOpenFile.FileNames select Path.GetFileName(f);
                 inputFiles.AddRange(dlgOpenFile.FileNames);
+                var fileNames = from f in inputFiles
+                                select Path.GetFileName(f);
                 txtBxInput.Text = string.Join("; ", fileNames);
                 logger.Debug("Input files: {0}", txtBxInput.Text);
-                if (string.IsNullOrWhiteSpace(txtBxOutput.Text))
-                {
-                    var outputFileName = Path.GetFileNameWithoutExtension(fileNames.First());
-                    txtBxOutput.Text = outputFileName;
-                    logger.Debug("Automatically selected output file name: {0}", outputFileName);
-                }
             }
         }
 
@@ -69,6 +64,24 @@
             inputFiles.Clear();
             txtBxInput.Text = string.Empty;
             txtBxOutput.Text = string.Empty;
+        }
+
+        private void btnGenerateOutput_Click(object sender, EventArgs e)
+        {
+            GenerateOutput();
+        }
+
+        private void GenerateOutput()
+        {
+            var zoomLevels = GetZoomLevels();
+            if (inputFiles.Count == 0 || zoomLevels.Length == 0)
+            {
+                return;
+            }
+
+            var firstInputFileName = Path.GetFileNameWithoutExtension(inputFiles.Last());
+            var descriptor = cmbMapSource.SelectedItem as SourceDescriptor;
+            txtBxOutput.Text = string.Format("{0} - {1} - {2}-{3}", firstInputFileName, descriptor.Name, zoomLevels.Min(), zoomLevels.Max());
         }
 
         private async void btnRun_Click(object sender, EventArgs e)
@@ -92,11 +105,10 @@
             string outputFile = txtBxOutput.Text;
             if (string.IsNullOrWhiteSpace(outputFile))
             {
-                logger.Warn("No output file name selected");
-                MessageBox.Show("Please specify an output file name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                GenerateOutput();
             }
-            else if (!Path.IsPathRooted(outputFile))
+
+            if (!Path.IsPathRooted(outputFile))
             {
                 outputFile = Path.Combine("output", outputFile);
             }
@@ -291,5 +303,6 @@
 
             checkBox.Enabled = true;
         }
+
     }
 }
