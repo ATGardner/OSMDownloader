@@ -1,19 +1,82 @@
 ﻿namespace com.atgardner.OMFG
 {
+    using Fclp;
+    using packagers;
+    using sources;
     using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     static class Program
     {
+        private static readonly string SourceFile = @"sources\sources.json";
+        private static SourceDescriptor[] sources;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            try
+            {
+                sources = SourceDescriptor.LoadSources(SourceFile);
+            }
+            catch
+            {
+                MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var mainController = new MainController();
+
+            var arguments = ParseArguments(args);
+            if (!arguments.hasAllFields || arguments.Interactive)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                var mainForm = new MainForm(sources);
+                mainForm.MainController = mainController;
+                mainForm.InputFiles = arguments.InputFiles;
+                mainForm.ZoomLevels = arguments.ZoomLevels;
+                mainForm.SourceDescriptor = arguments.SourceDescriptor;
+                mainForm.OutputFile = arguments.OutputFile;
+                mainForm.FormatType = arguments.FormatType;
+                Application.Run(mainForm);
+            }
+            else
+            {
+                mainController.ProgressChanged += (s, e) =>
+                {
+                    Console.WriteLine(e.UserState);
+                };
+                Task.WaitAll(mainController.DownloadTilesAsync(arguments.InputFiles.ToArray(), arguments.ZoomLevels.ToArray(), arguments.SourceDescriptor, arguments.OutputFile, arguments.FormatType));
+            }
+        }
+
+        private static Arguments ParseArguments(string[] args)
+        {
+            var p = new FluentCommandLineParser<Arguments>();
+            p.Setup(arg => arg.Interactive)
+                .As('x', "interactive")
+                .SetDefault(false);
+            p.Setup(arg => arg.InputFiles)
+                .As('i', "input")
+                .SetDefault(new List<string>());
+            p.Setup(arg => arg.ZoomLevelsString)
+                .As('z', "zoomLevels");
+            p.Setup(arg => arg.SourceDescriptorString)
+                .As('s', "source");
+            p.Setup(arg => arg.OutputFile)
+                .As('o', "output");
+            p.Setup(arg => arg.FormatType)
+                .As('f', "format")
+                .SetDefault(FormatType.None);
+            p.Parse(args);
+            var arguments = p.Object;
+            arguments.ParseSourceDescriptor(sources);
+            return arguments;
         }
     }
 }

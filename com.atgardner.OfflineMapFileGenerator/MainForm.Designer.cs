@@ -53,7 +53,6 @@
             this.tspContainer = new System.Windows.Forms.ToolStripContainer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnGenerateOutput = new System.Windows.Forms.Button();
             this.tlpContainer.SuspendLayout();
             this.flpZoomLevels.SuspendLayout();
             this.flpTarget.SuspendLayout();
@@ -78,7 +77,6 @@
             this.tlpContainer.Controls.Add(this.btnClear, 3, 0);
             this.tlpContainer.Controls.Add(this.lblOutput, 0, 1);
             this.tlpContainer.Controls.Add(this.txtBxOutput, 1, 1);
-            this.tlpContainer.Controls.Add(this.btnGenerateOutput, 2, 1);
             this.tlpContainer.Controls.Add(this.lblMapSource, 0, 2);
             this.tlpContainer.Controls.Add(this.cmbMapSource, 1, 2);
             this.tlpContainer.Controls.Add(this.lblZoomLevels, 0, 3);
@@ -118,14 +116,14 @@
             this.txtBxInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBxInput.Location = new System.Drawing.Point(95, 14);
             this.txtBxInput.Name = "txtBxInput";
-            this.txtBxInput.Size = new System.Drawing.Size(386, 20);
+            this.txtBxInput.Size = new System.Drawing.Size(387, 20);
             this.txtBxInput.TabIndex = 2;
             // 
             // btnAdd
             // 
             this.btnAdd.AutoSize = true;
             this.btnAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnAdd.Location = new System.Drawing.Point(487, 13);
+            this.btnAdd.Location = new System.Drawing.Point(488, 13);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(36, 23);
             this.btnAdd.TabIndex = 3;
@@ -149,7 +147,7 @@
             // 
             this.lblOutput.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblOutput.AutoSize = true;
-            this.lblOutput.Location = new System.Drawing.Point(13, 47);
+            this.lblOutput.Location = new System.Drawing.Point(13, 45);
             this.lblOutput.Name = "lblOutput";
             this.lblOutput.Size = new System.Drawing.Size(58, 13);
             this.lblOutput.TabIndex = 12;
@@ -158,16 +156,16 @@
             // txtBxOutput
             // 
             this.txtBxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBxOutput.Location = new System.Drawing.Point(95, 43);
+            this.txtBxOutput.Location = new System.Drawing.Point(95, 42);
             this.txtBxOutput.Name = "txtBxOutput";
-            this.txtBxOutput.Size = new System.Drawing.Size(386, 20);
+            this.txtBxOutput.Size = new System.Drawing.Size(387, 20);
             this.txtBxOutput.TabIndex = 13;
             // 
             // lblMapSource
             // 
             this.lblMapSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMapSource.AutoSize = true;
-            this.lblMapSource.Location = new System.Drawing.Point(13, 75);
+            this.lblMapSource.Location = new System.Drawing.Point(13, 72);
             this.lblMapSource.Name = "lblMapSource";
             this.lblMapSource.Size = new System.Drawing.Size(68, 13);
             this.lblMapSource.TabIndex = 6;
@@ -177,7 +175,7 @@
             // 
             this.cmbMapSource.DisplayMember = "Name";
             this.cmbMapSource.FormattingEnabled = true;
-            this.cmbMapSource.Location = new System.Drawing.Point(95, 71);
+            this.cmbMapSource.Location = new System.Drawing.Point(95, 68);
             this.cmbMapSource.Name = "cmbMapSource";
             this.cmbMapSource.Size = new System.Drawing.Size(121, 21);
             this.cmbMapSource.TabIndex = 7;
@@ -186,7 +184,7 @@
             // lblZoomLevels
             // 
             this.lblZoomLevels.AutoSize = true;
-            this.lblZoomLevels.Location = new System.Drawing.Point(13, 95);
+            this.lblZoomLevels.Location = new System.Drawing.Point(13, 92);
             this.lblZoomLevels.Name = "lblZoomLevels";
             this.lblZoomLevels.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.lblZoomLevels.Size = new System.Drawing.Size(71, 17);
@@ -198,9 +196,9 @@
             this.flpZoomLevels.AutoSize = true;
             this.flpZoomLevels.Controls.Add(this.chkBxAll);
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpZoomLevels.Location = new System.Drawing.Point(95, 98);
+            this.flpZoomLevels.Location = new System.Drawing.Point(95, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
-            this.flpZoomLevels.Size = new System.Drawing.Size(386, 30);
+            this.flpZoomLevels.Size = new System.Drawing.Size(387, 30);
             this.flpZoomLevels.TabIndex = 8;
             // 
             // chkBxAll
@@ -217,7 +215,7 @@
             // 
             this.lblTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTarget.AutoSize = true;
-            this.lblTarget.Location = new System.Drawing.Point(13, 139);
+            this.lblTarget.Location = new System.Drawing.Point(13, 136);
             this.lblTarget.Name = "lblTarget";
             this.lblTarget.Size = new System.Drawing.Size(76, 13);
             this.lblTarget.TabIndex = 14;
@@ -229,9 +227,9 @@
             this.flpTarget.Controls.Add(this.rdBtnBCNav);
             this.flpTarget.Controls.Add(this.rdBtnMB);
             this.flpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTarget.Location = new System.Drawing.Point(95, 134);
+            this.flpTarget.Location = new System.Drawing.Point(95, 131);
             this.flpTarget.Name = "flpTarget";
-            this.flpTarget.Size = new System.Drawing.Size(386, 23);
+            this.flpTarget.Size = new System.Drawing.Size(387, 23);
             this.flpTarget.TabIndex = 15;
             // 
             // rdBtnBCNav
@@ -262,9 +260,9 @@
             this.lnk.AutoSize = true;
             this.tlpContainer.SetColumnSpan(this.lnk, 2);
             this.lnk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lnk.Location = new System.Drawing.Point(13, 160);
+            this.lnk.Location = new System.Drawing.Point(13, 157);
             this.lnk.Name = "lnk";
-            this.lnk.Size = new System.Drawing.Size(468, 13);
+            this.lnk.Size = new System.Drawing.Size(469, 13);
             this.lnk.TabIndex = 11;
             this.lnk.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk_LinkClicked);
             // 
@@ -351,18 +349,6 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // btnGenerateOutput
-            // 
-            this.btnGenerateOutput.AutoSize = true;
-            this.btnGenerateOutput.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnGenerateOutput.Location = new System.Drawing.Point(487, 42);
-            this.btnGenerateOutput.Name = "btnGenerateOutput";
-            this.btnGenerateOutput.Size = new System.Drawing.Size(37, 23);
-            this.btnGenerateOutput.TabIndex = 17;
-            this.btnGenerateOutput.Text = "Gen";
-            this.btnGenerateOutput.UseVisualStyleBackColor = true;
-            this.btnGenerateOutput.Click += new System.EventHandler(this.btnGenerateOutput_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -419,7 +405,6 @@
         private System.Windows.Forms.CheckBox chkBxAll;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.CheckBox rdBtnMB;
-        private System.Windows.Forms.Button btnGenerateOutput;
     }
 }
 

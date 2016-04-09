@@ -14,7 +14,6 @@
     class MainController
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public SourceDescriptor[] Sources { get; private set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
 
@@ -25,11 +24,6 @@
                 var applicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 return Path.Combine(applicationData, "OMFG");
             }
-        }
-
-        public async Task InitAsync(string sourceFile)
-        {
-            Sources = await SourceDescriptor.LoadSourcesAsync(sourceFile);
         }
 
         public async Task DownloadTilesAsync(string[] inputFiles, int[] zoomLevels, SourceDescriptor descriptor, string outputFile, FormatType formatType)

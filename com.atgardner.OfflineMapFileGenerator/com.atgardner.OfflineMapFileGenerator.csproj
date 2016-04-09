@@ -58,6 +58,10 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentCommandLineParser, Version=1.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentCommandLineParser.1.4.3\lib\net35\FluentCommandLineParser.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Gavaghan.Geodesy">
       <HintPath>..\lib\Gavaghan.Geodesy.dll</HintPath>
     </Reference>
@@ -106,6 +110,7 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Arguments.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="packagers\CachePackager.cs" />
     <Compile Include="packagers\CompositePackager.cs" />

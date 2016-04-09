@@ -3,7 +3,6 @@
     using Newtonsoft.Json;
     using System;
     using System.IO;
-    using System.Threading.Tasks;
 
     public class SourceDescriptor : IEquatable<SourceDescriptor>
     {
@@ -88,10 +87,10 @@
             return Name.GetHashCode() ^ Address.GetHashCode();
         }
 
-        public static async Task<SourceDescriptor[]> LoadSourcesAsync(string path)
+        public static SourceDescriptor[] LoadSources(string path)
         {
             var json = File.ReadAllText(path);
-            return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<SourceDescriptor[]>(json));
+            return JsonConvert.DeserializeObject<SourceDescriptor[]>(json);
         }
     }
 }

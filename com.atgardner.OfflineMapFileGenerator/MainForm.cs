@@ -1,8 +1,8 @@
 ﻿namespace com.atgardner.OMFG
 {
-    using com.atgardner.OMFG.packagers;
-    using com.atgardner.OMFG.sources;
-    using com.atgardner.OMFG.utils;
+    using packagers;
+    using sources;
+    using utils;
     using NLog;
     using System;
     using System.Collections.Generic;
@@ -13,45 +13,32 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
 
-    public partial class MainForm : Form
+    partial class MainForm : Form
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly string SourceFile = @"sources\sources.json";
 
         private readonly List<string> inputFiles;
-        private readonly MainController controller;
+        private MainController controller;
         private bool zoomChangeFromCode;
 
-        public MainForm()
+        public MainController MainController
         {
-            InitializeComponent();
-            inputFiles = new List<string>();
-            controller = new MainController();
-            controller.ProgressChanged += controller_ProgressChanged;
-        }
-
-        protected override async void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            CreateZoomCheckBoxes();
-            try
+            set
             {
-                await controller.InitAsync(SourceFile);
-                cmbMapSource.DataSource = controller.Sources;
-            }
-            catch (Exception ex)
-            {
-                logger.Fatal(ex, "Failed reading sources");
-                MessageBox.Show("Failed reading sources", "Missing sources", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
+                controller = value;
+                controller.ProgressChanged += controller_ProgressChanged;
             }
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e)
+        public IEnumerable<string> InputFiles
         {
-            if (dlgOpenFile.ShowDialog() == DialogResult.OK)
+            get
             {
-                inputFiles.AddRange(dlgOpenFile.FileNames);
+                return inputFiles;
+            }
+            set
+            {
+                inputFiles.AddRange(value);
                 var fileNames = from f in inputFiles
                                 select Path.GetFileName(f);
                 txtBxInput.Text = string.Join("; ", fileNames);
@@ -59,29 +46,136 @@
             }
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        public IEnumerable<int> ZoomLevels
         {
-            inputFiles.Clear();
-            txtBxInput.Text = string.Empty;
-            txtBxOutput.Text = string.Empty;
+            get
+            {
+                return from c in flpZoomLevels.Controls.Cast<CheckBox>()
+                       where c.Enabled && c.Checked && c != chkBxAll
+                       select Convert.ToInt32(c.Text);
+            }
+            set
+            {
+                zoomChangeFromCode = true;
+                foreach (CheckBox chkBx in flpZoomLevels.Controls)
+                {
+                    if (chkBx != chkBxAll)
+                    {
+                        var zoomLevel = Convert.ToInt32(chkBx.Text);
+                        var shouldCheck = value.Contains(zoomLevel);
+                        if (chkBx.Enabled)
+                        {
+                            chkBx.Checked = shouldCheck;
+                        }
+                        else
+                        {
+                            chkBx.Tag = chkBx.CheckState;
+                            if (shouldCheck)
+                            {
+                                chkBx.CheckState = CheckState.Indeterminate;
+                            }
+                        }
+                    }
+                }
+
+                zoomChangeFromCode = false;
+            }
         }
 
-        private void btnGenerateOutput_Click(object sender, EventArgs e)
+        public SourceDescriptor SourceDescriptor
         {
-            GenerateOutput();
+            get
+            {
+                return cmbMapSource.SelectedItem as SourceDescriptor;
+            }
+            set
+            {
+                cmbMapSource.SelectedItem = value;
+            }
+        }
+
+        public string SourceDescriptorString
+        {
+            set
+            {
+                cmbMapSource.ValueMember = value;
+            }
+        }
+
+        public string OutputFile
+        {
+            get
+            {
+                return txtBxOutput.Text;
+            }
+            set
+            {
+                txtBxOutput.Text = value;
+            }
+        }
+
+        public FormatType FormatType
+        {
+            get
+            {
+                var result = FormatType.None;
+                if (rdBtnBCNav.Checked)
+                {
+                    result |= FormatType.BCNav;
+                }
+
+                if (rdBtnMB.Checked)
+                {
+                    result |= FormatType.MBTiles;
+                }
+
+                return result;
+            }
+            set
+            {
+                rdBtnBCNav.Checked = value.HasFlag(FormatType.BCNav);
+                rdBtnMB.Checked = value.HasFlag(FormatType.MBTiles);
+            }
+        }
+
+        public MainForm()
+        {
+            InitializeComponent();
+            inputFiles = new List<string>();
+            CreateZoomCheckBoxes();
+        }
+
+        public MainForm(SourceDescriptor[] sources) : this()
+        {
+            cmbMapSource.DataSource = sources;
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            if (dlgOpenFile.ShowDialog() == DialogResult.OK)
+            {
+                InputFiles = dlgOpenFile.FileNames;
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            InputFiles = new string[0];
+            OutputFile = string.Empty;
         }
 
         private void GenerateOutput()
         {
-            var zoomLevels = GetZoomLevels();
-            if (inputFiles.Count == 0 || zoomLevels.Length == 0)
+            var zoomLevels = ZoomLevels;
+            var zoomCount = zoomLevels.Count();
+            if (inputFiles.Count == 0 || zoomCount == 0)
             {
                 return;
             }
 
             var firstInputFileName = Path.GetFileNameWithoutExtension(inputFiles.Last());
-            var descriptor = cmbMapSource.SelectedItem as SourceDescriptor;
-            txtBxOutput.Text = string.Format("{0} - {1} - {2}-{3}", firstInputFileName, descriptor.Name, zoomLevels.Min(), zoomLevels.Max());
+            var descriptor = SourceDescriptor;
+            OutputFile = string.Format("{0} - {1} - {2}-{3}", firstInputFileName, descriptor.Name, ZoomLevels.Min(), ZoomLevels.Max());
         }
 
         private async void btnRun_Click(object sender, EventArgs e)
@@ -93,16 +187,17 @@
                 return;
             }
 
-            var zoomLevels = GetZoomLevels();
-            if (zoomLevels.Length == 0)
+            var zoomLevels = ZoomLevels.ToArray();
+            var zoomCount = zoomLevels.Count();
+            if (zoomCount == 0)
             {
                 logger.Warn("No zoom level selected");
                 MessageBox.Show("Please chose at least one zoom level", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var descriptor = cmbMapSource.SelectedItem as SourceDescriptor;
-            string outputFile = txtBxOutput.Text;
+            var descriptor = SourceDescriptor;
+            string outputFile = OutputFile;
             if (string.IsNullOrWhiteSpace(outputFile))
             {
                 GenerateOutput();
@@ -113,7 +208,7 @@
                 outputFile = Path.Combine("output", outputFile);
             }
 
-            var formatType = getFormatType();
+            var formatType = FormatType;
             if (formatType == FormatType.None)
             {
                 logger.Warn("No output format selected");
@@ -130,25 +225,9 @@
             tlpContainer.Enabled = true;
         }
 
-        private FormatType getFormatType()
-        {
-            var result = FormatType.None;
-            if (rdBtnBCNav.Checked)
-            {
-                result |= FormatType.BCNav;
-            }
-
-            if (rdBtnMB.Checked)
-            {
-                result |= FormatType.MBTiles;
-            }
-
-            return result;
-        }
-
         private void cmbMapSource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var mapSource = cmbMapSource.SelectedItem as SourceDescriptor;
+            var mapSource = SourceDescriptor;
             if (mapSource != null)
             {
                 logger.Debug("Changed source to {0}", mapSource);
@@ -178,16 +257,17 @@
                 return;
             }
 
-            var zoomLevels = GetZoomLevels();
-            var mapSource = cmbMapSource.SelectedItem as SourceDescriptor;
+            var zoomLevels = ZoomLevels;
+            var mapSource = SourceDescriptor;
             var totalLevels = mapSource.MaxZoom - mapSource.MinZoom + 1;
             var checkState = CheckState.Unchecked;
-            if (zoomLevels.Length > 0)
+            var zoomCount = zoomLevels.Count();
+            if (zoomCount > 0)
             {
                 checkState = CheckState.Indeterminate;
             }
 
-            if (zoomLevels.Length == totalLevels)
+            if (zoomCount == totalLevels)
             {
                 checkState = CheckState.Checked;
             }
@@ -230,21 +310,6 @@
             {
                 about.ShowDialog(this);
             }
-        }
-
-        private int[] GetZoomLevels()
-        {
-            var levels = new List<int>();
-            foreach (CheckBox chkBx in flpZoomLevels.Controls)
-            {
-                int zoomLevel;
-                if (chkBx.Enabled && chkBx.Checked && int.TryParse(chkBx.Text, out zoomLevel))
-                {
-                    levels.Add(zoomLevel);
-                }
-            }
-
-            return levels.ToArray();
         }
 
         private void ResetZoomCheckBoxes(int minZoom, int maxZoom)
