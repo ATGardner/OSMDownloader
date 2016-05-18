@@ -84,22 +84,6 @@
     "type": "TileServer"
   },
   {
-    "Name": "TA - Landcare Research - 0-15 (MBTILES)",
-    "Address": "D:\\Users\\Noam\\Downloads\\offline maps\\TA - Landcare Research - 0-15.mbtiles",
-    "minZoom": 0,
-    "maxZoom": 15,
-    "attribution": "Landcare Research and licensed by Landcare Research for re-use under Creative Commons CC-BY New Zealand license (http://creativecommons.org/licenses/by/3.0/nz/).",
-    "type": "MBTiles"
-  },
-  {
-    "Name": "Maperitive",
-    "Address": "D:\\Users\\Noam\\Downloads\\OMFG\\aosta.sqlitedb",
-    "minZoom": 11,
-    "maxZoom": 15,
-    "attribution": "whatever",
-    "type": "Maperitive"
-  },
-  {
     "Name": "NZ - Topo50 Maps",
     "Address": "http://tiles-[abcd].data-cdn.linz.govt.nz/services;key=65bc0122063d4dbebe7a16f80eb5f97e/tiles/v4/layer=2343/EPSG:3857/{z}/{x}/{y}.png",
     "minZoom": 0,

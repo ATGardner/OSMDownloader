@@ -197,15 +197,14 @@
             }
 
             var descriptor = SourceDescriptor;
-            string outputFile = OutputFile;
-            if (string.IsNullOrWhiteSpace(outputFile))
+            if (string.IsNullOrWhiteSpace(OutputFile))
             {
                 GenerateOutput();
             }
 
-            if (!Path.IsPathRooted(outputFile))
+            if (!Path.IsPathRooted(OutputFile))
             {
-                outputFile = Path.Combine("output", outputFile);
+                OutputFile = Path.Combine("output", OutputFile);
             }
 
             var formatType = FormatType;
@@ -220,7 +219,7 @@
             prgBar.Value = 0;
             await Task.Run(async () =>
             {
-                await controller.DownloadTilesAsync(inputFiles.ToArray(), zoomLevels, descriptor, outputFile.Replace("\"", string.Empty), formatType);
+                await controller.DownloadTilesAsync(inputFiles.ToArray(), zoomLevels, descriptor, OutputFile.Replace("\"", string.Empty), formatType);
             });
             tlpContainer.Enabled = true;
         }
@@ -230,9 +229,13 @@
             var mapSource = SourceDescriptor;
             if (mapSource != null)
             {
+                flpZoomLevels.Enabled = true;
                 logger.Debug("Changed source to {0}", mapSource);
                 ResetZoomCheckBoxes(mapSource.MinZoom, mapSource.MaxZoom);
                 Utils.ConfigLinkLabel(lnk, mapSource.Attribution);
+            } else
+            {
+                flpZoomLevels.Enabled = false;
             }
         }
 

@@ -196,6 +196,7 @@
             this.flpZoomLevels.AutoSize = true;
             this.flpZoomLevels.Controls.Add(this.chkBxAll);
             this.flpZoomLevels.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpZoomLevels.Enabled = false;
             this.flpZoomLevels.Location = new System.Drawing.Point(95, 95);
             this.flpZoomLevels.Name = "flpZoomLevels";
             this.flpZoomLevels.Size = new System.Drawing.Size(387, 30);

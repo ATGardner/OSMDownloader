@@ -136,7 +136,7 @@
                 var outputDirectory = Path.GetDirectoryName(directory);
                 var parentDirectory = Path.GetFileName(directory);
                 var fileName = Path.GetFileNameWithoutExtension(fileToZip);
-                var zipFile = Path.Combine(outputDirectory, string.Format("{0} {1}.zip", parentDirectory, fileName));
+                var zipFile = Path.Combine(outputDirectory, string.Format("{0} - {1}.zip", fileName, parentDirectory));
                 File.Delete(zipFile);
                 using (var zip = new ZipFile(zipFile))
                 {

@@ -58,22 +58,37 @@
         private static Arguments ParseArguments(string[] args)
         {
             var p = new FluentCommandLineParser<Arguments>();
+            //p.IsCaseSensitive = false;
+            //p.SetupHelp("?", "help")
+            //    .Callback(text => Console.WriteLine(text));
             p.Setup(arg => arg.Interactive)
                 .As('x', "interactive")
+                .WithDescription("Always show options dialog")
                 .SetDefault(false);
             p.Setup(arg => arg.InputFiles)
                 .As('i', "input")
+                .WithDescription("A list of input GPX/KML/KMZ files")
                 .SetDefault(new List<string>());
             p.Setup(arg => arg.ZoomLevelsString)
-                .As('z', "zoomLevels");
+                .As('z', "zoomLevels")
+                .WithDescription("Space saparated zoom levels, or range (e.g. - \"0 2-3 5\")")
+                .SetDefault(new List<string>());
             p.Setup(arg => arg.SourceDescriptorString)
-                .As('s', "source");
+                .As('s', "source")
+                .WithDescription("Name of required map source (e.g. - \"USA Topo Maps\")");
             p.Setup(arg => arg.OutputFile)
-                .As('o', "output");
+                .As('o', "output")
+                .WithDescription("Output file name");
             p.Setup(arg => arg.FormatType)
                 .As('f', "format")
+                .WithDescription("Output format - BCNav/MBTiles or both")
                 .SetDefault(FormatType.None);
-            p.Parse(args);
+            var result = p.Parse(args);
+            if (result.HasErrors)
+            {
+                p.HelpOption.ShowHelp(p.Options);
+            }
+
             var arguments = p.Object;
             arguments.ParseSourceDescriptor(sources);
             return arguments;
